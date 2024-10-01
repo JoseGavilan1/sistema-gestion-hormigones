@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,10 +7,11 @@ import { AuthService } from '../../services/auth/auth.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-
-  constructor(private authService: AuthService) {}
+  constructor(private router: Router) {}
 
   logout() {
-    this.authService.logout();  // Llamar al método de logout
+    // Lógica para cerrar sesión, como limpiar tokens, etc.
+    // Luego redirigir al login
+    this.router.navigate(['/login']);
   }
 }

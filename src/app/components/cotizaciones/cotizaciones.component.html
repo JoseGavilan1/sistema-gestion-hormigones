@@ -1,0 +1,21 @@
+<!-- cotizaciones.component.html -->
+<nav
+  class="navbar navbar-expand-lg navbar-dark"
+  style="background-color: black"
+>
+  <div class="container-fluid">
+    <h1 class="text-center text-white flex-grow-1">
+      SISTEMA DE GESTIÓN Y COSTEO DE HORMIGONES
+    </h1>
+    <button class="btn btn-outline-light" >
+      Cerrar Sesión
+    </button>
+  </div>
+</nav>
+
+<!-- cotizaciones.component.html -->
+<h2>Cargar Cotizaciones</h2>
+<input type="file" (change)="onFileSelected($event)" accept="application/pdf" />
+<button (click)="uploadFile()" [disabled]="!selectedFile">Cargar</button>
+<p *ngIf="uploadSuccess">{{ uploadMessage }}</p>
+

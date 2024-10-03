@@ -1,0 +1,27 @@
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: black;">
+  <div class="container-fluid">
+    <h1 class="text-center text-white flex-grow-1">SISTEMA DE GESTIÓN Y COSTEO DE HORMIGONES</h1>
+    <button class="btn btn-outline-light" (click)="logout()">Cerrar Sesión</button>
+  </div>
+</nav>
+
+
+<div class="container">
+  <h1 class="text-center">Precios materias primas planta 1</h1>
+  <button class="btn btn-primary" [routerLink]="['/plantas']">Volver atras</button>
+  <table class="table table-bordered table-striped table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th>Producto</th>
+        <th>Precio</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let dato of datos">
+        <td>{{ dato.producto }}</td>
+        <td>{{ dato.precio }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
+import { UfService } from '../../../services/uf/uf-service.service';
 
 @Component({
   selector: 'app-planta-1',
@@ -8,13 +9,17 @@ import { ApiService } from '../../../services/api/api.service';
   styleUrl: './planta-1.component.css'
 })
 export class Planta1Component {
-  constructor(private router: Router, private apiService: ApiService) {}
+
+
+  constructor(private router: Router, private apiService: ApiService, private ufService: UfService) {}
 
   logout() {
     this.router.navigate(['/login']);
   }
 
   datos: any[] = [];
+
+  ufValue!: number;
 
   ngOnInit(): void {
     this.apiService.getDatos().subscribe(
@@ -26,5 +31,11 @@ export class Planta1Component {
         console.error('Error al obtener datos:', error);
       }
     );
+
+    this.ufService.getUfValue().subscribe(data => {
+      this.ufValue = data.serie[0].valor;
+    })
   }
+
+
 }

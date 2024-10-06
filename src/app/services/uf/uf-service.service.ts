@@ -5,14 +5,13 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
+export class UfService {
 
-  private apiUrl = 'http://localhost:3000/api/PLANTATOCOPILLA'; // URL de tu API
+  private apiUrl = 'https://mindicador.cl/api/uf';
 
   constructor(private http: HttpClient) { }
 
-  getDatos(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+  getUfValue(): Observable<any> {
+    return this.http.get(this.apiUrl);
   }
-
 }

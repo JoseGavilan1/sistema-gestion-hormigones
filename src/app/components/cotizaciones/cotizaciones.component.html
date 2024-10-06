@@ -1,21 +1,29 @@
-<!-- cotizaciones.component.html -->
-<nav
-  class="navbar navbar-expand-lg navbar-dark"
-  style="background-color: black"
->
-  <div class="container-fluid">
-    <h1 class="text-center text-white flex-grow-1">
-      SISTEMA DE GESTIÓN Y COSTEO DE HORMIGONES
-    </h1>
-    <button class="btn btn-outline-light" >
-      Cerrar Sesión
-    </button>
+<app-navbar></app-navbar>
+
+<div class="container mt-4">
+  <button class="btn btn-primary" [routerLink]="['/home']">Volver atras</button>
+  <div class="row">
+    <!-- Columna izquierda: Listado de cotizaciones -->
+    <div class="col-md-6">
+      <div class="d-flex justify-content-between mt-4">
+        <h1>Cotizaciones</h1>
+      </div>
+      <h3>Aquí podrás encontrar un listado de las cotizaciones efectuadas</h3>
+
+      <!-- Listado de cotizaciones -->
+      <div *ngFor="let cotizacion of cotizaciones" class="mt-5">
+        <p>{{ cotizacion.nombre }}</p>
+        <button class="btn btn-primary" (click)="verDetalles(cotizacion)">Ver detalles</button>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Detalle de la cotización seleccionada -->
+    <div class="col-md-6" *ngIf="cotizacionSeleccionada">
+      <!-- Aquí se incluye el componente detalle-cotizacion con los datos -->
+      <app-detalle-cotizacion
+        [data]="cotizacionSeleccionada"
+        (cerrarDetallesEvent)="cotizacionSeleccionada = null">
+      </app-detalle-cotizacion>
+    </div>
   </div>
-</nav>
-
-<!-- cotizaciones.component.html -->
-<h2>Cargar Cotizaciones</h2>
-<input type="file" (change)="onFileSelected($event)" accept="application/pdf" />
-<button (click)="uploadFile()" [disabled]="!selectedFile">Cargar</button>
-<p *ngIf="uploadSuccess">{{ uploadMessage }}</p>
-
+</div>

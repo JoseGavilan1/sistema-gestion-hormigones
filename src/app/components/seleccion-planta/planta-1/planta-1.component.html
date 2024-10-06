@@ -1,14 +1,11 @@
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: black;">
-  <div class="container-fluid">
-    <h1 class="text-center text-white flex-grow-1">SISTEMA DE GESTIÓN Y COSTEO DE HORMIGONES</h1>
-    <button class="btn btn-outline-light" (click)="logout()">Cerrar Sesión</button>
-  </div>
-</nav>
-
+<app-navbar></app-navbar>
 
 <div class="container">
   <h1 class="text-center">Precios materias primas planta 1</h1>
   <button class="btn btn-primary" [routerLink]="['/plantas']">Volver atras</button>
+  <div *ngIf="ufValue">
+    <p>El valor actual de la UF es: {{ ufValue }} CLP</p>
+  </div>
   <table class="table table-bordered table-striped table-hover">
     <thead class="thead-dark">
       <tr>

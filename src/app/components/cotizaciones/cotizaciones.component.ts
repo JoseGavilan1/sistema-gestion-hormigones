@@ -1,43 +1,47 @@
 import { Component } from '@angular/core';
-import { BlobServiceClient } from '@azure/storage-blob';
+import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-cotizaciones',
-    templateUrl: './cotizaciones.component.html',
-    styleUrls: ['./cotizaciones.component.css']
+  selector: 'app-cotizaciones',
+  templateUrl: './cotizaciones.component.html',
+  styleUrls: ['./cotizaciones.component.css']
 })
 export class CotizacionesComponent {
-    private connectionString = 'UseDevelopmentStorage=true';
-    selectedFile: File | null = null;
-    uploadSuccess = false;
-    uploadMessage = '';
 
-    constructor() {}
-
-    onFileSelected(event: any) {
-        this.selectedFile = event.target.files[0];
-        this.uploadSuccess = false; // Reset success status when a new file is selected
+  constructor(private router: Router){}
+  logout() {
+    // Lógica para cerrar sesión, como limpiar tokens, etc.
+    // Luego redirigir al login
+    this.router.navigate(['/login']);
+  }
+  cotizaciones = [
+    {
+      nombre: 'Cotización 1',
+      date: '05/10/2024',
+      seller: 'Vendedor A',
+      client: 'Cliente 1',
+      items: [
+        { product: 'Producto 1', quantity: 1, price: 12345, total: 12345 }
+      ],
+      total: 12345,
+      observations: 'Observaciones de la cotización 1'
+    },
+    {
+      nombre: 'Cotización 2',
+      date: '06/10/2024',
+      seller: 'Vendedor B',
+      client: 'Cliente 2',
+      items: [
+        { product: 'Producto 2', quantity: 2, price: 54321, total: 108642 }
+      ],
+      total: 108642,
+      observations: 'Observaciones de la cotización 2'
     }
+  ];
 
-    async uploadFile() {
-        if (this.selectedFile && this.selectedFile.type === 'application/pdf') {
-            const blobServiceClient = BlobServiceClient.fromConnectionString(this.connectionString);
-            const containerClient = blobServiceClient.getContainerClient('cotizaciones');
-            const blobClient = containerClient.getBlockBlobClient(this.selectedFile.name);
+  cotizacionSeleccionada: any = null;
 
-            try {
-                await blobClient.upload(this.selectedFile, this.selectedFile.size);
-                this.uploadSuccess = true;
-                this.uploadMessage = 'Archivo subido exitosamente';
-            } catch (error) {
-                console.error('Error al subir el archivo:', error);
-                this.uploadSuccess = false;
-                this.uploadMessage = 'Error al subir el archivo';
-            }
-        } else {
-            console.error('Por favor, selecciona un archivo PDF válido.');
-            this.uploadSuccess = false;
-            this.uploadMessage = 'Por favor, selecciona un archivo PDF válido.';
-        }
-    }
+  verDetalles(cotizacion: any) {
+    this.cotizacionSeleccionada = cotizacion;
+  }
 }

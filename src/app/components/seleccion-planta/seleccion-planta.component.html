@@ -1,17 +1,13 @@
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: black;">
-  <div class="container-fluid">
-    <h1 class="text-center text-white flex-grow-1">SISTEMA DE GESTIÓN Y COSTEO DE HORMIGONES</h1>
-    <button class="btn btn-outline-light" (click)="logout()">Cerrar Sesión</button>
-  </div>
-</nav>
-
-<div class="container mt-4 d-flex justify-content-between">
-  <h1>seleccione planta</h1>
+<app-navbar></app-navbar>
+<div class="container mt-4">
   <button class="btn btn-dark" [routerLink]="['/home']">Volver atras</button>
+</div>
+<div class="container mt-4 d-flex justify-content-between">
+  <h1>Seleccione planta</h1>
 
 </div>
-<div class="row">
-  <button [routerLink]="['/planta1']">planta 1</button>
-  <button [routerLink]="['/planta2']">planta 2</button>
-  <button [routerLink]="['/planta3']">planta 3</button>
+<div class="container d-flex justify-content-between" style="margin-top: 10px;">
+  <button [routerLink]="['/planta1']" class="btn btn-primary">planta 1</button>
+  <button [routerLink]="['/planta2']" class="btn btn-primary">planta 2</button>
+  <button [routerLink]="['/planta3']" class="btn btn-primary">planta 3</button>
 </div>

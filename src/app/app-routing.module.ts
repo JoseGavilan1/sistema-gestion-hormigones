@@ -8,6 +8,8 @@ import { Planta1Component } from './components/seleccion-planta/planta-1/planta-
 import { Planta2Component } from './components/seleccion-planta/planta-2/planta-2.component';
 import { Planta3Component } from './components/seleccion-planta/planta-3/planta-3.component';
 import { CotizacionesComponent } from './components/cotizaciones/cotizaciones.component';
+import { CosteoProductoComponent } from './components/costeo-producto/costeo-producto.component';
+import { DetalleCotizacionComponent } from './components/detalle-cotizacion/detalle-cotizacion.component';
 
 
 const routes: Routes = [
@@ -25,7 +27,10 @@ const routes: Routes = [
 
   {path: 'planta3', component: Planta3Component},
 
-  {path: 'cotizaciones', component: CotizacionesComponent}
+  {path: 'cotizaciones', component: CotizacionesComponent},
+
+  {path: 'costeo-producto', component: CosteoProductoComponent},
+
 
 ];
 

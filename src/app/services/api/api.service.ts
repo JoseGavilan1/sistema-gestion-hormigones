@@ -22,4 +22,8 @@ export class ApiService {
     return this.http.get<any>(this.aditivosEspecialesUrl);
   }
 
+  getPreciosPorPlanta(): Observable<any> {
+    return this.http.get<any>('http://localhost:3000/api/precios_por_planta');
+  }
+
 }

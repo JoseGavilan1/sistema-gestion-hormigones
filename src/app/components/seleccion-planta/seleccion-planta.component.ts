@@ -12,19 +12,35 @@ export class SeleccionPlantaComponent {
 
   datos: any = {
     Taltal: [],
-    Mejillones: []
+    Mejillones: [],
+    Tocopilla: [],
+    MariaElena: [],
+    Calama: [],
+    Antofagasta: []
   };
 
 
   ngOnInit(): void {
     this.apiService.getPreciosPorPlanta().subscribe(
       (response) => {
-        this.datos = response; // Aquí se combinan los datos de ambas plantas
+        // Verificar si los datos devueltos están organizados por planta
+        if (response && response.Taltal && response.Mejillones) {
+          this.datos.Taltal = response.Taltal;
+          this.datos.Mejillones = response.Mejillones;
+          this.datos.Tocopilla = response.Tocopilla;
+          this.datos.MariaElena = response.MariaElena;
+          this.datos.Calama = response.Calama;
+          this.datos.Antofagasta = response.Antofagasta;
+        } else {
+          console.error('El formato de los datos no es el esperado.');
+        }
       },
       (error) => {
         console.error('Error al obtener los datos:', error);
       }
     );
+
+    console.log('Los datos de las materias primas es', this.datos)
   }
 
 

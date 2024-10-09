@@ -7,23 +7,22 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
 
-  private materiasPrimasUrl = 'http://localhost:3000/api/materias_primas'; // URL de la API para materias_primas
-  private aditivosEspecialesUrl = 'http://localhost:3000/api/aditivos_especiales'; // URL de la API para aditivos_especiales
+  private baseUrl = 'http://localhost:3000/api'; // Define la base URL para evitar duplicación
 
   constructor(private http: HttpClient) { }
 
-  // Método para obtener los datos de materias_primas
-  getMateriasPrimas(): Observable<any> {
-    return this.http.get<any>(this.materiasPrimasUrl);
+  // Obtener materias primas filtradas por planta
+  getMateriasPrimasPorPlanta(planta: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/${planta}/materias_primas`);
   }
 
-  // Método para obtener los datos de aditivos_especiales
-  getAditivosEspeciales(): Observable<any> {
-    return this.http.get<any>(this.aditivosEspecialesUrl);
+  // Obtener aditivos especiales
+  getAditivosEspeciales(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/aditivos_especiales`);
   }
 
+  // Obtener precios por planta (si es necesario)
   getPreciosPorPlanta(): Observable<any> {
-    return this.http.get<any>('http://localhost:3000/api/precios_por_planta');
+    return this.http.get<any>(`${this.baseUrl}/precios_por_planta`);
   }
-
 }

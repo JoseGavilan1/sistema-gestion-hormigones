@@ -30,7 +30,7 @@
     <table class="table table-bordered table-striped table-hover">
       <thead>
         <tr>
-          <th>Nombre materia prima</th>
+          <th>Materia prima</th>
           <th>TALTAL</th>
           <th>MEJILLONES</th>
           <th>TOCOPILLA</th>
@@ -43,9 +43,13 @@
         <!-- Itera sobre las materias primas de la planta de Taltal -->
         <tr *ngFor="let materiaPrima of datos.Taltal; let i = index">
           <td>{{ materiaPrima.producto }}</td>
-          <td>{{ materiaPrima.precio }}</td>
+          <td>${{ materiaPrima.precio }}</td>
           <!-- Mostrar el precio de la misma materia prima en Mejillones, si existe -->
-          <td *ngIf="datos.Mejillones[i]">{{ datos.Mejillones[i]?.precio }}</td>
+          <td *ngIf="datos.Mejillones[i]">${{ datos.Mejillones[i]?.precio }}</td>
+          <td *ngIf="datos.Tocopilla[i]">${{ datos.Tocopilla[i]?.precio }}</td>
+          <td *ngIf="datos.MariaElena[i]">${{ datos.MariaElena[i]?.precio }}</td>
+          <td *ngIf="datos.Calama[i]">${{ datos.Calama[i]?.precio }}</td>
+          <td *ngIf="datos.Antofagasta[i]">${{datos.Antofagasta[i]?.precio}}</td>
         </tr>
       </tbody>
     </table>

@@ -14,12 +14,10 @@ export class Planta1Component implements OnInit {
   aditivosEspeciales: any[] = []; // Para almacenar datos de aditivos_especiales
   ufValue!: number;
 
-
-
   constructor(private router: Router, private apiService: ApiService, private ufService: UfService) {}
 
   ngOnInit(): void {
-    this.apiService.getMateriasPrimas().subscribe(
+    this.apiService.getMateriasPrimasPorPlanta('taltal').subscribe(
       (response) => {
         this.datos = response;
       },
@@ -28,6 +26,7 @@ export class Planta1Component implements OnInit {
       }
     );
 
+    // Obtener datos de aditivos especiales
     this.apiService.getAditivosEspeciales().subscribe(
       (response) => {
         this.aditivosEspeciales = response;
@@ -37,20 +36,21 @@ export class Planta1Component implements OnInit {
       }
     );
 
+    // Obtener el valor actual de la UF
     this.ufService.getUfValue().subscribe(data => {
       this.ufValue = data.serie[0].valor;
     });
   }
 
-  // Método para calcular Densidad $/kg para el aditivo VISCOCRETE
+  // Método para calcular Densidad $/kg
   calcularDensidadKg(aditivo: any): string {
-    if (aditivo.precio_por_litro && aditivo.densidad_kg_lt) {
-      return (aditivo.precio_por_litro / aditivo.densidad_kg_lt).toFixed(2);
+    if (aditivo.precio_por_litro && aditivo.densidad_kg_litro) {
+      return (aditivo.precio_por_litro / aditivo.densidad_kg_litro).toFixed(2);
     }
     return 'N/A';
   }
 
-  // Método para calcular UF/kg para el aditivo VISCOCRETE
+  // Método para calcular UF/kg
   calcularUFPorKgVisco(aditivo: any): string {
     const densidadKg = this.calcularDensidadKg(aditivo);
     if (this.ufValue && densidadKg !== 'N/A') {
@@ -58,16 +58,6 @@ export class Planta1Component implements OnInit {
     }
     return 'N/A';
   }
-
-  // Método para calcular UF/kg para el aditivo DARAFILL
-  calcularUFPorKgDara(aditivo: any): string {
-    if (this.ufValue && aditivo.precio_kg) {
-        const ufKgValue = (aditivo.precio_kg / this.ufValue).toFixed(3);
-        return ufKgValue;
-    }
-    console.error('Datos insuficientes para calcular UF/kg para DARAFILL:', { ufValue: this.ufValue, precio_kg: aditivo.precio_kg });
-    return 'N/A';
-}
 
   logout() {
     this.router.navigate(['/login']);

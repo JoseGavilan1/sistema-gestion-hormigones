@@ -1,55 +1,54 @@
 <app-navbar></app-navbar>
 
 <div class="container w-50">
-  <h1 class="text-center mt-4">Precios materias primas planta taltal</h1>
+  <h1 class="text-center mt-4">Precios materias primas planta Taltal</h1>
   <button class="btn btn-primary" [routerLink]="['/plantas']">Volver atrás</button>
 
   <!-- Mostrar el valor de la UF -->
   <div class="mt-4" *ngIf="ufValue">
     <p>El valor actual de la UF es: <span>{{ ufValue }}</span> CLP</p>
   </div>
-    <!-- Tabla de materias primas -->
-    <table class="table table-bordered table-striped table-hover w-75">
-      <thead class="thead-dark">
-        <tr>
-          <th>Producto</th>
-          <th>Densidad</th>
-          <th>Precio</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let dato of datos">
-          <td>{{ dato.producto }}</td>
-          <td>{{ dato.densidad }}</td>
-          <td>$ {{ dato.precio }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <button class="btn btn-primary">Editar valores</button>
 
+  <!-- Tabla de materias primas -->
+  <table class="table table-bordered table-striped table-hover w-75">
+    <thead class="thead-dark">
+      <tr>
+        <th>Producto</th>
+        <th>Densidad</th>
+        <th>Precio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let dato of datos">
+        <td>{{ dato.producto }}</td>
+        <td>{{ dato.densidad }}</td>
+        <td>$ {{ dato.precio }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="btn btn-primary">Editar valores</button>
 
-    <table class="table table-bordered table-striped table-hover w-75 mt-3">
-      <thead class="thead-dark">
-        <tr>
-          <th>Aditivos Especiales</th>
-          <th>($/lt)</th>
-          <th>Densidad (kg/lt)</th>
-          <th>Densidad $/kg</th>
-          <th>Densidad UF/kg</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let aditivo of aditivosEspeciales">
-          <td>{{ aditivo.nombre }}</td>
-          <td>{{ aditivo.precio_por_litro }}</td> <!-- Precio por litro -->
-          <td>{{ aditivo.densidad_kg_lt | number:'1.2-2'}}</td>    <!-- Densidad en kg/lt -->
-          <td>{{ aditivo.densidad_precio_kg | number: '1.0-0'}}</td>
-          <td>{{aditivo.densidad_precio_kg /ufValue | number: '1.0-3'}}</td>   <!-- Densidad en UF/kg --> <!--AQUI DEBERIA SER PRECIO_KG / VALOR UF-->
-        </tr>
-      </tbody>
-    </table>
+  <!-- Tabla de aditivos especiales -->
+  <table class="table table-bordered table-striped table-hover w-75 mt-3">
+    <thead class="thead-dark">
+      <tr>
+        <th>Aditivos Especiales</th>
+        <th>($/lt)</th>
+        <th>Densidad (kg/lt)</th>
+        <th>Densidad $/kg</th>
+        <th>Densidad UF/kg</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let aditivo of aditivosEspeciales">
+        <td>{{ aditivo.nombre }}</td>
+        <td>{{ aditivo.precio_por_litro }}</td> <!-- Precio por litro -->
+        <td>{{ aditivo.densidad_kg_litro | number:'1.0-2' }}</td> <!-- Densidad en kg/lt -->
+        <td>{{ calcularDensidadKg(aditivo) }}</td> <!-- Densidad $/kg -->
+        <td>{{ calcularUFPorKgVisco(aditivo) }}</td> <!-- Densidad en UF/kg -->
+      </tr>
+    </tbody>
+  </table>
 
-    <button class="btn btn-primary">Editar aditivos</button>
-
-
+  <button class="btn btn-primary">Editar aditivos</button>
 </div>

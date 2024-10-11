@@ -44,9 +44,26 @@ export class Planta1Component implements OnInit {
 
   // Método para calcular Densidad $/kg
   calcularDensidadKg(aditivo: any): string {
+    const aditivosSinCalculo = [
+      'DARAFILL',
+      'SIKAFIBER FORCE-48',
+      'SIKA WT240',
+      'DELVO',
+      'PERLAS',
+      'SIKA CNI',
+      'BARCHIP54'
+    ];
+
+    // Verificar si el nombre del aditivo está en la lista de aditivos sin cálculo
+    if (aditivosSinCalculo.includes(aditivo.nombre)) {
+      return aditivo.precio_por_kg ? aditivo.precio_por_kg.toFixed(2) : 'N/A';
+    }
+
+    // Para otros aditivos, hacer el cálculo basado en precio_por_litro y densidad_kg_litro
     if (aditivo.precio_por_litro && aditivo.densidad_kg_litro) {
       return (aditivo.precio_por_litro / aditivo.densidad_kg_litro).toFixed(2);
     }
+
     return 'N/A';
   }
 

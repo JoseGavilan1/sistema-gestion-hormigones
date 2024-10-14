@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 import { ApiService } from './services/api/api.service';
@@ -41,6 +41,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
+    FormsModule
 
   ],
   providers: [ApiService],

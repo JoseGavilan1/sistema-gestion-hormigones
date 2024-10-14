@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
 import { UfService } from '../../../services/uf/uf-service.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-planta-1',
@@ -14,7 +15,44 @@ export class Planta1Component implements OnInit {
   aditivosEspeciales: any[] = []; // Para almacenar datos de aditivos_especiales
   ufValue!: number;
 
-  constructor(private router: Router, private apiService: ApiService, private ufService: UfService) {}
+  diseno: any[] = [
+    {
+      cantidad: '',
+      tipoHormigon: '',
+      cemento: '',
+      grava: '',
+      gravilla: '',
+      arena: '',
+      agua: '',
+      aditivoBase: '',
+      aditivo2: '',
+      porcentajePerdida: '',
+      porcentajePerdidaGrava: ''
+    }
+  ];
+
+  myForm: FormGroup;
+  controlNames = Array.from({ length: 9 }, (_, i) => `field${i + 1}`);
+
+  constructor(private router: Router, private apiService: ApiService, private ufService: UfService, private fb: FormBuilder) {
+    this.myForm = this.fb.group(
+      this.controlNames.reduce((controls: { [key: string]: any }, name: string) => {
+        controls[name] = [
+          '',
+          [Validators.required, Validators.pattern(/^\d+(\.\d{1})?$/)]
+        ];
+        return controls;
+      }, {})
+    );
+  }
+
+
+  onSubmit() {
+    if (this.myForm.valid) {
+      console.log(this.myForm.value);
+    }
+  }
+
 
   ngOnInit(): void {
     this.apiService.getMateriasPrimasPorPlanta('taltal').subscribe(
@@ -59,24 +97,15 @@ export class Planta1Component implements OnInit {
       return aditivo.precio_por_kg ? aditivo.precio_por_kg.toFixed(2) : 'N/A';
     }
 
-    // Para otros aditivos, hacer el cálculo basado en precio_por_litro y densidad_kg_litro
-    if (aditivo.precio_por_litro && aditivo.densidad_kg_litro) {
-      return (aditivo.precio_por_litro / aditivo.densidad_kg_litro).toFixed(2);
-    }
-
-    return 'N/A';
+    return aditivo.densidad_kg_litro ? (aditivo.precio_por_litro / aditivo.densidad_kg_litro).toFixed(2) : 'N/A';
   }
 
-  // Método para calcular UF/kg
+  // Método para calcular UF/kg por visco
   calcularUFPorKgVisco(aditivo: any): string {
     const densidadKg = this.calcularDensidadKg(aditivo);
-    if (this.ufValue && densidadKg !== 'N/A') {
-      return (parseFloat(densidadKg) / this.ufValue).toFixed(3);
-    }
-    return 'N/A';
+    return densidadKg !== 'N/A' ? (Number(densidadKg) / this.ufValue).toFixed(2) : 'N/A';
   }
 
-  logout() {
-    this.router.navigate(['/login']);
-  }
+
+
 }

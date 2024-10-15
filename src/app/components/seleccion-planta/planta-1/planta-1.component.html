@@ -15,8 +15,8 @@
     </div>
 
     <!-- Tabla de materias primas -->
-    <table class="table table-bordered table-striped table-hover">
-      <thead class="thead-dark">
+    <table>
+      <thead>
         <tr>
           <th>Producto</th>
           <th>Densidad</th>
@@ -26,12 +26,12 @@
       <tbody>
         <tr *ngFor="let dato of datos">
           <td>{{ dato.producto }}</td>
-          <td>{{ dato.densidad }}</td>
-          <td>$ {{ dato.precio }}</td>
+          <td>{{ dato.densidad !== null ? dato.densidad : 'N/A' }}</td>
+          <td>{{ dato.precio }}</td>
         </tr>
       </tbody>
     </table>
-    <button class="btn btn-primary">Editar valores</button>
+    <button class="btn btn-primary mt-3">Editar valores</button>
 
     <!-- Tabla de aditivos especiales -->
     <table class="table table-bordered table-striped table-hover mt-3">
@@ -48,7 +48,7 @@
         <tr *ngFor="let aditivo of aditivosEspeciales">
           <td>{{ aditivo.nombre }}</td>
           <td>{{ aditivo.precio_por_litro }}</td>
-          <td>{{ aditivo.densidad_kg_litro | number : "1.0-2" }}</td>
+          <td>{{ aditivo.densidad | number : '1.0-2' }}</td>
           <td>{{ calcularDensidadKg(aditivo) }}</td>
           <td>{{ calcularUFPorKgVisco(aditivo) }}</td>
         </tr>

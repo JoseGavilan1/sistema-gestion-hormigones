@@ -14,4 +14,5 @@ export class UfService {
   getUfValue(): Observable<any> {
     return this.http.get(this.apiUrl);
   }
+
 }

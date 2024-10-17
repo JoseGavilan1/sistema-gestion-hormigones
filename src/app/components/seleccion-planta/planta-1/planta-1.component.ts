@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
 import { UfService } from '../../../services/uf/uf-service.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-planta-1',
@@ -11,33 +10,45 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class Planta1Component implements OnInit {
 
-  datos: any[] = []; // Almacenar datos de materias primas
-  aditivosEspeciales: any[] = []; // Almacenar datos de aditivos especiales
-  ufValue: number | null = null; // Valor de la UF inicializado como null
+  datos: any[] = [];
+  aditivosEspeciales: any[] = [];
+  ufValue: number = 0
 
+  cantidadDiseño: number=0;
+  tipoHormigon: string = '';
+  cemento: number = 0;
+  kgGrava: number = 0;
+  kgGravilla: number = 0;
+  kgArena: number = 0;
+  agua: number= 0;
+  aditivo: number = 0;
+  aditivo2: number = 0;
+  porcentajeCemento: number = 0;
+  porcentajeGrava: number = 0;
+  porcentajeGravilla: number = 0;
+  porcentajeArena: number = 0;
+  porcentajeAgua: number= 0;
+  porcentajeAditivo: number = 0;
+  porcentajeAditivo2: number = 0;
+  porcentajeMix: number = 0;
 
   constructor(
     private router: Router,
     private apiService: ApiService,
     private ufService: UfService,
-  ) {
-    // Inicialización del formulario con validaciones
-
-  }
+  ) {}
 
   ngOnInit(): void {
 
-    // Obtener el valor de la UF
     this.ufService.getUfValue().subscribe(
       (data) => {
         this.ufValue = data.serie[0].valor;
-        console.log('Valor de la UF:', this.ufValue); // Verifica el valor
+        console.log('Valor de la UF:', this.ufValue);
       },
       (error) => {
         console.error('Error al obtener el valor de la UF:', error);
       }
     );
-    //Obtener materias primas TALTAL
     this.apiService.getMateriasPrimasTALTAL().subscribe(
       (data) => {
         this.datos = data;
@@ -50,7 +61,7 @@ export class Planta1Component implements OnInit {
     this.apiService.getAditivosEspeciales().subscribe(
       (response) => {
         this.aditivosEspeciales = response;
-        console.log('Aditivos especiales:', this.aditivosEspeciales); // Verifica la respuesta
+        console.log('Aditivos especiales:', this.aditivosEspeciales);
       },
       (error) => {
         console.error('Error al obtener datos de aditivos especiales:', error);
@@ -58,10 +69,6 @@ export class Planta1Component implements OnInit {
     );
   }
 
-
-
-
-  // Método para calcular Densidad $/kg
   calcularDensidadKg(aditivo: any): string {
     const aditivosSinCalculo = [
       'DARAFILL',
@@ -77,19 +84,95 @@ export class Planta1Component implements OnInit {
       return aditivo.precio_por_kg ? aditivo.precio_por_kg.toFixed(2) : 'N/A';
     }
 
-    if (aditivo.precio_por_litro && aditivo.densidad_kg_litro) {
-      return (aditivo.precio_por_litro / aditivo.densidad_kg_litro).toFixed(2);
+    if (aditivo.precio_por_litro && aditivo.densidad) {
+      return (aditivo.precio_por_litro / aditivo.densidad).toFixed(2);
     }
 
     return 'N/A';
   }
 
-  // Método para calcular UF/kg por visco
   calcularUFPorKgVisco(aditivo: any): string {
     const densidadKg = this.calcularDensidadKg(aditivo);
     if (densidadKg !== 'N/A' && this.ufValue) {
       return (Number(densidadKg) / this.ufValue).toFixed(2);
     }
+    return 'N/A';
+  }
+
+  calcularResultadoGravilla(): number {
+    const gravilla = this.datos.find(dato => dato.producto === 'GRAVILLA');
+
+    if (gravilla && gravilla.densidad && this.kgGravilla > 0) {
+      return parseFloat((this.kgGravilla / gravilla.densidad).toFixed(2));
+    }
+
+    return 0;
+  }
+
+  calcularResultadoGrava(): number {
+    const grava = this.datos.find(dato => dato.producto === 'GRAVA');
+
+    if (grava && grava.densidad && this.kgGrava > 0) {
+      return parseFloat((this.kgGrava / grava.densidad).toFixed(2));
+    }
+
+    return 0;
+  }
+
+  calcularResultadoArena(): number {
+    const arena = this.datos.find(dato => dato.producto === 'ARENA');
+
+    if (arena && arena.densidad && this.kgArena > 0) {
+      return parseFloat((this.kgArena / arena.densidad).toFixed(2));
+    }
+
+    return 0;
+  }
+
+  sumaMix(): number {
+    const resultadoArena = this.calcularResultadoArena();
+    const resultadoGrava = this.calcularResultadoGrava();
+    const resultadoGravilla = this.calcularResultadoGravilla();
+
+    const sumaTotal = resultadoArena + resultadoGrava + resultadoGravilla;
+
+    return sumaTotal;
+  }
+
+  calcularValorAjustado(valor: any, porcentajePerdida: number): string {
+    const numeroValor = parseFloat(valor);
+
+    if (!isNaN(numeroValor) && porcentajePerdida) {
+      const valorAjustado = numeroValor * (1 + porcentajePerdida / 100);
+      return valorAjustado.toFixed(2);
+    }
+    return 'N/A';
+  }
+
+  calcularPrecioCemento(datos: any): number {
+    const cemento = this.datos.find(dato => dato.producto === 'CEMENTO');
+
+    if (cemento && cemento.precio && this.porcentajeCemento && this.ufValue) {
+
+      const valorAjustado = this.cemento * (1 + this.porcentajeCemento / 100);
+
+      const resultado = (valorAjustado * cemento.precio) / this.ufValue;
+      return parseFloat(resultado.toFixed(2));
+    }
+
+    return 0;
+  }
+
+  calcularValorAjustadoSumaMix(): string {
+    const resultadoArenaAjustado = parseFloat(this.calcularValorAjustado(this.calcularResultadoArena(), this.porcentajeArena));
+    const resultadoGravaAjustado = parseFloat(this.calcularValorAjustado(this.calcularResultadoGrava(), this.porcentajeGrava));
+    const resultadoGravillaAjustado = parseFloat(this.calcularValorAjustado(this.calcularResultadoGravilla(), this.porcentajeGravilla));
+
+    if (!isNaN(resultadoArenaAjustado) && !isNaN(resultadoGravaAjustado) && !isNaN(resultadoGravillaAjustado)) {
+      const sumaAjustada = resultadoArenaAjustado + resultadoGravaAjustado + resultadoGravillaAjustado;
+      return sumaAjustada.toFixed(2);
+    }
+
     return 'N/A';
   }
 }

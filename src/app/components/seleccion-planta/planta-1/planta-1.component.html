@@ -26,8 +26,8 @@
       <tbody>
         <tr *ngFor="let dato of datos">
           <td>{{ dato.producto }}</td>
-          <td>{{ dato.densidad !== null ? dato.densidad : 'N/A' }}</td>
-          <td>{{ dato.precio }}</td>
+          <td>{{ dato.densidad !== null ? dato.densidad : "N/A" }}</td>
+          <td>${{ dato.precio }}</td>
         </tr>
       </tbody>
     </table>
@@ -47,9 +47,9 @@
       <tbody>
         <tr *ngFor="let aditivo of aditivosEspeciales">
           <td>{{ aditivo.nombre }}</td>
-          <td>{{ aditivo.precio_por_litro }}</td>
-          <td>{{ aditivo.densidad | number : '1.0-2' }}</td>
-          <td>{{ calcularDensidadKg(aditivo) }}</td>
+          <td>${{ aditivo.precio_por_litro }}</td>
+          <td>{{ aditivo.densidad | number : "1.0-2" }}</td>
+          <td>${{ calcularDensidadKg(aditivo) }}</td>
           <td>{{ calcularUFPorKgVisco(aditivo) }}</td>
         </tr>
       </tbody>
@@ -58,7 +58,7 @@
     <button class="btn btn-primary">Editar aditivos</button>
   </div>
   <div class="container mt-4">
-    <h3 class="text-center">Diseño</h3>
+    <h3 class="text-center">Diseño materias primas</h3>
     <div></div>
     <form class="d-flex justify-content-between">
       <div class="form-group">
@@ -86,6 +86,8 @@
           class="form-control"
           id="exampleFormControlInput1"
           placeholder="0"
+          [(ngModel)]="cemento"
+          name="kgCemento"
         />
       </div>
       <div class="form-group">
@@ -95,15 +97,19 @@
           class="form-control"
           id="exampleFormControlInput1"
           placeholder="0"
+          name="kgGrava"
+          [(ngModel)]="kgGrava"
         />
       </div>
       <div class="form-group">
-        <label for="exampleFormControlInput1">GRAVILLA</label>
+        <label for="kgGravilla">GRAVILLA</label>
         <input
           type="number"
           class="form-control"
           id="exampleFormControlInput1"
           placeholder="0"
+          [(ngModel)]="kgGravilla"
+          name="kgGravilla"
         />
       </div>
       <div class="form-group">
@@ -113,6 +119,8 @@
           class="form-control"
           id="exampleFormControlInput1"
           placeholder="0"
+          name="kgArena"
+          [(ngModel)]="kgArena"
         />
       </div>
       <div class="form-group">
@@ -122,6 +130,8 @@
           class="form-control"
           id="exampleFormControlInput1"
           placeholder="0"
+          name="agua"
+          [(ngModel)]="agua"
         />
       </div>
       <div class="form-group">
@@ -131,6 +141,8 @@
           class="form-control"
           id="exampleFormControlInput1"
           placeholder="0"
+          [(ngModel)]="aditivo"
+          name="aditivo"
         />
       </div>
       <div class="form-group">
@@ -140,17 +152,156 @@
           class="form-control"
           id="exampleFormControlInput1"
           placeholder="0"
+          [(ngModel)]="aditivo2"
+          name="aditivo2"
         />
       </div>
     </form>
 
-    <div class="d-flex justify-content-center">
-      <div>
-        <p>perdida</p>
+    <div class="mt-4 d-flex justify-content-center">
+      <div class="d-flex">
+        <div class="">
+          <h4 class="text-center">Control de Pérdida</h4>
+          <table class="table mt-3">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th style="width: 25%">% de Pérdida</th>
+                <th>Valor Ajustado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Cemento</td>
+                <td>{{ cemento }}</td>
+                <td>
+                  <input
+                    type="number"
+                    [(ngModel)]="porcentajeCemento"
+                    placeholder="%"
+                    style="width: 50%; text-align: center"
+                  />
+                </td>
+                <td>{{ calcularValorAjustado(cemento, porcentajeCemento) }}</td>
+              </tr>
+              <tr>
+                <td>Grava (kg)</td>
+                <td>{{ calcularResultadoGrava() }}</td>
+                <td>
+                  <input
+                    type="number"
+                    [(ngModel)]="porcentajeGrava"
+                    placeholder="%"
+                    style="width: 50%; text-align: center"
+                  />
+                </td>
+                <td>
+                  {{
+                    calcularValorAjustado(
+                      calcularResultadoGrava(),
+                      porcentajeGrava
+                    )
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td>Gravilla</td>
+                <td>{{ calcularResultadoGravilla() }}</td>
+                <td>
+                  <input
+                    type="number"
+                    [(ngModel)]="porcentajeGravilla"
+                    placeholder="%"
+                    style="width: 50%; text-align: center"
+                  />
+                </td>
+                <td>
+                  {{
+                    calcularValorAjustado(
+                      calcularResultadoGravilla(),
+                      porcentajeGravilla
+                    )
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td>Arena</td>
+                <td>{{ calcularResultadoArena() }}</td>
+                <td>
+                  <input
+                    type="number"
+                    [(ngModel)]="porcentajeArena"
+                    placeholder="%"
+                    style="width: 50%; text-align: center"
+                  />
+                </td>
+                <td>
+                  {{
+                    calcularValorAjustado(
+                      calcularResultadoArena(),
+                      porcentajeArena
+                    )
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td>Mix</td>
+                <td>{{ sumaMix() }}</td>
+                <td></td>
+                <td>{{ calcularValorAjustadoSumaMix() }}</td>
+              </tr>
+              <tr>
+                <td>Agua (lts)</td>
+                <td>{{ agua }}</td>
+                <td>
+                  <input
+                    type="number"
+                    [(ngModel)]="porcentajeAgua"
+                    placeholder="%"
+                    style="width: 50%; text-align: center"
+                  />
+                </td>
+                <td>{{ calcularValorAjustado(agua, porcentajeAgua) }}</td>
+              </tr>
+              <tr>
+                <td>Aditivo base</td>
+                <td>{{ aditivo }}</td>
+                <td>
+                  <input
+                    type="number"
+                    [(ngModel)]="porcentajeAditivo"
+                    placeholder="%"
+                    style="width: 50%; text-align: center"
+                  />
+                </td>
+                <td>{{ calcularValorAjustado(aditivo, porcentajeAditivo) }}</td>
+              </tr>
+              <tr>
+                <td>Aditivo 2</td>
+                <td>{{ aditivo2 }}</td>
+                <td>
+                  <input
+                    type="number"
+                    [(ngModel)]="porcentajeAditivo2"
+                    placeholder="%"
+                    style="width: 50%; text-align: center"
+                  />
+                </td>
+                <td>
+                  {{ calcularValorAjustado(aditivo2, porcentajeAditivo2) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div style="width: 20px;"></div>
+      <div style="width: 20px"></div>
       <div>
-        <p>costo uf</p>
+        <div>
+          <p>costo uf</p>
+          <p>Valor costo uf del cemento: {{ calcularPrecioCemento(datos) }}</p>
+        </div>
       </div>
     </div>
   </div>

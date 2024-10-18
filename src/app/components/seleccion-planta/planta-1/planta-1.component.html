@@ -297,10 +297,22 @@
         </div>
       </div>
       <div style="width: 20px"></div>
-      <div>
+      <div class="text-center">
         <div>
-          <p>costo uf</p>
-          <p>Valor costo uf del cemento: {{ calcularPrecioCemento(datos) }}</p>
+          <h4 style="text-align: center">Costo UF materias primas</h4>
+          <table class="mt-3">
+            <thead>
+              <th>Producto</th>
+              <th>Costo UF</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let dato of datos">
+                <td>{{ dato.producto }}</td>
+                <td>{{ calcularPrecio(dato) }} UF</td>
+              </tr>
+            </tbody>
+          </table>
+
         </div>
       </div>
     </div>

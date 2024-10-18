@@ -149,19 +149,7 @@ export class Planta1Component implements OnInit {
     return 'N/A';
   }
 
-  calcularPrecioCemento(datos: any): number {
-    const cemento = this.datos.find(dato => dato.producto === 'CEMENTO');
 
-    if (cemento && cemento.precio && this.porcentajeCemento && this.ufValue) {
-
-      const valorAjustado = this.cemento * (1 + this.porcentajeCemento / 100);
-
-      const resultado = (valorAjustado * cemento.precio) / this.ufValue;
-      return parseFloat(resultado.toFixed(2));
-    }
-
-    return 0;
-  }
 
   calcularValorAjustadoSumaMix(): string {
     const resultadoArenaAjustado = parseFloat(this.calcularValorAjustado(this.calcularResultadoArena(), this.porcentajeArena));
@@ -175,4 +163,43 @@ export class Planta1Component implements OnInit {
 
     return 'N/A';
   }
+
+  calcularPrecio(dato: any): number {
+    if (dato && dato.precio && this.ufValue) {
+      let cantidad: number = 0;
+      let porcentaje: number = 0;
+
+      // Asigna la cantidad y el porcentaje en función del producto
+      switch (dato.producto.toUpperCase()) {
+        case 'CEMENTO':
+          cantidad = this.cemento;
+          porcentaje = this.porcentajeCemento;
+          break;
+        case 'GRAVA':
+          cantidad = this.kgGrava;
+          porcentaje = this.porcentajeGrava;
+          break;
+        case 'GRAVILLA':
+          cantidad = this.kgGravilla;
+          porcentaje = this.porcentajeGravilla;
+          break;
+        case 'ARENA':
+          cantidad = this.kgArena;
+          porcentaje = this.porcentajeArena;
+          break;
+        default:
+          return 0; // Si el producto no es reconocido, regresa 0
+      }
+
+      // Calcula el valor ajustado con el porcentaje y convierte a UF
+      const valorAjustado = cantidad * (1 + porcentaje / 100);
+      const resultado = (valorAjustado * dato.precio) / this.ufValue;
+      return parseFloat(resultado.toFixed(2));
+    }
+
+    return 0;
+  }
+
+
+
 }

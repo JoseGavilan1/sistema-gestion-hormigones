@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 interface MateriaPrima {
   producto: string;
   densidad: number | null;
-  precio: string; // o number dependiendo de tu necesidad
+  precio: string; // or number, depending on your requirements
 }
 
 @Injectable({
@@ -13,22 +13,19 @@ interface MateriaPrima {
 })
 export class ApiService {
 
-  private baseUrl = 'http://localhost:3000/'; // Define la base URL para evitar duplicación
+  // Update the baseUrl to point to your deployed Node.js server's URL
+  private baseUrl = 'https://app.js.azurewebsites.net/'
 
-  private apiUrlMATERIAS_PRIMAS_TALTAL = 'http://localhost:3000/materias_primas?planta=TALTAL';
+  private apiUrlMATERIAS_PRIMAS_TALTAL = `${this.baseUrl}materias_primas?planta=TALTAL`;
 
   constructor(private http: HttpClient) { }
-
-
 
   getMateriasPrimasTALTAL(): Observable<MateriaPrima[]> {
     return this.http.get<MateriaPrima[]>(this.apiUrlMATERIAS_PRIMAS_TALTAL);
   }
 
-
-  // Obtener aditivos especiales
+  // Fetch special additives
   getAditivosEspeciales(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}aditivos_especiales`);
   }
-
 }

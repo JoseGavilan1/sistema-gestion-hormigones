@@ -14,7 +14,7 @@ interface MateriaPrima {
 export class ApiService {
 
   // Update the baseUrl to point to your deployed Node.js server's URL
-  private baseUrl = 'https://app.js.azurewebsites.net/'
+  private baseUrl = 'https://backend-copat.netlify.app/';
 
   private apiUrlMATERIAS_PRIMAS_TALTAL = `${this.baseUrl}materias_primas?planta=TALTAL`;
 

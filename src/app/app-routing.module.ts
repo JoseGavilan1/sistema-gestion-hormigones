@@ -9,7 +9,6 @@ import { Planta2Component } from './components/seleccion-planta/planta-2/planta-
 import { Planta3Component } from './components/seleccion-planta/planta-3/planta-3.component';
 import { CotizacionesComponent } from './components/cotizaciones/cotizaciones.component';
 import { CosteoProductoComponent } from './components/costeo-producto/costeo-producto.component';
-import { DetalleCotizacionComponent } from './components/detalle-cotizacion/detalle-cotizacion.component';
 import { CosteoProductoMejillonesComponent } from './components/costeo-producto/costeo-producto-mejillones/costeo-producto-mejillones.component';
 
 

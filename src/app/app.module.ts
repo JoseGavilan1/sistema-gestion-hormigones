@@ -19,7 +19,11 @@ import { CotizacionesComponent } from './components/cotizaciones/cotizaciones.co
 import { CosteoProductoComponent } from './components/costeo-producto/costeo-producto.component';
 import { DetalleCotizacionComponent } from './components/detalle-cotizacion/detalle-cotizacion.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+<<<<<<< Updated upstream
 import { RouterModule } from '@angular/router';
+=======
+import { CosteoProductoMejillonesComponent } from './components/costeo-producto/costeo-producto-mejillones/costeo-producto-mejillones.component';
+>>>>>>> Stashed changes
 
 
 @NgModule({
@@ -35,6 +39,7 @@ import { RouterModule } from '@angular/router';
     CosteoProductoComponent,
     DetalleCotizacionComponent,
     NavbarComponent,
+    CosteoProductoMejillonesComponent,
 
   ],
   imports: [

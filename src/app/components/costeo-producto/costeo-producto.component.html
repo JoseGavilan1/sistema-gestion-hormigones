@@ -1,7 +1,58 @@
 <app-navbar></app-navbar>
 <div class="container mt-4">
+<<<<<<< Updated upstream
   <h1>Costeo de producto</h1>
   <input type="file" (change)="onFileChange($event)" />
 <button (click)="cargarDatos()">Cargar Datos</button>
 
 </div>
+=======
+  <button class="btn btn-primary" [routerLink]="['/home']">Volver atras</button>
+  <h1 class="mt-4">Costeo de producto</h1>
+  <h5 class="mt-4">Seleccione planta</h5>
+  <img src="/src/app/assets/mezcladora-de-cemento.png" alt="">
+  <div class="row mt-5">
+    <div class="col text-center">
+      <button class="btn btn-primary" style="width: auto" [routerLink]="['/costeo-mejillones']">
+        MEJILLONES
+      </button>
+    </div>
+    <div class="col text-center mb-3">
+      <button
+        class="btn btn-primary"
+        style="width: auto"
+        [routerLink]="['/plantas']"
+      >
+        TALTAL
+      </button>
+    </div>
+    <div class="col text-center mb-3">
+      <button
+        class="btn btn-primary"
+        style="width: auto"
+        [routerLink]="['/cotizaciones']"
+      >
+        ANTOFAGASTA
+      </button>
+    </div>
+    <div class="col text-center mb-3">
+      <button class="btn btn-primary" style="width: auto">
+        TOCOPILLA
+      </button>
+
+    </div>
+    <div class="col text-center mb-3">
+      <button class="btn btn-primary" style="width: auto">
+        CALAMA
+      </button>
+
+    </div>
+    <div class="col text-center mb-3">
+      <button class="btn btn-primary" style="width: auto">
+        MARIA ELENA
+      </button>
+
+    </div>
+  </div>
+</div>
+>>>>>>> Stashed changes

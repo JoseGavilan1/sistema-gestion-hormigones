@@ -19,6 +19,7 @@ import { CotizacionesComponent } from './components/cotizaciones/cotizaciones.co
 import { CosteoProductoComponent } from './components/costeo-producto/costeo-producto.component';
 import { DetalleCotizacionComponent } from './components/detalle-cotizacion/detalle-cotizacion.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FormsModule
+    FormsModule, 
+    RouterModule
 
   ],
   providers: [ApiService],

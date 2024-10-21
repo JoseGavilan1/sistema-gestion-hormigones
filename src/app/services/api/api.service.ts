@@ -29,4 +29,8 @@ export class ApiService {
   getAditivosEspeciales(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}aditivos_especiales`);
   }
+
+  cargarDatos(datos: any[]): Observable<any> {
+    return this.http.post('http://localhost:3000/insertar_disenos', datos, { responseType: 'text' });
+  }
 }

@@ -192,7 +192,7 @@ export class Planta1Component implements OnInit {
       }
 
       // Calcula el valor ajustado con el porcentaje y convierte a UF
-      const valorAjustado = cantidad * (1 + porcentaje / 100);
+      const valorAjustado = cantidad * (1 + porcentaje / 1000);
       const resultado = (valorAjustado * dato.precio) / this.ufValue;
       return parseFloat(resultado.toFixed(2));
     }

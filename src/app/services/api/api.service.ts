@@ -13,24 +13,18 @@ interface MateriaPrima {
 })
 export class ApiService {
 
-  // Actualiza baseUrl para que apunte a tu servidor Node.js local
-  private baseUrl = 'http://localhost:3000/';
-
-  private apiUrlMATERIAS_PRIMAS_TALTAL = `${this.baseUrl}materias_primas`;
+  // Endpoint para obtener materias primas de la planta Taltal
+  private apiUrlMATERIAS_PRIMAS_TALTAL = 'https://localhost:44364/api/MateriaPrima/taltal';
+  private apiUrlMATERIAS_PRIMAS_MEJILLONES = 'https://localhost:44364/api/MateriaPrima/mejillones';
 
   constructor(private http: HttpClient) { }
 
   // Obtener materias primas de TALTAL
-  getMateriasPrimasTALTAL(): Observable<MateriaPrima[]> {
-    return this.http.get<MateriaPrima[]>(`${this.apiUrlMATERIAS_PRIMAS_TALTAL}`);
+  getMateriasPrimasTaltal() {
+    return this.http.get<any[]>(this.apiUrlMATERIAS_PRIMAS_TALTAL);
   }
 
-  // Obtener aditivos especiales
-  getAditivosEspeciales(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}aditivos_especiales`);
-  }
-
-  cargarDatos(datos: any[]): Observable<any> {
-    return this.http.post('http://localhost:3000/insertar_disenos', datos, { responseType: 'text' });
+  getMateriasPrimasMejillones() {
+    return this.http.get<any[]>(this.apiUrlMATERIAS_PRIMAS_MEJILLONES);
   }
 }

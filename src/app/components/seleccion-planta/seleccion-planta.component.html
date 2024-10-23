@@ -2,56 +2,29 @@
 <div class="container mt-4">
   <button class="btn btn-dark" [routerLink]="['/home']">Volver atras</button>
   <div class="mt-4 d-flex justify-content-between">
-    <h1>Seleccione planta</h1>
+    <h1>Seleccione planta | Costeo Materias Primas</h1>
   </div>
-  <div class="d-flex justify-content-between" style="margin-top: 10px">
-    <button [routerLink]="['/planta1']" class="btn btn-primary">
+  <div class="d-flex justify-content-between mt-4">
+    <button [routerLink]="['/m-primas-taltal']" class="btn btn-primary">
       Planta Taltal
     </button>
-    <button [routerLink]="['/planta2']" class="btn btn-primary">
+    <button  [routerLink]="['/m-primas-mejillones']" class="btn btn-primary">
       Planta Mejillones
     </button>
-    <button [routerLink]="['/planta3']" class="btn btn-primary">
+    <button  class="btn btn-primary">
       Planta Tocopilla
     </button>
-    <button [routerLink]="['/planta3']" class="btn btn-primary">
+    <button class="btn btn-primary">
       Planta Maria Elena
     </button>
-    <button [routerLink]="['/planta3']" class="btn btn-primary">
+    <button  class="btn btn-primary">
       Planta Calama
     </button>
-    <button [routerLink]="['/planta3']" class="btn btn-primary">
+    <button  class="btn btn-primary">
       Planta Antofagasta
     </button>
   </div>
 
-  <div class="mt-4">
-    <h3>Resumen de precios por cada planta</h3>
-    <table class="table table-bordered table-striped table-hover">
-      <thead>
-        <tr>
-          <th>Materia prima</th>
-          <th>TALTAL</th>
-          <th>MEJILLONES</th>
-          <th>TOCOPILLA</th>
-          <th>MARIA ELENA</th>
-          <th>CALAMA</th>
-          <th>ANTOFAGASTA</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Itera sobre las materias primas de la planta de Taltal -->
-        <tr *ngFor="let materiaPrima of datos.Taltal; let i = index">
-          <td>{{ materiaPrima.producto }}</td>
-          <td>${{ materiaPrima.precio }}</td>
-          <!-- Mostrar el precio de la misma materia prima en Mejillones, si existe -->
-          <td *ngIf="datos.Mejillones[i]">${{ datos.Mejillones[i]?.precio }}</td>
-          <td *ngIf="datos.Tocopilla[i]">${{ datos.Tocopilla[i]?.precio }}</td>
-          <td *ngIf="datos.MariaElena[i]">${{ datos.MariaElena[i]?.precio }}</td>
-          <td *ngIf="datos.Calama[i]">${{ datos.Calama[i]?.precio }}</td>
-          <td *ngIf="datos.Antofagasta[i]">${{datos.Antofagasta[i]?.precio}}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+
+
 </div>

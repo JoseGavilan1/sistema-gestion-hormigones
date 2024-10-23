@@ -43,7 +43,7 @@ export class CosteoProductoComponent {
       alert('Por favor, carga un archivo Excel primero.');
       return;
     }
-  
+
     const datosProcesados = this.datosExcel.map((fila: any[]) => {
       return {
         n_formula: fila[0],
@@ -51,16 +51,7 @@ export class CosteoProductoComponent {
         // Asigna los valores según el formato de tus datos
       };
     });
-  
-    this.apiService.cargarDatos(datosProcesados).subscribe(
-      (response: string) => {
-        console.log('Respuesta del servidor:', response);
-        alert('Datos cargados correctamente');
-      },
-      (error) => {
-        console.error('Error al cargar los datos:', error);
-        alert('Error al cargar los datos');
-      }
-    );
+
+    
   }
 }

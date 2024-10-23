@@ -1,0 +1,47 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background-color: lightgray;
+}
+
+input[type="text"] {
+  width: 100%;
+  border: none;
+  text-align: center;
+}
+
+
+.horizontal-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-group {
+  margin-right: 10px;
+}
+
+label{
+  margin-top: 15px;
+  font-size: 15px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Quitar flechas en Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

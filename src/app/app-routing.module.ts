@@ -26,9 +26,9 @@ const routes: Routes = [
 
   {path: 'costeo-mejillones', component: CosteoProductoMejillonesComponent},
 
-  {path:'materias-primas', component: MateriaPrimaComponent},
+  {path:'materias-primas/:planta', component: MateriaPrimaComponent},
 
-  {path:'editar-precios-materias-primas/:planta', component: EditarPreciosMateriasPrimasComponent}
+  {path:'editar-precio', component: EditarPreciosMateriasPrimasComponent}
 
 ];
 

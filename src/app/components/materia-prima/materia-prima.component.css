@@ -1,7 +1,4 @@
-/* Estilos para los botones de planta */
-.botones-planta {
-  margin-bottom: 20px;
-}
+
 
 .botones-planta button {
   margin-right: 10px;
@@ -23,4 +20,11 @@
   justify-content: center;
   align-items: center;
   height: 100px;
+}
+
+
+button.selected {
+  background-color: black; /* Cambia el fondo a negro */
+  border-color: black; /* También puedes cambiar el borde */
+  color: white; /* Asegúrate de que el texto sea visible */
 }

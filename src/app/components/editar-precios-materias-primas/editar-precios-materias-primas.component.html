@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 <div class="container mt-3" *ngIf="producto">
-  <h3>Editar precio de {{ producto.nombre }}</h3>
+  <h3>Editar precio de {{ producto.nombre }} planta {{plantaSeleccionada.toUpperCase()}}</h3>
   <form (ngSubmit)="guardarCambios()">
     <div class="form-group">
       <label for="nombre">Producto</label>

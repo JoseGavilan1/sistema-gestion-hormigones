@@ -3,12 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from './services/auth.guard/auth.guard';
-import { SeleccionPlantaComponent } from './components/seleccion-planta/seleccion-planta.component';
 import { CotizacionesComponent } from './components/cotizaciones/cotizaciones.component';
 import { CosteoProductoComponent } from './components/costeo-producto/costeo-producto.component';
 import { CosteoProductoMejillonesComponent } from './components/costeo-producto/costeo-producto-mejillones/costeo-producto-mejillones.component';
-import { PlantaMejillonesComponent } from './components/planta-mejillones/planta-mejillones.component';
-import { PlantaTaltalComponent } from './components/planta-taltal/planta-taltal.component';
+
+import { MateriaPrimaComponent } from './components/materia-prima/materia-prima.component';
+import { EditarPreciosMateriasPrimasComponent } from './components/editar-precios-materias-primas/editar-precios-materias-primas.component';
+
 
 
 const routes: Routes = [
@@ -18,7 +19,6 @@ const routes: Routes = [
 
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
 
-  { path: 'plantas', component: SeleccionPlantaComponent},
 
   {path: 'cotizaciones', component: CotizacionesComponent},
 
@@ -26,9 +26,9 @@ const routes: Routes = [
 
   {path: 'costeo-mejillones', component: CosteoProductoMejillonesComponent},
 
-  {path: 'm-primas-mejillones', component: PlantaMejillonesComponent},
+  {path:'materias-primas', component: MateriaPrimaComponent},
 
-  {path: 'm-primas-taltal', component: PlantaTaltalComponent}
+  {path:'editar-precios-materias-primas/:planta', component: EditarPreciosMateriasPrimasComponent}
 
 ];
 

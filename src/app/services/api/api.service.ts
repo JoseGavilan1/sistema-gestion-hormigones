@@ -1,30 +1,40 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-interface MateriaPrima {
-  producto: string;
-  densidad: number | null;
-  precio: string; // o puedes usar number, dependiendo de tus requisitos
-}
+import { MateriaPrima } from '../../models/materia-prima.model';  // Usa el modelo desde aquí
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-
-  // Endpoint para obtener materias primas de la planta Taltal
-  private apiUrlMATERIAS_PRIMAS_TALTAL = 'https://localhost:44364/api/MateriaPrima/taltal';
-  private apiUrlMATERIAS_PRIMAS_MEJILLONES = 'https://localhost:44364/api/MateriaPrima/mejillones';
+  private apiUrlBase = 'https://localhost:44364/api/MateriaPrima';
 
   constructor(private http: HttpClient) { }
 
-  // Obtener materias primas de TALTAL
-  getMateriasPrimasTaltal() {
-    return this.http.get<any[]>(this.apiUrlMATERIAS_PRIMAS_TALTAL);
+  // Obtener materias primas de una planta específica
+  getMateriasPrimas(planta: string): Observable<MateriaPrima[]> {
+    const url = `${this.apiUrlBase}/${planta}`;
+    return this.http.get<MateriaPrima[]>(url);  // Asegúrate de que el tipo es correcto
   }
 
-  getMateriasPrimasMejillones() {
-    return this.http.get<any[]>(this.apiUrlMATERIAS_PRIMAS_MEJILLONES);
-  }
+  actualizarPrecios(planta: string, materiasPrimas: MateriaPrima[]): Observable<any> {
+    const url = `${this.apiUrlBase}/actualizar/${planta}`;
+
+    // Aquí envolvemos las materiasPrimas en el formato esperado
+    const requestBody = {
+        materiasPrimas: materiasPrimas.map(mp => ({
+            materiaPrimaId: mp.materiaPrimaId,
+            nombre: mp.nombre,
+            precio: mp.precio,
+            unidadMedida: mp.unidadMedida,
+            densidad: mp.densidad,
+            plantaId: mp.plantaId
+        }))
+    };
+
+    return this.http.put(url, requestBody);  // Enviar el cuerpo correctamente
+}
+
+
+
 }

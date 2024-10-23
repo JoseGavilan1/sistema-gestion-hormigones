@@ -11,15 +11,17 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
-import { SeleccionPlantaComponent } from './components/seleccion-planta/seleccion-planta.component';
 import { CotizacionesComponent } from './components/cotizaciones/cotizaciones.component';
 import { CosteoProductoComponent } from './components/costeo-producto/costeo-producto.component';
 import { DetalleCotizacionComponent } from './components/detalle-cotizacion/detalle-cotizacion.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { RouterModule } from '@angular/router';
 import { CosteoProductoMejillonesComponent } from './components/costeo-producto/costeo-producto-mejillones/costeo-producto-mejillones.component';
-import { PlantaMejillonesComponent } from './components/planta-mejillones/planta-mejillones.component';
-import { PlantaTaltalComponent } from './components/planta-taltal/planta-taltal.component';
+
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MateriaPrimaComponent } from './components/materia-prima/materia-prima.component';
+import { EditarPreciosMateriasPrimasComponent } from './components/editar-precios-materias-primas/editar-precios-materias-primas.component';
 
 
 @NgModule({
@@ -27,14 +29,13 @@ import { PlantaTaltalComponent } from './components/planta-taltal/planta-taltal.
     AppComponent,
     LoginComponent,
     HomeComponent,
-    SeleccionPlantaComponent,
     CotizacionesComponent,
     CosteoProductoComponent,
     DetalleCotizacionComponent,
     NavbarComponent,
     CosteoProductoMejillonesComponent,
-    PlantaMejillonesComponent,
-    PlantaTaltalComponent
+    MateriaPrimaComponent,
+    EditarPreciosMateriasPrimasComponent
 
   ],
   imports: [
@@ -43,10 +44,11 @@ import { PlantaTaltalComponent } from './components/planta-taltal/planta-taltal.
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+    MatProgressSpinnerModule
 
   ],
-  providers: [ApiService],
+  providers: [ApiService, provideAnimationsAsync()],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

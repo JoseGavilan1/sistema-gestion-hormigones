@@ -1,0 +1,26 @@
+/* Estilos para los botones de planta */
+.botones-planta {
+  margin-bottom: 20px;
+}
+
+.botones-planta button {
+  margin-right: 10px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.botones-planta button.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Estilos para el spinner */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}

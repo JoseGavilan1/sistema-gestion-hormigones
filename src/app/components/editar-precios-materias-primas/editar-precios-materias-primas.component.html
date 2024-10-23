@@ -1,0 +1,16 @@
+<app-navbar></app-navbar>
+<div class="edit-precios-container">
+  <h2>Editar Precios - {{ selectedPlanta | titlecase }}</h2>
+
+  <form (ngSubmit)="guardarCambios()">
+    <div *ngFor="let materiaPrima of materiasPrimas" class="form-group">
+      <label>{{ materiaPrima.nombre }}</label>
+      <input [(ngModel)]="materiaPrima.precio" name="precio_{{ materiaPrima.nombre }}" class="form-control" type="number" />
+    </div>
+
+    <div class="buttons">
+      <button type="submit" class="btn btn-success">Guardar Cambios</button>
+      <button (click)="cancelar()" class="btn btn-secondary">Cancelar</button>
+    </div>
+  </form>
+</div>

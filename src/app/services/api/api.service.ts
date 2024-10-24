@@ -17,23 +17,16 @@ export class ApiService {
     return this.http.get<MateriaPrima[]>(url);  // Asegúrate de que el tipo es correcto
   }
 
-  actualizarPrecios(planta: string, materiasPrimas: MateriaPrima[]): Observable<any> {
-    const url = `${this.apiUrlBase}/actualizar/${planta}`;
+  actualizarPrecio(plantaId: number, productoId: number, precio: number): Observable<any> {
+    const url = `${this.apiUrlBase}/actualizar/${plantaId}/${productoId}`;
 
-    // Aquí envolvemos las materiasPrimas en el formato esperado
-    const requestBody = {
-        materiasPrimas: materiasPrimas.map(mp => ({
-            materiaPrimaId: mp.materiaPrimaId,
-            nombre: mp.nombre,
-            precio: mp.precio,
-            unidadMedida: mp.unidadMedida,
-            densidad: mp.densidad,
-            plantaId: mp.plantaId
-        }))
-    };
+    return this.http.put(url, precio, { headers: { 'Content-Type': 'application/json' } });
+  }
 
-    return this.http.put(url, requestBody);  // Enviar el cuerpo correctamente
-}
+
+
+
+
 
 
 

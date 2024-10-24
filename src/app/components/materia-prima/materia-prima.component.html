@@ -21,19 +21,19 @@
     <mat-spinner></mat-spinner>
   </div>
 
-  <table *ngIf="!isLoading && materiasPrimas.length > 0" class="table mt-3">
+  <table *ngIf="!isLoading && materiasPrimas.length > 0" class="table table-elegante mt-3">
     <thead>
       <tr>
         <th>Producto</th>
         <th>Precio</th>
         <th>Densidad</th>
-        <th>Acciones</th> <!-- Nueva columna para acciones -->
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let materiaPrima of materiasPrimas">
         <td>{{ materiaPrima.nombre }}</td>
-        <td>{{ materiaPrima.precio }}</td>
+        <td>${{ materiaPrima.precio }}</td>
         <td>{{ materiaPrima.densidad }}</td>
         <td>
           <button class="btn btn-primary" (click)="irAEditarPrecio(materiaPrima)">

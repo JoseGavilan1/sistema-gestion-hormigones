@@ -35,8 +35,8 @@ import { EditarPreciosMateriasPrimasComponent } from './components/editar-precio
     NavbarComponent,
     CosteoProductoMejillonesComponent,
     MateriaPrimaComponent,
-    EditarPreciosMateriasPrimasComponent
-
+    EditarPreciosMateriasPrimasComponent,
+ // Configura Toastr
   ],
   imports: [
     BrowserModule,
@@ -45,7 +45,8 @@ import { EditarPreciosMateriasPrimasComponent } from './components/editar-precio
     HttpClientModule,
     FormsModule,
     RouterModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+
 
   ],
   providers: [ApiService, provideAnimationsAsync()],

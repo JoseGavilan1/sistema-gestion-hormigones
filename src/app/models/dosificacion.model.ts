@@ -1,4 +1,5 @@
 export interface Dosificacion {
+  idDosificacion: number;
   idProducto: number;
   cemento: number;
   aguaTotal: number;

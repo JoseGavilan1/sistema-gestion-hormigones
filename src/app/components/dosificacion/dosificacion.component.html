@@ -1,7 +1,8 @@
 <app-navbar></app-navbar>
 <div class="formulario-container mt-3">
   <h3 class="text-center">Formulario de Dosificación</h3>
-
+  <p>Número de formula: {{ultimoProducto?.numeroFormula}}</p>
+  <p>Nomenclatura: {{ultimoProducto?.descripcionATecnica}}</p>
   <form (ngSubmit)="onSubmit()" #dosificacionForm="ngForm">
     <div class="form-row">
       <div class="form-group">
@@ -64,7 +65,9 @@
     </div>
 
     <div class="text-center">
-      <button type="submit" class="btn btn-success">Registrar Dosificación</button>
+      <button type="submit" class="btn btn-success">
+        {{ isUpdating ? 'Actualizar Dosificación' : 'Registrar Dosificación' }}
+      </button>
       <button type="button" class="btn btn-danger" [routerLink]="['/menu-area-tecnica']">Cancelar</button>
     </div>
   </form>

@@ -21,7 +21,11 @@ export class ApiService {
   }
 
   // Actualizar el precio de un producto en una planta
-  actualizarPrecio(plantaId: number, productoId: number, precio: number): Observable<any> {
+  actualizarPrecio(
+    plantaId: number,
+    productoId: number,
+    precio: number
+  ): Observable<any> {
     const url = `${this.apiUrlBase}MateriaPrima/actualizar/${plantaId}/${productoId}`;
     return this.http.put(url, precio, {
       headers: { 'Content-Type': 'application/json' },
@@ -35,9 +39,13 @@ export class ApiService {
 
   // Obtener el último número de fórmula para una familia específica
   getUltimoNumeroFormula(familia: number): Observable<number> {
-    return this.http.get<number>(`${this.apiUrlBase}producto/ultimo-numero-formula/${familia}`).pipe(
-      catchError(() => of(1000)) // Si hay error, retorna 1000 como valor por defecto
-    );
+    return this.http
+      .get<number>(
+        `${this.apiUrlBase}producto/ultimo-numero-formula/${familia}`
+      )
+      .pipe(
+        catchError(() => of(1000)) // Si hay error, retorna 1000 como valor por defecto
+      );
   }
 
   // Crear un nuevo producto
@@ -47,13 +55,29 @@ export class ApiService {
 
   // Obtener el último producto ingresado
   getUltimoProducto(): Observable<Producto | null> {
-    return this.http.get<Producto>(`${this.apiUrlBase}producto/ultimo-producto`).pipe(
-      catchError(() => of(null)) // Devuelve null en caso de error
-    );
+    return this.http
+      .get<Producto>(`${this.apiUrlBase}producto/ultimo-producto`)
+      .pipe(
+        catchError(() => of(null)) // Devuelve null en caso de error
+      );
   }
 
   createDosificacion(dosificacion: Dosificacion): Observable<Dosificacion> {
-    return this.http.post<Dosificacion>(`${this.apiUrlBase}dosificaciones`, dosificacion);
+    // Remueve el `idDosificacion` y `producto` antes de enviar
+    const { idDosificacion, producto, ...data } = dosificacion as any; // Quita los campos extra
+    return this.http.post<Dosificacion>(`${this.apiUrlBase}Dosificacion`, data);
   }
 
+  getDosificacionByProducto(idProducto: number): Observable<Dosificacion> {
+    return this.http.get<Dosificacion>(
+      `${this.apiUrlBase}dosificacion/${idProducto}`
+    );
+  }
+
+  updateDosificacion(id: number, dosificacion: Dosificacion): Observable<void> {
+    return this.http.put<void>(
+      `${this.apiUrlBase}dosificacion/${id}`,
+      dosificacion
+    );
+  }
 }

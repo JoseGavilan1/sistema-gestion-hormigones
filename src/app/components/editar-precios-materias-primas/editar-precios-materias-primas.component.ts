@@ -27,7 +27,7 @@ export class EditarPreciosMateriasPrimasComponent implements OnInit {
   producto!: MateriaPrima;
   plantaSeleccionada!: string;
 
-  private adminPassword = 'admin123'; // Define la contraseña de administrador
+  private adminPassword = 'admin123'; 
 
   constructor(private router: Router, private apiService: ApiService) {
     const navigation = this.router.getCurrentNavigation();

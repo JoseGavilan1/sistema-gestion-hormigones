@@ -1,0 +1,76 @@
+<app-navbar></app-navbar>
+<div class="container mt-3 formulario-container">
+  <h3>Ingrese el nuevo producto</h3>
+  <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()">
+    <div class="form-group">
+      <label for="familia">Familia</label>
+      <select
+        id="familia"
+        class="form-select"
+        formControlName="familia"
+        (change)="onFamiliaChange($event)"
+        [disabled]="productoForm.get('nuevaFamilia')?.value"
+      >
+        >
+        <option *ngFor="let familia of familias" [value]="familia">
+          Familia {{ familia }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group mt-3">
+      <input
+        type="checkbox"
+        id="nuevaFamilia"
+        formControlName="nuevaFamilia"
+        (change)="onNuevaFamiliaChange($event)"
+      />
+      <label for="nuevaFamilia">¿Ingresar nueva familia?</label>
+    </div>
+
+    <div
+      *ngIf="productoForm.get('nuevaFamilia')?.value"
+      class="form-group mt-2"
+    >
+      <label for="nuevaFamiliaSelect">Seleccionar Nueva Familia</label>
+      <select
+        id="nuevaFamiliaSelect"
+        class="form-select"
+        formControlName="familiaSeleccionada"
+        (change)="onNuevaFamiliaSeleccionadaChange($event)"
+      >
+        <option *ngFor="let familia of familiasNuevas" [value]="familia">
+          Familia {{ familia }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="nomenclatura">Nomenclatura</label>
+      <input
+        type="text"
+        id="nomenclatura"
+        class="form-control"
+        formControlName="nomenclatura"
+        required
+      />
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="nFormula">N° Formula asignado</label>
+      <input
+        type="text"
+        id="nFormula"
+        class="form-control"
+        [value]="numeroFormula !== undefined ? numeroFormula : ''"
+        disabled
+      />
+    </div>
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn btn-success mt-3">
+        Guardar Cambios
+      </button>
+      <button type="button" class="btn btn-danger mt-3" [routerLink]="['/menu-area-tecnica']">Cancelar</button>
+    </div>
+  </form>
+</div>

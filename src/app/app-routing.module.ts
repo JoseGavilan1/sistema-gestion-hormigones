@@ -9,6 +9,8 @@ import { CosteoProductoMejillonesComponent } from './components/costeo-producto/
 
 import { MateriaPrimaComponent } from './components/materia-prima/materia-prima.component';
 import { EditarPreciosMateriasPrimasComponent } from './components/editar-precios-materias-primas/editar-precios-materias-primas.component';
+import { MenuAreaTecnicaComponent } from './components/menu-area-tecnica/menu-area-tecnica.component';
+import { NewProductAtComponent } from './components/new-product-at/new-product-at.component';
 
 
 
@@ -28,7 +30,12 @@ const routes: Routes = [
 
   {path:'materias-primas/:planta', component: MateriaPrimaComponent},
 
-  {path:'editar-precio', component: EditarPreciosMateriasPrimasComponent}
+  {path:'editar-precio', component: EditarPreciosMateriasPrimasComponent},
+
+  {path:'menu-area-tecnica', component: MenuAreaTecnicaComponent},
+
+  {path: 'nuevo-producto-at', component: NewProductAtComponent},
+
 
 ];
 

@@ -1,0 +1,62 @@
+/* Estilo del contenedor del formulario */
+.formulario-container {
+  max-width: 450px; /* Ancho máximo reducido */
+  margin: 0 auto; /* Centra el formulario */
+  padding: 15px; /* Padding reducido */
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para los campos del formulario */
+.form-row {
+  display: flex; /* Usar flexbox para alinear elementos en fila */
+  justify-content: space-between; /* Espacio entre columnas */
+  margin-bottom: 10px; /* Espacio entre filas */
+}
+
+.form-group {
+  flex: 1; /* Permite que cada input ocupe la misma cantidad de espacio */
+  margin-right: 10px; /* Espacio entre las columnas */
+}
+
+/* Eliminar margen derecho del último elemento */
+.form-group:last-child {
+  margin-right: 0; /* Sin margen derecho en el último elemento */
+}
+
+.form-group label {
+  font-weight: bold;
+  color: #343a40;
+}
+
+.form-control {
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  padding: 8px; /* Padding reducido */
+}
+
+/* Botones */
+.btn {
+  padding: 8px 16px; /* Tamaño de botones ajustado */
+  border-radius: 5px;
+  font-size: 14px; /* Tamaño de texto reducido */
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+/* Título centrado */
+h3.text-center {
+  text-align: center;
+  margin-bottom: 15px; /* Margen reducido */
+  color: #343a40;
+}

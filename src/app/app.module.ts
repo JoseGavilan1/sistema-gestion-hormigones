@@ -24,6 +24,7 @@ import { MateriaPrimaComponent } from './components/materia-prima/materia-prima.
 import { EditarPreciosMateriasPrimasComponent } from './components/editar-precios-materias-primas/editar-precios-materias-primas.component';
 import { MenuAreaTecnicaComponent } from './components/menu-area-tecnica/menu-area-tecnica.component';
 import { NewProductAtComponent } from './components/new-product-at/new-product-at.component';
+import { DosificacionComponent } from './components/dosificacion/dosificacion.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { NewProductAtComponent } from './components/new-product-at/new-product-a
     MateriaPrimaComponent,
     EditarPreciosMateriasPrimasComponent,
     MenuAreaTecnicaComponent,
-    NewProductAtComponent
+    NewProductAtComponent,
+    DosificacionComponent
   ],
   imports: [
     BrowserModule,

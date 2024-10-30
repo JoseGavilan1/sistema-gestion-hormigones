@@ -58,7 +58,7 @@ export class ApiService {
     return this.http
       .get<Producto>(`${this.apiUrlBase}producto/ultimo-producto`)
       .pipe(
-        catchError(() => of(null)) // Devuelve null en caso de error
+        catchError(() => of(null)) 
       );
   }
 

@@ -3,7 +3,7 @@ import { ApiService } from '../../services/api/api.service';
 import { Producto } from '../../models/producto.model';
 import { Dosificacion } from '../../models/dosificacion.model';
 import Swal from 'sweetalert2';
-
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dosificacion',
@@ -29,7 +29,7 @@ export class DosificacionComponent implements OnInit {
     descripcion: 'N/A'
   };
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {
     this.cargarUltimoProducto();
@@ -75,7 +75,7 @@ export class DosificacionComponent implements OnInit {
         response => {
           Swal.fire({
             title: '¡Éxito!',
-            text: 'La dosificación se ha registrado correctamente.',
+            text: 'La dosificación para el hormigón'+' '+this.ultimoProducto?.numeroFormula+' '+'se ha registrado correctamente.',
             icon: 'success',
             confirmButtonText: 'Aceptar'
           });
@@ -84,11 +84,11 @@ export class DosificacionComponent implements OnInit {
           if (error.status === 409) {
             Swal.fire({
               title: 'Dosificación existente',
-              text: 'La dosificación para este producto ya existe. ¿Deseas actualizarla?',
+              text: 'La dosificación para este producto ya existe. ¿Deseas actualizarla o ingresar un nuevo producto?',
               icon: 'warning',
               showCancelButton: true,
               confirmButtonText: 'Actualizar',
-              cancelButtonText: 'Cancelar'
+              cancelButtonText: 'Nuevo producto'
             }).then(result => {
               if (result.isConfirmed) {
                 this.apiService.getDosificacionByProducto(this.dosificacion.idProducto).subscribe(
@@ -97,6 +97,8 @@ export class DosificacionComponent implements OnInit {
                     this.isUpdating = true;
                   }
                 );
+              } else if (result.dismiss === Swal.DismissReason.cancel) {
+                this.router.navigate(['/nuevo-producto-at']);
               }
             });
           }
@@ -104,6 +106,4 @@ export class DosificacionComponent implements OnInit {
       );
     }
   }
-
-
 }

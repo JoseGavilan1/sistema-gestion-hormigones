@@ -12,6 +12,7 @@ import { EditarPreciosMateriasPrimasComponent } from './components/editar-precio
 import { MenuAreaTecnicaComponent } from './components/menu-area-tecnica/menu-area-tecnica.component';
 import { NewProductAtComponent } from './components/new-product-at/new-product-at.component';
 import { DosificacionComponent } from './components/dosificacion/dosificacion.component';
+import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.component';
 
 
 
@@ -37,7 +38,9 @@ const routes: Routes = [
 
   {path: 'nuevo-producto-at', component: NewProductAtComponent},
 
-  {path: 'dosificacion', component: DosificacionComponent}
+  {path: 'dosificacion', component: DosificacionComponent},
+
+  {path: 'carga-maestro', component: CargaMaestroComponent}
 
 
 ];

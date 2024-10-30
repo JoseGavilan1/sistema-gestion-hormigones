@@ -58,7 +58,7 @@ export class ApiService {
     return this.http
       .get<Producto>(`${this.apiUrlBase}producto/ultimo-producto`)
       .pipe(
-        catchError(() => of(null)) 
+        catchError(() => of(null))
       );
   }
 
@@ -79,5 +79,17 @@ export class ApiService {
       `${this.apiUrlBase}dosificacion/${id}`,
       dosificacion
     );
+  }
+
+  crearDosificacion(dosificacion: any): Observable<any> {
+    return this.http.post(`${this.apiUrlBase}dosificacion`, dosificacion);
+  }
+
+  obtenerDosificacion(idProducto: number): Observable<any> {
+    return this.http.get(`${this.apiUrlBase}dosificacion/${idProducto}`);
+  }
+
+  actualizarDosificacion(id: number, dosificacion: any): Observable<any> {
+    return this.http.put(`${this.apiUrlBase}dosificacion/${id}`, dosificacion);
   }
 }

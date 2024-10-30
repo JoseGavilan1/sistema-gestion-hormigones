@@ -64,14 +64,15 @@
       </div>
 
       <div class="form-group">
-        <label for="planta">Seleccione planta de dosificacion</label>
-        <select name="" id="">
-          <option value="Planta Taltal">Taltal</option>
-          <option value="Planta Mejillones">Mejillones</option>
-          <option value="Planta Antofagasta">Antofagasta</option>
-          <option value="Planta Maria Elena">Maria Elena</option>
+        <label for="planta">Seleccione planta de dosificación</label>
+        <select [(ngModel)]="dosificacion.idPlanta" name="idPlanta" id="planta" class="form-control">
+          <option value="1">Planta Taltal</option>
+          <option value="2">Planta Mejillones</option>
+          <option value="3">Planta Antofagasta</option>
+          <option value="4">Planta Maria Elena</option>
         </select>
       </div>
+
     </div>
 
     <div class="text-center">

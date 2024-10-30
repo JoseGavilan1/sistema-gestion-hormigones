@@ -124,9 +124,10 @@ export class NewProductAtComponent implements OnInit {
 
     // Crear el nuevo producto, asegurando que numeroFormula sea un número
     const nuevoProducto = {
-        familia: familia,
-        descripcionATecnica: this.productoForm.value.nomenclatura,
-        numeroFormula: this.numeroFormula // Este valor debe estar definido aquí
+      idProducto: 0, // O `null`, si lo prefieres
+      familia: familia,
+      descripcionATecnica: this.productoForm.value.nomenclatura,
+      numeroFormula: this.numeroFormula // Este valor debe estar definido aquí
     };
 
     console.log('Nuevo producto a guardar:', nuevoProducto);

@@ -1,5 +1,6 @@
 export interface Producto {
-  numeroFormula: number; // Asegúrate de que el nombre coincida con el de tu API
+  idProducto: number; // Asegúrate de que este campo se asigna después de crear el producto
+  numeroFormula: number;
   familia: number;
   descripcionATecnica: string;
   insertDate?: Date; // Esta propiedad puede ser opcional

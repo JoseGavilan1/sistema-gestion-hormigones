@@ -26,8 +26,9 @@ export class DosificacionComponent implements OnInit {
     aditivo3: 0,
     aditivo4: 0,
     aditivo5: 0,
+    idPlanta: 1, // Establece un valor predeterminado
     descripcion: 'N/A'
-  };
+};
 
   constructor(private apiService: ApiService, private router: Router) {}
 
@@ -51,59 +52,49 @@ export class DosificacionComponent implements OnInit {
 
   onSubmit(): void {
     if (this.isUpdating) {
-      this.apiService.updateDosificacion(this.dosificacion.idDosificacion, this.dosificacion).subscribe(
-        () => {
-          Swal.fire({
-            title: '¡Actualización exitosa!',
-            text: 'La dosificación se ha actualizado correctamente.',
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
-          });
-          this.isUpdating = false;
-        },
-        error => {
-          Swal.fire({
-            title: 'Error',
-            text: 'No se pudo actualizar la dosificación.',
-            icon: 'error',
-            confirmButtonText: 'Cerrar'
-          });
+        // Asegúrate de que idDosificacion no sea null o undefined
+        if (this.dosificacion.idDosificacion != null) {
+            this.apiService.actualizarDosificacion(this.dosificacion.idDosificacion, this.dosificacion).subscribe(
+                () => {
+                    Swal.fire({
+                        title: '¡Actualización exitosa!',
+                        text: 'La dosificación se ha actualizado correctamente.',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    });
+                    this.isUpdating = false;
+                },
+                error => {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No se pudo actualizar la dosificación.',
+                        icon: 'error',
+                        confirmButtonText: 'Cerrar'
+                    });
+                }
+            );
         }
-      );
     } else {
-      this.apiService.createDosificacion(this.dosificacion).subscribe(
-        response => {
-          Swal.fire({
-            title: '¡Éxito!',
-            text: 'La dosificación para el hormigón'+' '+this.ultimoProducto?.numeroFormula+' '+'se ha registrado correctamente.',
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
-          });
-        },
-        error => {
-          if (error.status === 409) {
-            Swal.fire({
-              title: 'Dosificación existente',
-              text: 'La dosificación para este producto ya existe. ¿Deseas actualizarla o ingresar un nuevo producto?',
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Actualizar',
-              cancelButtonText: 'Nuevo producto'
-            }).then(result => {
-              if (result.isConfirmed) {
-                this.apiService.getDosificacionByProducto(this.dosificacion.idProducto).subscribe(
-                  existingDosificacion => {
-                    this.dosificacion = existingDosificacion;
-                    this.isUpdating = true;
-                  }
-                );
-              } else if (result.dismiss === Swal.DismissReason.cancel) {
-                this.router.navigate(['/nuevo-producto-at']);
-              }
-            });
-          }
-        }
-      );
+        // Asegúrate de que idProducto y idPlanta sean válidos
+        const idProducto = this.dosificacion.idProducto != null ? this.dosificacion.idProducto : 0; // Valor por defecto si es null
+        const idPlanta = this.dosificacion.idPlanta != null ? this.dosificacion.idPlanta : 1; // Valor por defecto si es null
+
+        this.apiService.obtenerDosificacion(idProducto, idPlanta).subscribe(
+            (existingDosificacion) => {
+                // Lógica para manejar la dosificación existente
+                this.dosificacion = existingDosificacion;
+                this.isUpdating = true;
+            },
+            error => {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'No se pudo cargar la dosificación existente.',
+                    icon: 'error',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+        );
     }
-  }
+}
+
 }

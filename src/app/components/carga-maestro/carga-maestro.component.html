@@ -1,9 +1,23 @@
 <app-navbar></app-navbar>
 <div class="container">
-  <button class="btn btn-primary mt-3" [routerLink]="['/menu-area-tecnica']">Volver atras</button>
-  <div class="mb-3">
-    <label for="formFileSm" class="form-label">Cargar archivo maestro</label>
-    <input class="form-control form-control-sm" id="formFileSm" type="file" (change)="onFileChange($event)">
-  </div>
+  <p>Seleccione la planta:</p>
+  <select [(ngModel)]="idPlanta">
+    <option *ngFor="let planta of plantas" [value]="planta.id">{{ planta.nombre }}</option>
+  </select>
+
+  <p>Seleccione el archivo Excel:</p>
+  <input type="file" #fileInput (change)="onFileChange($event)">
+
+  <button (click)="cargarDatos()">Cargar Datos</button>
+
+  <p>Los datos se cargarán y actualizarán para la planta seleccionada.</p>
+
+  <!-- Mostrar la primera fila de datos -->
+  <p *ngIf="primeraFila.length > 0">
+    Datos a insertar/actualizar:
+    <strong>
+      {{ primeraFila.join(', ') }}
+    </strong>
+  </p>
 
 </div>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { ApiService } from '../../services/api/api.service';
+import { Producto } from '../../models/producto.model';
 
 @Component({
   selector: 'app-carga-maestro',
@@ -10,8 +11,15 @@ import { ApiService } from '../../services/api/api.service';
 export class CargaMaestroComponent {
   dosificacion: any = {};
   idProducto: number = 1000; // Número de fórmula especificado
+  planta: number = 1;
+  productos: Producto[] = [];
 
   constructor(private apiService: ApiService) {}
+
+  seleccionarPlanta(idPlanta: number) {
+    this.planta = idPlanta;
+    this.dosificacion.IdPlanta = idPlanta;
+  }
 
   onFileChange(event: any) {
     const file = event.target.files[0];
@@ -23,11 +31,47 @@ export class CargaMaestroComponent {
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const excelData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-        this.extractDosificacionData(excelData);
+        // Procesar cada fila del Excel y agregar los productos a la lista temporal
+        this.crearProductosDesdeExcel(excelData);
       };
       reader.readAsArrayBuffer(file);
     }
   }
+
+  crearProductosDesdeExcel(excelData: any[]) {
+    this.productos = []; // Limpiar la lista de productos previamente cargados
+
+    for (let i = 1; i < excelData.length; i++) {
+        const fila = excelData[i];
+        if (fila.length < 2) continue; // Asegura que haya datos en las columnas necesarias
+
+        const numeroFormula = fila[0];
+        const nomenclatura = fila[1];
+
+        // Calcular familia a partir del número de fórmula
+        const familia = Math.floor(numeroFormula / 1000) * 1000;
+
+        const producto: Producto = {
+            numeroFormula: numeroFormula,
+            familia: familia, // Usa el valor calculado
+            descripcionATecnica: nomenclatura,
+            insertDate: new Date()
+        };
+
+        this.productos.push(producto);
+    }
+}
+
+
+  visualizarProductos() {
+    if (this.productos.length > 0) {
+      console.log("Productos a insertar:", this.productos);
+    } else {
+      alert("No hay productos cargados para visualizar.");
+    }
+  }
+
+
 
   extractDosificacionData(excelData: any[]) {
     // Encuentra la fila correspondiente a la fórmula
@@ -44,7 +88,8 @@ export class CargaMaestroComponent {
         Aditivo3: formulaRow[8],
         Aditivo4: formulaRow[9],
         Aditivo5: formulaRow[10],
-        Descripcion: 'Dosificación cargada desde Excel'
+        Descripcion: formulaRow[11],
+        IdPlanta: this.planta
       };
       this.cargarDosificacion();
     } else {
@@ -53,20 +98,16 @@ export class CargaMaestroComponent {
   }
 
   cargarDosificacion() {
-    // Verificar si existe una dosificación para el IdProducto
     this.apiService.obtenerDosificacion(this.dosificacion.IdProducto).subscribe(
       existingDosificacion => {
         if (existingDosificacion) {
-          // Si ya existe, actualizar con los datos del Excel
           this.actualizarDosificacion(existingDosificacion.idDosificacion);
         } else {
-          // Si no existe, crear una nueva dosificación
           this.crearDosificacion();
         }
       },
       error => {
         if (error.status === 404) {
-          // Si no se encuentra (404), crear una nueva dosificación
           this.crearDosificacion();
         } else {
           alert('Error al verificar la existencia de la dosificación');
@@ -93,6 +134,19 @@ export class CargaMaestroComponent {
       },
       error => {
         alert('Error al actualizar la dosificación');
+      }
+    );
+  }
+
+  insertarProductos() {
+    this.apiService.createMultipleProductos(this.productos).subscribe(
+      () => {
+        alert('Productos insertados exitosamente');
+        this.productos = []; // Limpia la lista de productos después de la inserción
+      },
+      (error) => {
+        console.error('Error al insertar productos:', error);
+        alert('Error al insertar productos');
       }
     );
   }

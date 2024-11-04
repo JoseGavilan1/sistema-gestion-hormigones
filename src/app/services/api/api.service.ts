@@ -57,9 +57,7 @@ export class ApiService {
   getUltimoProducto(): Observable<Producto | null> {
     return this.http
       .get<Producto>(`${this.apiUrlBase}producto/ultimo-producto`)
-      .pipe(
-        catchError(() => of(null))
-      );
+      .pipe(catchError(() => of(null)));
   }
 
   createDosificacion(dosificacion: Dosificacion): Observable<Dosificacion> {
@@ -91,5 +89,9 @@ export class ApiService {
 
   actualizarDosificacion(id: number, dosificacion: any): Observable<any> {
     return this.http.put(`${this.apiUrlBase}dosificacion/${id}`, dosificacion);
+  }
+
+  createMultipleProductos(productos: Producto[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrlBase}producto/multiples`, productos);
   }
 }

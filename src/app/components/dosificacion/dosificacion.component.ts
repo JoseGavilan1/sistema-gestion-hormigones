@@ -79,7 +79,7 @@ export class DosificacionComponent implements OnInit {
         const idProducto = this.dosificacion.idProducto != null ? this.dosificacion.idProducto : 0; // Valor por defecto si es null
         const idPlanta = this.dosificacion.idPlanta != null ? this.dosificacion.idPlanta : 1; // Valor por defecto si es null
 
-        this.apiService.obtenerDosificacion(idProducto, idPlanta).subscribe(
+        this.apiService.obtenerDosificacion(idProducto).subscribe(
             (existingDosificacion) => {
                 // Lógica para manejar la dosificación existente
                 this.dosificacion = existingDosificacion;

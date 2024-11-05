@@ -52,10 +52,11 @@ export class CargaMaestroComponent {
         const familia = Math.floor(numeroFormula / 1000) * 1000;
 
         const producto: Producto = {
-            numeroFormula: numeroFormula,
-            familia: familia, // Usa el valor calculado
-            descripcionATecnica: nomenclatura,
-            insertDate: new Date()
+          numeroFormula: numeroFormula,
+          familia: familia, // Usa el valor calculado
+          descripcionATecnica: nomenclatura,
+          insertDate: new Date(),
+          idProducto: 0
         };
 
         this.productos.push(producto);

@@ -1,1 +1,4 @@
-{}
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/dfa858cc-9f66-4eea-9fb8-ed5d7cdf0d1c/resourceGroups/gestionycosteohormigonescopat_group/providers/Microsoft.Web/sites/gestionycosteohormigonescopat",
+    "appService.deploySubpath": "."
+}

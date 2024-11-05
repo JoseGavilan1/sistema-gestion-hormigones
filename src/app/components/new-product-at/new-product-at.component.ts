@@ -57,25 +57,25 @@ export class NewProductAtComponent implements OnInit {
     const familiaId = Number(selectElement.value);
 
     if (!isNaN(familiaId)) {
-      this.productoForm.patchValue({ familia: familiaId }); // Actualiza el formulario aquí
+      this.productoForm.patchValue({ familia: familiaId });
 
-      // Lógica para determinar el número de fórmula
-      if (familiaId >= 2000) {
-        this.numeroFormula = familiaId + 1; // Se establece como familia + 1
-      } else {
-        // Si es una familia existente, consultar el último número de fórmula
+      // Comprobar si la familia está dentro del rango de consulta
+      if (familiaId >= 1000 && familiaId <= 15000) {
+        // Consulta al último número de fórmula para esta familia
         this.apiService.getUltimoNumeroFormula(familiaId).subscribe(
           (numero) => {
-            this.numeroFormula = numero;
+            this.numeroFormula = numero ; // Asignar el siguiente número de fórmula
           },
           (error) => {
             console.error('Error al obtener el número de fórmula', error);
-            this.numeroFormula = undefined; // Resetear si hay error
+            this.numeroFormula = undefined; // Reseteo en caso de error
           }
         );
       }
     }
   }
+
+
 
   onNuevaFamiliaChange(event: Event): void {
     const checkboxElement = event.target as HTMLInputElement;

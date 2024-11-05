@@ -1,23 +1,78 @@
 <app-navbar></app-navbar>
 <div class="container">
-  <p>Seleccione la planta:</p>
-  <select [(ngModel)]="idPlanta">
-    <option *ngFor="let planta of plantas" [value]="planta.id">{{ planta.nombre }}</option>
-  </select>
+  <button class="btn btn-primary mt-3" [routerLink]="['/menu-area-tecnica']">Volver atras</button>
+  <div class="mt-3">
+    <button
+      class="btn btn-secondary"
+      [ngClass]="{'active': planta === 1}"
+      (click)="seleccionarPlanta(1)">
+      Planta Taltal
+    </button>
+    <button
+      class="btn btn-secondary"
+      [ngClass]="{'active': planta === 2}"
+      (click)="seleccionarPlanta(2)">
+      Planta Mejillones
+    </button>
+    <button
+      class="btn btn-secondary"
+      [ngClass]="{'active': planta === 3}"
+      (click)="seleccionarPlanta(3)">
+      Planta Antofagasta
+    </button>
+    <button
+      class="btn btn-secondary"
+      [ngClass]="{'active': planta === 4}"
+      (click)="seleccionarPlanta(4)">
+      Planta María Elena
+    </button>
+    <button
+      class="btn btn-secondary"
+      [ngClass]="{'active': planta === 5}"
+      (click)="seleccionarPlanta(5)">
+      Planta Calama
+    </button>
+    <button
+      class="btn btn-secondary"
+      [ngClass]="{'active': planta === 6}"
+      (click)="seleccionarPlanta(6)">
+      Planta Tocopilla
+    </button>
+  </div>
 
-  <p>Seleccione el archivo Excel:</p>
-  <input type="file" #fileInput (change)="onFileChange($event)">
+  <h5>Cargar archivo maestro</h5>
+  <div class="mb-3">
+    <label for="formFileSm" class="form-label">Cargar archivo maestro</label>
+    <input class="form-control form-control-sm" id="formFileSm" type="file" (change)="onFileChange($event)">
+  </div>
 
-  <button (click)="cargarDatos()">Cargar Datos</button>
+  <button class="btn btn-info mb-3" (click)="visualizarProductos()">Visualizar datos a insertar</button>
 
-  <p>Los datos se cargarán y actualizarán para la planta seleccionada.</p>
+  <p *ngIf="productos.length > 0">Total de productos a insertar: {{ productos.length }}</p>
 
-  <!-- Mostrar la primera fila de datos -->
-  <p *ngIf="primeraFila.length > 0">
-    Datos a insertar/actualizar:
-    <strong>
-      {{ primeraFila.join(', ') }}
-    </strong>
-  </p>
+  <table *ngIf="productos.length > 0" class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th># Fórmula</th>
+        <th>Familia</th>
+        <th>Nomenclatura</th>
+        <th>Fecha de Inserción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let producto of productos">
+        <td>{{ producto.numeroFormula }}</td>
+        <td>{{ producto.familia }}</td>
+        <td>{{ producto.descripcionATecnica }}</td>
+        <td>{{ producto.insertDate | date: 'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
 
+  <button *ngIf="productos.length > 0" class="btn btn-success mt-3" (click)="insertarProductos()">Insertar productos</button>
+
+  <div *ngIf="dosificacion && dosificacion.IdProducto">
+    <h5>Datos de la Dosificación</h5>
+    <!-- Detalles de la dosificación -->
+  </div>
 </div>

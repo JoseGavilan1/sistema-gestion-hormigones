@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 export class DosificacionComponent implements OnInit {
 
   isUpdating = false;
+  isCheckingExisting = false;  // Nueva variable para controlar la verificación inicial
   ultimoProducto: Producto | null = null;
   dosificacion: Dosificacion = {
     idDosificacion: 0,
@@ -26,9 +27,9 @@ export class DosificacionComponent implements OnInit {
     aditivo3: 0,
     aditivo4: 0,
     aditivo5: 0,
-    idPlanta: 1, // Establece un valor predeterminado
+    idPlanta: 1, // Valor predeterminado
     descripcion: 'N/A'
-};
+  };
 
   constructor(private apiService: ApiService, private router: Router) {}
 
@@ -52,49 +53,75 @@ export class DosificacionComponent implements OnInit {
 
   onSubmit(): void {
     if (this.isUpdating) {
-        // Asegúrate de que idDosificacion no sea null o undefined
-        if (this.dosificacion.idDosificacion != null) {
-            this.apiService.actualizarDosificacion(this.dosificacion.idDosificacion, this.dosificacion).subscribe(
-                () => {
-                    Swal.fire({
-                        title: '¡Actualización exitosa!',
-                        text: 'La dosificación se ha actualizado correctamente.',
-                        icon: 'success',
-                        confirmButtonText: 'Aceptar'
-                    });
-                    this.isUpdating = false;
-                },
-                error => {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'No se pudo actualizar la dosificación.',
-                        icon: 'error',
-                        confirmButtonText: 'Cerrar'
-                    });
-                }
-            );
+      // Si está en modo de actualización, actualiza directamente
+      this.apiService.actualizarDosificacion(this.dosificacion.idDosificacion, this.dosificacion).subscribe(
+        () => {
+          Swal.fire({
+            title: '¡Actualización exitosa!',
+            text: 'La dosificación se ha actualizado correctamente.',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          });
+          this.isUpdating = false;
+          this.isCheckingExisting = false;  // Reinicia el estado al finalizar
+        },
+        error => {
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo actualizar la dosificación.',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+          });
         }
-    } else {
-        // Asegúrate de que idProducto y idPlanta sean válidos
-        const idProducto = this.dosificacion.idProducto != null ? this.dosificacion.idProducto : 0; // Valor por defecto si es null
-        const idPlanta = this.dosificacion.idPlanta != null ? this.dosificacion.idPlanta : 1; // Valor por defecto si es null
-
-        this.apiService.obtenerDosificacion(idProducto).subscribe(
-            (existingDosificacion) => {
-                // Lógica para manejar la dosificación existente
-                this.dosificacion = existingDosificacion;
-                this.isUpdating = true;
-            },
-            error => {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'No se pudo cargar la dosificación existente.',
-                    icon: 'error',
-                    confirmButtonText: 'Cerrar'
-                });
+      );
+    } else if (!this.isCheckingExisting) {
+      // Si no está en modo de actualización y no se ha verificado la existencia
+      this.isCheckingExisting = true;
+      this.apiService.obtenerDosificacion(this.dosificacion.idProducto).subscribe(
+        (existingDosificacion) => {
+          // Si existe, carga la dosificación para editar
+          Swal.fire({
+            title: 'Dosificación existente',
+            text: '¿Deseas actualizar la dosificación existente o ingresar un nuevo producto?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Actualizar Dosificación',
+            cancelButtonText: 'Ingresar Nuevo Producto'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Carga la dosificación existente y habilita el modo de actualización
+              this.dosificacion = existingDosificacion;
+              this.isUpdating = true;
+            } else {
+              this.router.navigate(['/nuevo-producto-at']);
             }
-        );
+            this.isCheckingExisting = false;  // Reinicia el estado
+          });
+        },
+        error => {
+          if (error.status === 404) {
+            // Si no existe la dosificación, crea una nueva
+            this.apiService.createDosificacion(this.dosificacion).subscribe(
+              () => {
+                Swal.fire({
+                  title: '¡Dosificación registrada!',
+                  text: 'La dosificación se ha registrado correctamente.',
+                  icon: 'success',
+                  confirmButtonText: 'Aceptar'
+                });
+              },
+              err => {
+                Swal.fire({
+                  title: 'Error',
+                  text: 'No se pudo registrar la dosificación.',
+                  icon: 'error',
+                  confirmButtonText: 'Cerrar'
+                });
+              }
+            );
+          }
+        }
+      );
     }
-}
-
+  }
 }

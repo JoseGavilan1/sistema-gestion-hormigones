@@ -118,7 +118,7 @@ export class CargaMaestroComponent {
   }
 
   crearDosificacion() {
-    this.apiService.crearDosificacion(this.dosificacion).subscribe(
+    this.apiService.createDosificacion(this.dosificacion).subscribe(
       () => {
         alert('Dosificación creada correctamente');
       },

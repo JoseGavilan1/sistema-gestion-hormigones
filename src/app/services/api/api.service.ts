@@ -10,7 +10,7 @@ import { Dosificacion } from '../../models/dosificacion.model';
   providedIn: 'root',
 })
 export class ApiService {
-  private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
+  private apiUrlBase = 'https://localhost:44364/api/';
 
   constructor(private http: HttpClient) {}
 
@@ -79,9 +79,7 @@ export class ApiService {
     );
   }
 
-  crearDosificacion(dosificacion: any): Observable<any> {
-    return this.http.post(`${this.apiUrlBase}dosificacion`, dosificacion);
-  }
+  
 
   obtenerDosificacion(idProducto: number): Observable<any> {
     return this.http.get(`${this.apiUrlBase}dosificacion/${idProducto}`);

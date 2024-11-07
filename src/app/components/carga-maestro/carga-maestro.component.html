@@ -1,78 +1,131 @@
 <app-navbar></app-navbar>
 <div class="container">
-  <button class="btn btn-primary mt-3" [routerLink]="['/menu-area-tecnica']">Volver atras</button>
-  <div class="mt-3">
-    <button
-      class="btn btn-secondary"
-      [ngClass]="{'active': planta === 1}"
-      (click)="seleccionarPlanta(1)">
-      Planta Taltal
-    </button>
-    <button
-      class="btn btn-secondary"
-      [ngClass]="{'active': planta === 2}"
-      (click)="seleccionarPlanta(2)">
-      Planta Mejillones
-    </button>
-    <button
-      class="btn btn-secondary"
-      [ngClass]="{'active': planta === 3}"
-      (click)="seleccionarPlanta(3)">
-      Planta Antofagasta
-    </button>
-    <button
-      class="btn btn-secondary"
-      [ngClass]="{'active': planta === 4}"
-      (click)="seleccionarPlanta(4)">
-      Planta María Elena
-    </button>
-    <button
-      class="btn btn-secondary"
-      [ngClass]="{'active': planta === 5}"
-      (click)="seleccionarPlanta(5)">
-      Planta Calama
-    </button>
-    <button
-      class="btn btn-secondary"
-      [ngClass]="{'active': planta === 6}"
-      (click)="seleccionarPlanta(6)">
-      Planta Tocopilla
-    </button>
-  </div>
+  <button class="btn btn-primary mt-3" [routerLink]="['/menu-area-tecnica']">
+    Volver atrás
+  </button>
 
-  <h5>Cargar archivo maestro</h5>
-  <div class="mb-3">
-    <label for="formFileSm" class="form-label">Cargar archivo maestro</label>
-    <input class="form-control form-control-sm" id="formFileSm" type="file" (change)="onFileChange($event)">
-  </div>
+  <div class="row mt-3">
+    <!-- Columna Izquierda: Cargar Productos -->
+    <div class="col-md-6">
+      <h5 class="mt-3">Cargar productos</h5>
 
-  <button class="btn btn-info mb-3" (click)="visualizarProductos()">Visualizar datos a insertar</button>
+      <!-- Selección de Planta -->
 
-  <p *ngIf="productos.length > 0">Total de productos a insertar: {{ productos.length }}</p>
 
-  <table *ngIf="productos.length > 0" class="table table-bordered mt-3">
-    <thead>
-      <tr>
-        <th># Fórmula</th>
-        <th>Familia</th>
-        <th>Nomenclatura</th>
-        <th>Fecha de Inserción</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let producto of productos">
-        <td>{{ producto.numeroFormula }}</td>
-        <td>{{ producto.familia }}</td>
-        <td>{{ producto.descripcionATecnica }}</td>
-        <td>{{ producto.insertDate | date: 'short' }}</td>
-      </tr>
-    </tbody>
-  </table>
+      <!-- Cargar Archivo -->
+      <div class="mb-3">
+        <label for="formFileSm" class="form-label">Cargar archivo maestro</label>
+        <input
+          class="form-control form-control-sm"
+          id="formFileSm"
+          type="file"
+          (change)="onFileChange($event)"
+        />
+      </div>
 
-  <button *ngIf="productos.length > 0" class="btn btn-success mt-3" (click)="insertarProductos()">Insertar productos</button>
+      <button class="btn btn-info mb-3" (click)="visualizarProductos()">
+        Visualizar datos a insertar
+      </button>
 
-  <div *ngIf="dosificacion && dosificacion.IdProducto">
-    <h5>Datos de la Dosificación</h5>
-    <!-- Detalles de la dosificación -->
+      <!-- Buscador de Número de Fórmula -->
+      <div class="mb-3">
+        <label for="buscadorFormula" class="form-label">Buscar por # Fórmula</label>
+        <input
+          class="form-control mb-2"
+          [(ngModel)]="busqueda"
+          (input)="buscarProducto()"
+          placeholder="Buscar por número de fórmula"
+        />
+      </div>
+
+      <!-- Tabla de Productos -->
+      <p *ngIf="productosFiltrados.length > 0">
+        Total de productos a insertar: {{ productosFiltrados.length }}
+      </p>
+
+      <div style="max-height: 300px; overflow-y: auto;">
+        <table *ngIf="productosFiltrados.length > 0" class="table table-bordered mt-3">
+          <thead>
+            <tr>
+              <th># Fórmula</th>
+              <th>Familia</th>
+              <th>Nomenclatura</th>
+              <th>Fecha de Inserción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let producto of productosFiltrados">
+              <td>{{ producto.numeroFormula }}</td>
+              <td>{{ producto.familia }}</td>
+              <td>{{ producto.descripcionATecnica }}</td>
+              <td>{{ producto.insertDate | date : 'short' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button
+        *ngIf="productosFiltrados.length > 0"
+        class="btn btn-success mt-3"
+        (click)="insertarProductos()"
+      >
+        Insertar productos
+      </button>
+    </div>
+
+    <!-- Columna Derecha: Dosificaciones -->
+    <div class="col-md-6">
+      <div class="mb-3 d-flex justify-content-between">
+        <button
+          class="btn btn-secondary me-3"
+          [ngClass]="{ active: planta === 1 }"
+          (click)="seleccionarPlanta(1)"
+        >
+          Planta Taltal
+        </button>
+        <button
+          class="btn btn-secondary me-3"
+          [ngClass]="{ active: planta === 2 }"
+          (click)="seleccionarPlanta(2)"
+        >
+          Planta Mejillones
+        </button>
+        <button
+          class="btn btn-secondary me-3"
+          [ngClass]="{ active: planta === 3 }"
+          (click)="seleccionarPlanta(3)"
+        >
+          Planta Antofagasta
+        </button>
+        <button
+          class="btn btn-secondary me-3"
+          [ngClass]="{ active: planta === 4 }"
+          (click)="seleccionarPlanta(4)"
+        >
+          Planta María Elena
+        </button>
+        <button
+          class="btn btn-secondary me-3"
+          [ngClass]="{ active: planta === 5 }"
+          (click)="seleccionarPlanta(5)"
+        >
+          Planta Calama
+        </button>
+        <button
+          class="btn btn-secondary me-3"
+          [ngClass]="{ active: planta === 6 }"
+          (click)="seleccionarPlanta(6)"
+        >
+          Planta Tocopilla
+        </button>
+      </div>
+      <h3>Cargar dosificaciones</h3>
+      <p>Aquí se cargarán las dosificaciones para los productos ingresados</p>
+
+      <div *ngIf="dosificacion && dosificacion.IdProducto">
+        <h5>Datos de la Dosificación</h5>
+        <!-- Detalles de la dosificación -->
+      </div>
+    </div>
   </div>
 </div>

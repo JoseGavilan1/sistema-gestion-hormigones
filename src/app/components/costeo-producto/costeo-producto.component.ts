@@ -6,17 +6,16 @@ import { ApiService } from '../../services/api/api.service';
 @Component({
   selector: 'app-costeo-producto',
   templateUrl: './costeo-producto.component.html',
-  styleUrls: ['./costeo-producto.component.css']
+  styleUrls: ['./costeo-producto.component.css'],
 })
 export class CosteoProductoComponent {
-
   datosExcel: any[] = [];
 
   constructor(private apiService: ApiService) {}
 
   // Método para manejar el cambio de archivo
   onFileChange(event: any) {
-    const target: DataTransfer = <DataTransfer>(event.target);
+    const target: DataTransfer = <DataTransfer>event.target;
     if (target.files.length !== 1) {
       alert('Por favor, selecciona un solo archivo.');
       return;
@@ -47,11 +46,9 @@ export class CosteoProductoComponent {
     const datosProcesados = this.datosExcel.map((fila: any[]) => {
       return {
         n_formula: fila[0],
-        nomenclatura: fila[1]
+        nomenclatura: fila[1],
         // Asigna los valores según el formato de tus datos
       };
     });
-
-    
   }
 }

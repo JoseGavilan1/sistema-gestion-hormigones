@@ -1,71 +1,140 @@
 <app-navbar></app-navbar>
 <div class="formulario-container mt-3">
   <h3 class="text-center">Formulario de Dosificación</h3>
-  <p>Número de formula: {{ultimoProducto?.numeroFormula}}</p>
-  <p>Nomenclatura: {{ultimoProducto?.descripcionATecnica}}</p>
+  <p>Número de formula: {{ ultimoProducto?.numeroFormula }}</p>
+  <p>Nomenclatura: {{ ultimoProducto?.descripcionATecnica }}</p>
   <form (ngSubmit)="onSubmit()" #dosificacionForm="ngForm">
     <div class="form-row">
       <div class="form-group">
         <label for="cemento">Cemento (kg)</label>
-        <input type="number" id="cemento" [(ngModel)]="dosificacion.cemento" name="cemento" required class="form-control">
+        <input
+          type="number"
+          id="cemento"
+          [(ngModel)]="dosificacion.cemento"
+          name="cemento"
+          required
+          class="form-control"
+        />
       </div>
 
       <div class="form-group">
         <label for="aguaTotal">Agua Total (litros)</label>
-        <input type="number" id="aguaTotal" [(ngModel)]="dosificacion.aguaTotal" name="aguaTotal" required class="form-control">
+        <input
+          type="number"
+          id="aguaTotal"
+          [(ngModel)]="dosificacion.aguaTotal"
+          name="aguaTotal"
+          required
+          class="form-control"
+        />
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label for="arena">Arena (kg)</label>
-        <input type="number" id="arena" [(ngModel)]="dosificacion.arena" name="arena" required class="form-control">
+        <input
+          type="number"
+          id="arena"
+          [(ngModel)]="dosificacion.arena"
+          name="arena"
+          required
+          class="form-control"
+        />
       </div>
 
       <div class="form-group">
         <label for="gravilla">Gravilla (kg)</label>
-        <input type="number" id="gravilla" [(ngModel)]="dosificacion.gravilla" name="gravilla" required class="form-control">
+        <input
+          type="number"
+          id="gravilla"
+          [(ngModel)]="dosificacion.gravilla"
+          name="gravilla"
+          required
+          class="form-control"
+        />
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label for="aditivo1">Aditivo 1 (kg)</label>
-        <input type="number" id="aditivo1" [(ngModel)]="dosificacion.aditivo1" name="aditivo1" class="form-control">
+        <input
+          type="number"
+          id="aditivo1"
+          [(ngModel)]="dosificacion.aditivo1"
+          name="aditivo1"
+          class="form-control"
+        />
       </div>
 
       <div class="form-group">
         <label for="aditivo2">Aditivo 2 (kg)</label>
-        <input type="number" id="aditivo2" [(ngModel)]="dosificacion.aditivo2" name="aditivo2" class="form-control">
+        <input
+          type="number"
+          id="aditivo2"
+          [(ngModel)]="dosificacion.aditivo2"
+          name="aditivo2"
+          class="form-control"
+        />
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label for="aditivo3">Aditivo 3 (kg)</label>
-        <input type="number" id="aditivo3" [(ngModel)]="dosificacion.aditivo3" name="aditivo3" class="form-control">
+        <input
+          type="number"
+          id="aditivo3"
+          [(ngModel)]="dosificacion.aditivo3"
+          name="aditivo3"
+          class="form-control"
+        />
       </div>
 
       <div class="form-group">
         <label for="aditivo4">Aditivo 4 (kg)</label>
-        <input type="number" id="aditivo4" [(ngModel)]="dosificacion.aditivo4" name="aditivo4" class="form-control">
+        <input
+          type="number"
+          id="aditivo4"
+          [(ngModel)]="dosificacion.aditivo4"
+          name="aditivo4"
+          class="form-control"
+        />
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label for="aditivo5">Aditivo 5 (kg)</label>
-        <input type="number" id="aditivo5" [(ngModel)]="dosificacion.aditivo5" name="aditivo5" class="form-control">
+        <input
+          type="number"
+          id="aditivo5"
+          [(ngModel)]="dosificacion.aditivo5"
+          name="aditivo5"
+          class="form-control"
+        />
       </div>
 
       <div class="form-group">
         <label for="descripcion">Descripción</label>
-        <textarea id="descripcion" [(ngModel)]="dosificacion.descripcion" name="descripcion" class="form-control" rows="3"></textarea>
+        <textarea
+          id="descripcion"
+          [(ngModel)]="dosificacion.descripcion"
+          name="descripcion"
+          class="form-control"
+          rows="3"
+        ></textarea>
       </div>
 
       <div class="form-group">
         <label for="planta">Seleccione planta de dosificación</label>
-        <select [(ngModel)]="dosificacion.idPlanta" name="idPlanta" id="planta" class="form-control">
+        <select
+          [(ngModel)]="dosificacion.idPlanta"
+          name="idPlanta"
+          id="planta"
+          class="form-control"
+        >
           <option value="1">Planta Taltal</option>
           <option value="2">Planta Mejillones</option>
           <option value="3">Planta Antofagasta</option>
@@ -74,15 +143,19 @@
           <option value="6">Planta Tocopilla</option>
         </select>
       </div>
-
     </div>
 
     <div class="text-center">
       <button type="submit" class="btn btn-success">
-        {{ isUpdating ? 'Actualizar Dosificación' : 'Registrar Dosificación' }}
+        {{ isUpdating ? "Actualizar Dosificación" : "Registrar Dosificación" }}
       </button>
-      <button type="button" class="btn btn-danger" [routerLink]="['/menu-area-tecnica']">Cancelar</button>
+      <button
+        type="button"
+        class="btn btn-danger"
+        [routerLink]="['/menu-area-tecnica']"
+      >
+        Cancelar
+      </button>
     </div>
-
   </form>
 </div>

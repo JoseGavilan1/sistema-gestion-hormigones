@@ -6,15 +6,29 @@ import { Producto } from '../../models/producto.model';
 @Component({
   selector: 'app-carga-maestro',
   templateUrl: './carga-maestro.component.html',
-  styleUrls: ['./carga-maestro.component.css']
+  styleUrls: ['./carga-maestro.component.css'],
 })
 export class CargaMaestroComponent {
   dosificacion: any = {};
   idProducto: number = 1000; // Número de fórmula especificado
   planta: number = 1;
   productos: Producto[] = [];
+  busqueda: string = '';
+  productosFiltrados: Producto[] = [];
 
   constructor(private apiService: ApiService) {}
+
+  ngOnInit() {
+    this.productosFiltrados = [...this.productos]; // Inicializa productosFiltrados con todos los productos
+  }
+
+  // Filtro productos solo si hay texto en el campo de búsqueda
+  buscarProducto() {
+    // Aplicar filtro solo si hay texto en el campo de búsqueda
+    this.productosFiltrados = this.productos.filter((producto) =>
+      this.busqueda ? producto.numeroFormula.toString().includes(this.busqueda) : true
+    );
+  }
 
   seleccionarPlanta(idPlanta: number) {
     this.planta = idPlanta;
@@ -31,8 +45,9 @@ export class CargaMaestroComponent {
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const excelData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-        // Procesar cada fila del Excel y agregar los productos a la lista temporal
+        // Procesar cada fila del Excel y agregar los productos a la lista
         this.crearProductosDesdeExcel(excelData);
+        this.productosFiltrados = [...this.productos];  // Inicia productosFiltrados con todos los productos
       };
       reader.readAsArrayBuffer(file);
     }
@@ -42,41 +57,37 @@ export class CargaMaestroComponent {
     this.productos = []; // Limpiar la lista de productos previamente cargados
 
     for (let i = 1; i < excelData.length; i++) {
-        const fila = excelData[i];
-        if (fila.length < 2) continue; // Asegura que haya datos en las columnas necesarias
+      const fila = excelData[i];
+      if (fila.length < 2) continue; // Asegura que haya datos en las columnas necesarias
 
-        const numeroFormula = fila[0];
-        const nomenclatura = fila[1];
+      const numeroFormula = fila[0];
+      const nomenclatura = fila[1];
 
-        // Calcular familia a partir del número de fórmula
-        const familia = Math.floor(numeroFormula / 1000) * 1000;
+      // Calcular familia a partir del número de fórmula
+      const familia = Math.floor(numeroFormula / 1000) * 1000;
 
-        const producto: Producto = {
-          numeroFormula: numeroFormula,
-          familia: familia, // Usa el valor calculado
-          descripcionATecnica: nomenclatura,
-          insertDate: new Date(),
-          idProducto: 0
-        };
+      const producto: Producto = {
+        numeroFormula: numeroFormula,
+        familia: familia, // Usa el valor calculado
+        descripcionATecnica: nomenclatura,
+        idProducto: 0,
+      };
 
-        this.productos.push(producto);
-    }
-}
-
-
-  visualizarProductos() {
-    if (this.productos.length > 0) {
-      console.log("Productos a insertar:", this.productos);
-    } else {
-      alert("No hay productos cargados para visualizar.");
+      this.productos.push(producto);
     }
   }
 
-
+  visualizarProductos() {
+    if (this.productos.length > 0) {
+      console.log('Productos a insertar:', this.productos);
+    } else {
+      alert('No hay productos cargados para visualizar.');
+    }
+  }
 
   extractDosificacionData(excelData: any[]) {
     // Encuentra la fila correspondiente a la fórmula
-    const formulaRow = excelData.find(row => row[0] === this.idProducto);
+    const formulaRow = excelData.find((row) => row[0] === this.idProducto);
     if (formulaRow) {
       this.dosificacion = {
         IdProducto: formulaRow[0],
@@ -90,24 +101,28 @@ export class CargaMaestroComponent {
         Aditivo4: formulaRow[9],
         Aditivo5: formulaRow[10],
         Descripcion: formulaRow[11],
-        IdPlanta: this.planta
+        IdPlanta: this.planta,
       };
       this.cargarDosificacion();
     } else {
-      alert('La fórmula número ' + this.idProducto + ' no se encuentra en el archivo.');
+      alert(
+        'La fórmula número ' +
+          this.idProducto +
+          ' no se encuentra en el archivo.'
+      );
     }
   }
 
   cargarDosificacion() {
     this.apiService.obtenerDosificacion(this.dosificacion.IdProducto).subscribe(
-      existingDosificacion => {
+      (existingDosificacion) => {
         if (existingDosificacion) {
           this.actualizarDosificacion(existingDosificacion.idDosificacion);
         } else {
           this.crearDosificacion();
         }
       },
-      error => {
+      (error) => {
         if (error.status === 404) {
           this.crearDosificacion();
         } else {
@@ -122,21 +137,23 @@ export class CargaMaestroComponent {
       () => {
         alert('Dosificación creada correctamente');
       },
-      error => {
+      (error) => {
         alert('Error al crear la dosificación');
       }
     );
   }
 
   actualizarDosificacion(idDosificacion: number) {
-    this.apiService.actualizarDosificacion(idDosificacion, this.dosificacion).subscribe(
-      () => {
-        alert('Dosificación actualizada correctamente');
-      },
-      error => {
-        alert('Error al actualizar la dosificación');
-      }
-    );
+    this.apiService
+      .actualizarDosificacion(idDosificacion, this.dosificacion)
+      .subscribe(
+        () => {
+          alert('Dosificación actualizada correctamente');
+        },
+        (error) => {
+          alert('Error al actualizar la dosificación');
+        }
+      );
   }
 
   insertarProductos() {

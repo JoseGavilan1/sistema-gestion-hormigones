@@ -10,7 +10,14 @@ import { Dosificacion } from '../../models/dosificacion.model';
   providedIn: 'root',
 })
 export class ApiService {
-  private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
+  updateProducto(producto: Producto): Observable<Producto> {
+    // Cambia la URL por la de tu API de actualización
+    return this.http.put<Producto>(
+      `${this.apiUrlBase}producto/${producto.numeroFormula}`,
+      producto
+    );
+  }
+  private apiUrlBase = 'https://localhost:44364/api/';
 
   constructor(private http: HttpClient) {}
 
@@ -72,12 +79,12 @@ export class ApiService {
     );
   }
 
-  updateDosificacion(id: number, dosificacion: Dosificacion): Observable<void> {
-    return this.http.put<void>(
-      `${this.apiUrlBase}dosificacion/${id}`,
-      dosificacion
-    );
+  // En el servicio ApiService
+  updateDosificacionPorNumeroFormula(numeroFormula: number, dosificacion: Dosificacion): Observable<Dosificacion> {
+    return this.http.put<Dosificacion>(`${this.apiUrlBase}dosificacion/${numeroFormula}`, dosificacion);
   }
+
+
 
   obtenerDosificacion(idProducto: number): Observable<any> {
     return this.http.get(`${this.apiUrlBase}dosificacion/${idProducto}`);
@@ -91,6 +98,26 @@ export class ApiService {
     return this.http.post<void>(
       `${this.apiUrlBase}producto/multiples`,
       productos
+    );
+  }
+
+  // Método para verificar si el producto ya existe en la base de datos
+  getProductoByNumeroFormula(
+    numeroFormula: number
+  ): Observable<Producto | null> {
+    return this.http
+      .get<Producto | null>(`${this.apiUrlBase}producto/${numeroFormula}`)
+      .pipe(
+        catchError(() => of(null)) // Si ocurre un error o no existe, devolvemos null
+      );
+  }
+
+  insertarDosificacion(
+    dosificacionData: Dosificacion
+  ): Observable<Dosificacion> {
+    return this.http.post<Dosificacion>(
+      `${this.apiUrlBase}Dosificacion`,
+      dosificacionData
     );
   }
 }

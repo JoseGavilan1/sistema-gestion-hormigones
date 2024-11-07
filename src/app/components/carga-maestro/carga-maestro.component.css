@@ -29,3 +29,34 @@
   height: 100%;
   fill: #fff;
 }
+
+/* Estilo del spinner personalizado */
+/* Estilo del spinner personalizado */
+.custom-spinner {
+  width: 4rem;
+  height: 4rem;
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #007bff; /* Color azul para el spinner */
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+}
+
+/* Animación para el spinner */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Texto debajo del spinner */
+.loading-text {
+  font-size: 1rem;
+  color: #007bff;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Estilo del popup */
+.custom-popup {
+  padding: 20px;
+  text-align: center;
+}

@@ -51,7 +51,7 @@ export class CargaMaestroComponent {
 
   seleccionarPlanta(idPlanta: number) {
     this.planta = idPlanta;
-    this.dosificacion.IdPlanta = idPlanta;
+    this.dosificacion.idPlanta = idPlanta; // Asigna el idPlanta a la dosificación
   }
 
   onFileChange(event: any) {
@@ -84,6 +84,7 @@ export class CargaMaestroComponent {
             descripcion: row[11],
             idProducto: row[0], // Asignamos el numeroFormula a idProducto
             idDosificacion: 0, // Columna L
+            idPlanta: this.planta,
           };
         });
       };

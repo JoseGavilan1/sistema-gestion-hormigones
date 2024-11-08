@@ -55,7 +55,7 @@ export class DosificacionComponent implements OnInit {
       // Si está en modo de actualización, actualiza directamente
       this.apiService
         .actualizarDosificacion(
-          this.dosificacion.idDosificacion,
+          this.dosificacion.idProducto,
           this.dosificacion
         )
         .subscribe(

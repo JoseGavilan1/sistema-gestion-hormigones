@@ -3,7 +3,51 @@
   <button class="btn btn-primary mt-3" [routerLink]="['/menu-area-tecnica']">
     Volver atrás
   </button>
-
+  <h4 class="mt-3">Primero, seleccione planta a actualizar</h4>
+  <div class="mt-3 d-flex justify-content-between">
+    <button
+      class="btn btn-secondary me-3"
+      [ngClass]="{ active: planta === 1 }"
+      (click)="seleccionarPlanta(1)"
+    >
+      Planta Taltal
+    </button>
+    <button
+      class="btn btn-secondary me-3"
+      [ngClass]="{ active: planta === 2 }"
+      (click)="seleccionarPlanta(2)"
+    >
+      Planta Mejillones
+    </button>
+    <button
+      class="btn btn-secondary me-3"
+      [ngClass]="{ active: planta === 3 }"
+      (click)="seleccionarPlanta(3)"
+    >
+      Planta Antofagasta
+    </button>
+    <button
+      class="btn btn-secondary me-3"
+      [ngClass]="{ active: planta === 4 }"
+      (click)="seleccionarPlanta(4)"
+    >
+      Planta María Elena
+    </button>
+    <button
+      class="btn btn-secondary me-3"
+      [ngClass]="{ active: planta === 5 }"
+      (click)="seleccionarPlanta(5)"
+    >
+      Planta Calama
+    </button>
+    <button
+      class="btn btn-secondary me-3"
+      [ngClass]="{ active: planta === 6 }"
+      (click)="seleccionarPlanta(6)"
+    >
+      Planta Tocopilla
+    </button>
+  </div>
   <div class="row mt-3">
     <!-- Columna Izquierda: Cargar Productos -->
     <div class="col-md-6">
@@ -11,9 +55,9 @@
 
       <!-- Cargar Archivo -->
       <div class="mb-3">
-        <label for="formFileSm" class="form-label"
-          >Cargar archivo maestro</label
-        >
+        <label for="formFileSm" class="form-label">
+          Cargar archivo maestro
+        </label>
         <input
           class="form-control form-control-sm"
           id="formFileSm"
@@ -24,9 +68,7 @@
 
       <!-- Buscador de Número de Fórmula -->
       <div class="mb-3">
-        <label for="buscadorFormula" class="form-label"
-          >Buscar por # Fórmula</label
-        >
+        <label for="buscadorFormula" class="form-label">Buscar por # Fórmula</label>
         <input
           class="form-control mb-2"
           [(ngModel)]="busqueda"
@@ -41,10 +83,7 @@
       </p>
 
       <div style="max-height: 300px; overflow-y: auto">
-        <table
-          *ngIf="productosFiltrados.length > 0"
-          class="table table-bordered mt-3"
-        >
+        <table *ngIf="productosFiltrados.length > 0" class="table table-bordered mt-3">
           <thead>
             <tr>
               <th># Fórmula</th>
@@ -73,88 +112,45 @@
 
     <!-- Columna Derecha: Dosificaciones -->
     <div class="col-md-6">
-      <div class="mb-3 d-flex justify-content-between">
-        <button
-          class="btn btn-secondary me-3"
-          [ngClass]="{ active: planta === 1 }"
-          (click)="seleccionarPlanta(1)"
-        >
-          Planta Taltal
-        </button>
-        <button
-          class="btn btn-secondary me-3"
-          [ngClass]="{ active: planta === 2 }"
-          (click)="seleccionarPlanta(2)"
-        >
-          Planta Mejillones
-        </button>
-        <button
-          class="btn btn-secondary me-3"
-          [ngClass]="{ active: planta === 3 }"
-          (click)="seleccionarPlanta(3)"
-        >
-          Planta Antofagasta
-        </button>
-        <button
-          class="btn btn-secondary me-3"
-          [ngClass]="{ active: planta === 4 }"
-          (click)="seleccionarPlanta(4)"
-        >
-          Planta María Elena
-        </button>
-        <button
-          class="btn btn-secondary me-3"
-          [ngClass]="{ active: planta === 5 }"
-          (click)="seleccionarPlanta(5)"
-        >
-          Planta Calama
-        </button>
-        <button
-          class="btn btn-secondary me-3"
-          [ngClass]="{ active: planta === 6 }"
-          (click)="seleccionarPlanta(6)"
-        >
-          Planta Tocopilla
-        </button>
-      </div>
-      <h3>Cargar dosificaciones</h3>
+
+      <h5 class="mt-3">Cargar dosificaciones</h5>
       <p>Aquí se cargarán las dosificaciones para los productos ingresados</p>
       <button class="btn btn-primary" (click)="insertarDosificaciones()">Insertar Dosificaciones</button>
-      <table class="mt-3">
-        <thead>
-          <tr>
-            <th>Numero de Formula</th>
-            <th>Cemento</th>
-            <th>Agua Total</th>
-            <th>Arena</th>
-            <th>Gravilla</th>
-            <th>Aditivo 1</th>
-            <th>Aditivo 2</th>
-            <th>Aditivo 3</th>
-            <th>Aditivo 4</th>
-            <th>Aditivo 5</th>
-            <th>Descripcion</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let dosificacion of dosificaciones">
-            <td>{{ dosificacion.idProducto }}</td>
-            <td>{{ dosificacion.cemento }}</td>
-            <td>{{ dosificacion.aguaTotal }}</td>
-            <td>{{ dosificacion.arena }}</td>
-            <td>{{ dosificacion.gravilla }}</td>
-            <td>{{ dosificacion.aditivo1 }}</td>
-            <td>{{ dosificacion.aditivo2 }}</td>
-            <td>{{ dosificacion.aditivo3 }}</td>
-            <td>{{ dosificacion.aditivo4 }}</td>
-            <td>{{ dosificacion.aditivo5 }}</td>
-            <td>{{ dosificacion.descripcion }}</td>
-          </tr>
-        </tbody>
-      </table>
 
-
-
+      <div style="max-height: 300px; overflow-y: auto; overflow-x: auto;">
+        <table class="table table-bordered mt-3">
+          <thead>
+            <tr>
+              <th>Numero de Formula</th>
+              <th>Cemento</th>
+              <th>Agua Total</th>
+              <th>Arena</th>
+              <th>Gravilla</th>
+              <th>Aditivo 1</th>
+              <th>Aditivo 2</th>
+              <th>Aditivo 3</th>
+              <th>Aditivo 4</th>
+              <th>Aditivo 5</th>
+              <th>Descripcion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let dosificacion of dosificaciones">
+              <td>{{ dosificacion.idProducto }}</td>
+              <td>{{ dosificacion.cemento }}</td>
+              <td>{{ dosificacion.aguaTotal }}</td>
+              <td>{{ dosificacion.arena }}</td>
+              <td>{{ dosificacion.gravilla }}</td>
+              <td>{{ dosificacion.aditivo1 }}</td>
+              <td>{{ dosificacion.aditivo2 }}</td>
+              <td>{{ dosificacion.aditivo3 }}</td>
+              <td>{{ dosificacion.aditivo4 }}</td>
+              <td>{{ dosificacion.aditivo5 }}</td>
+              <td>{{ dosificacion.descripcion }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
     </div>
   </div>

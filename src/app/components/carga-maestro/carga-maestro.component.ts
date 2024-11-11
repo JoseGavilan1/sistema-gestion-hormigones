@@ -222,18 +222,14 @@ export class CargaMaestroComponent {
       title: 'Insertando o actualizando dosificaciones...',
       html: `<div class="custom-spinner"></div><br><span class="loading-text">Por favor, espere...</span>`,
       allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      customClass: {
-        popup: 'custom-popup',
-      },
+      didOpen: () => Swal.showLoading(),
+      customClass: { popup: 'custom-popup' },
     });
 
     let creadasCorrectamente = 0;
     let actualizadasCorrectamente = 0;
     let omitidas = 0;
-    let dosificacionesExistentes: any[] = []; // Para almacenar las dosificaciones que ya existen
+    let dosificacionesExistentes: any[] = [];
 
     // Creamos un array de promesas para insertar o actualizar las dosificaciones
     const promesas = this.dosificaciones.map(async (dosificacion) => {
@@ -260,13 +256,22 @@ export class CargaMaestroComponent {
           await this.apiService.createDosificacion(dosificacion).toPromise();
           creadasCorrectamente++;
         }
-      } catch (error) {
-        console.error(
-          'Error al insertar o actualizar dosificación:',
-          dosificacion,
-          error
-        );
-        omitidas++; // Si hay error, se omite
+      } catch (error: any) {
+        // Verificamos si el error es un 404 (no encontrado)
+        if (error.status === 404) {
+          // Si es un 404, es porque la dosificación no existe, entonces la insertamos
+          console.log('Dosificación no encontrada, insertando:', dosificacion);
+          try {
+            await this.apiService.createDosificacion(dosificacion).toPromise();
+            creadasCorrectamente++; // Contamos como creada
+          } catch (insertError) {
+            console.error('Error al insertar dosificación:', insertError);
+            omitidas++; // Si ocurre un error al insertar, omitimos
+          }
+        } else {
+          console.error('Error al insertar o actualizar dosificación:', dosificacion, error);
+          omitidas++; // Si hay otro error, omitimos
+        }
       }
     });
 
@@ -312,6 +317,7 @@ export class CargaMaestroComponent {
       'success'
     );
   }
+
 
   mostrarAlertaDosificacionesExistentes(dosificaciones: any[]) {
     Swal.fire({

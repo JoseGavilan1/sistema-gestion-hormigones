@@ -17,7 +17,7 @@ export class ApiService {
       producto
     );
   }
-  private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
+  private apiUrlBase = 'https://localhost:44364/api/';
 
   constructor(private http: HttpClient) {}
 
@@ -90,9 +90,13 @@ export class ApiService {
     return this.http.get(`${this.apiUrlBase}dosificacion/${idProducto}`);
   }
 
-  actualizarDosificacion(id: number, dosificacion: any): Observable<any> {
-    return this.http.put(`${this.apiUrlBase}dosificacion/${id}`, dosificacion);
+  actualizarDosificacion(numeroFormula: number, dosificacion: Dosificacion): Observable<void> {
+    return this.http.put<void>(
+      `${this.apiUrlBase}dosificacion/${numeroFormula}`,
+      dosificacion
+    );
   }
+
 
   createMultipleProductos(productos: Producto[]): Observable<void> {
     return this.http.post<void>(
@@ -120,4 +124,9 @@ export class ApiService {
       dosificacionData
     );
   }
+
+  getDosificacionByProductoYPlanta(idProducto: number, idPlanta: number): Observable<Dosificacion> {
+    return this.http.get<Dosificacion>(`api/dosificaciones/${idProducto}/${idPlanta}`);
+  }
+
 }

@@ -54,10 +54,7 @@ export class DosificacionComponent implements OnInit {
     if (this.isUpdating) {
       // Si está en modo de actualización, actualiza directamente
       this.apiService
-        .actualizarDosificacion(
-          this.dosificacion.idProducto,
-          this.dosificacion
-        )
+        .actualizarDosificacion(this.dosificacion.idProducto, this.dosificacion)
         .subscribe(
           () => {
             Swal.fire({
@@ -67,7 +64,7 @@ export class DosificacionComponent implements OnInit {
               confirmButtonText: 'Aceptar',
             });
             this.isUpdating = false;
-            this.isCheckingExisting = false; // Reinicia el estado al finalizar
+            this.isCheckingExisting = false;
           },
           (error) => {
             Swal.fire({

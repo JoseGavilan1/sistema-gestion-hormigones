@@ -5,7 +5,6 @@ import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from './services/auth.guard/auth.guard';
 import { CotizacionesComponent } from './components/cotizaciones/cotizaciones.component';
 import { CosteoProductoComponent } from './components/costeo-producto/costeo-producto.component';
-import { CosteoProductoMejillonesComponent } from './components/costeo-producto/costeo-producto-mejillones/costeo-producto-mejillones.component';
 
 import { MateriaPrimaComponent } from './components/materia-prima/materia-prima.component';
 import { EditarPreciosMateriasPrimasComponent } from './components/editar-precios-materias-primas/editar-precios-materias-primas.component';
@@ -27,8 +26,6 @@ const routes: Routes = [
   {path: 'cotizaciones', component: CotizacionesComponent},
 
   {path: 'costeo-producto', component: CosteoProductoComponent},
-
-  {path: 'costeo-mejillones', component: CosteoProductoMejillonesComponent},
 
   {path:'materias-primas/:planta', component: MateriaPrimaComponent},
 

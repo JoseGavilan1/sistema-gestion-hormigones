@@ -31,7 +31,7 @@ export class CargaMaestroComponent {
   }
 
   cargarDosificaciones() {
-    this.apiService.obtenerDosificacion(this.dosificacion.idProducto).subscribe(
+    this.apiService.getDosificacionByProducto(this.dosificacion.idProducto).subscribe(
       (response) => {
         this.dosificacion = response;
       },

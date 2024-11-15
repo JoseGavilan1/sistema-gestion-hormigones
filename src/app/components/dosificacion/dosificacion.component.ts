@@ -79,7 +79,7 @@ export class DosificacionComponent implements OnInit {
       // Si no está en modo de actualización y no se ha verificado la existencia
       this.isCheckingExisting = true;
       this.apiService
-        .obtenerDosificacion(this.dosificacion.idProducto)
+        .getDosificacionByProducto(this.dosificacion.idProducto)
         .subscribe(
           (existingDosificacion) => {
             // Si existe, carga la dosificación para editar

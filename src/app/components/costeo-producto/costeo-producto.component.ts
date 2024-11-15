@@ -1,7 +1,8 @@
-// costeo-producto.component.ts
 import { Component } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { ApiService } from '../../services/api/api.service';
+import { Dosificacion } from '../../models/dosificacion.model';
+import { UfService } from '../../services/uf/uf-service.service';
 
 @Component({
   selector: 'app-costeo-producto',
@@ -9,46 +10,168 @@ import { ApiService } from '../../services/api/api.service';
   styleUrls: ['./costeo-producto.component.css'],
 })
 export class CosteoProductoComponent {
+  plantas = [
+    { id: 1, nombre: 'TALTAL' },
+    { id: 2, nombre: 'MEJILLONES' },
+    { id: 3, nombre: 'ANTOFAGASTA' },
+    { id: 4, nombre: 'MARIA ELENA' },
+    { id: 5, nombre: 'CALAMA' },
+    { id: 6, nombre: 'TOCOPILLA' },
+  ];
+
   datosExcel: any[] = [];
+  plantaSeleccionada: number | null = null;
+  nombrePlantaSeleccionada: string | null = null;
+  idProducto: number | null = null;
+  dosificacion: Dosificacion | null = null;
 
-  constructor(private apiService: ApiService) {}
+  precioCemento: number = 0;
+  precioAgua: number = 0;
+  precioArena: number = 0;
+  precioGravilla: number = 0;
+  precioGrava: number = 0;
+  densidadArena: number = 0;
+  densidadGravilla: number = 0;
+  densidadGrava: number = 0;
+  densidadAgua: number = 0.36;
+  ufValue: number = 0;
+  ufLaboratorio: number = 0.1;
 
-  // Método para manejar el cambio de archivo
-  onFileChange(event: any) {
-    const target: DataTransfer = <DataTransfer>event.target;
-    if (target.files.length !== 1) {
-      alert('Por favor, selecciona un solo archivo.');
-      return;
+  costoCemento: number = 0;
+  costoAgua: number = 0;
+  costoArena: number = 0;
+  costoGravilla: number = 0;
+  costoGrava: number = 0;
+  costoTotal: number = 0;
+  costoFinal: number = 0;
+  costoAridos: number = 0;
+
+  porcentajeDePerdida: number = 0.02;
+
+  constructor(private apiService: ApiService, private ufService: UfService) {}
+
+  seleccionarPlanta(idPlanta: number) {
+    const planta = this.plantas.find((p) => p.id === idPlanta);
+    if (planta) {
+      this.plantaSeleccionada = idPlanta;
+      this.nombrePlantaSeleccionada = planta.nombre;
     }
-
-    const reader: FileReader = new FileReader();
-    reader.onload = (e: any) => {
-      const bstr: string = e.target.result;
-      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
-      const wsname: string = wb.SheetNames[0];
-      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-
-      // Convertir la hoja de cálculo a un arreglo de datos, empezando desde la fila 3
-      const allData = XLSX.utils.sheet_to_json(ws, { header: 1 });
-      this.datosExcel = allData.slice(2); // Omitir las primeras dos filas
-      console.log('Datos leídos del Excel:', this.datosExcel);
-    };
-    reader.readAsBinaryString(target.files[0]);
   }
 
-  // Método para cargar los datos a la base de datos
-  cargarDatos() {
-    if (this.datosExcel.length === 0) {
-      alert('Por favor, carga un archivo Excel primero.');
-      return;
-    }
+  costearProducto() {
+    if (this.idProducto && this.plantaSeleccionada !== null) {
+      console.log(
+        'Buscando dosificación para:',
+        this.idProducto,
+        'en planta:',
+        this.plantaSeleccionada
+      );
 
-    const datosProcesados = this.datosExcel.map((fila: any[]) => {
-      return {
-        n_formula: fila[0],
-        nomenclatura: fila[1],
-        // Asigna los valores según el formato de tus datos
-      };
-    });
+      this.apiService
+        .getDosificacionByProductoYPlanta(
+          this.idProducto,
+          this.plantaSeleccionada
+        )
+        .subscribe({
+          next: (dosificacion) => {
+            this.dosificacion = dosificacion;
+            console.log('Dosificación encontrada:', dosificacion);
+
+            this.ufService.getUfValue().subscribe({
+              next: (ufData) => {
+                this.ufValue = ufData;
+                console.log('Valor de la UF:', this.ufValue);
+                this.obtenerPreciosMateriasPrimas();
+              },
+              error: (err) => {
+                console.log('Error al obtener el valor de la UF:', err);
+                alert('No se pudo obtener el valor de la UF.');
+              },
+            });
+          },
+          error: (err) => {
+            console.log('Error al obtener dosificación:', err);
+            alert(
+              'No se encontró la dosificación para este producto en la planta seleccionada.'
+            );
+          },
+        });
+    } else {
+      alert('Por favor, selecciona una planta e ingresa el ID del producto.');
+    }
   }
+
+  obtenerPreciosMateriasPrimas() {
+    if (this.nombrePlantaSeleccionada) {
+      this.apiService
+        .getMateriasPrimas(this.nombrePlantaSeleccionada)
+        .subscribe({
+          next: (materias) => {
+            const cemento = materias.find((m) => m.nombre === 'CEMENTO');
+            const agua = materias.find((m) => m.nombre === 'AGUA');
+            const arena = materias.find((m) => m.nombre === 'ARENA');
+            const gravilla = materias.find((m) => m.nombre === 'GRAVILLA');
+            const grava = materias.find((m) => m.nombre === 'GRAVA');
+
+            if (cemento) this.precioCemento = cemento.precio;
+            if (agua) this.precioAgua = agua.precio;
+            if (arena) {
+              this.precioArena = arena.precio;
+              this.densidadArena = arena.densidad;
+            }
+            if (gravilla) {
+              this.precioGravilla = gravilla.precio;
+              this.densidadGravilla = gravilla.densidad;
+            }
+            if (grava) {
+              this.precioGrava = grava.precio;
+              this.densidadGrava = grava.densidad;
+            }
+
+            this.calcularCostos();
+          },
+          error: (err) => {
+            console.log(
+              'Error al obtener los precios de las materias primas:',
+              err
+            );
+            alert('No se pudieron obtener los precios de las materias primas.');
+          },
+        });
+    }
+  }
+
+  calcularCostos() {
+    if (this.dosificacion) {
+      this.costoCemento =
+        (this.dosificacion.cemento * this.precioCemento) / this.ufValue;
+
+      this.costoAgua = 0.36 * this.precioAgua /this.ufValue;
+
+      const arenaAjustada = this.dosificacion.arena / this.densidadArena;
+      this.costoArena = (arenaAjustada * this.precioArena) / this.ufValue;
+
+      const gravillaAjustada =
+        this.dosificacion.gravilla / this.densidadGravilla;
+      this.costoGravilla =
+        (gravillaAjustada * this.precioGravilla) / this.ufValue;
+
+      this.costoTotal =
+        this.costoCemento +
+        this.costoAgua +
+        this.costoArena +
+        this.costoGravilla +
+        this.ufLaboratorio +
+        this.costoGrava;
+
+      this.costoFinal = this.costoTotal;
+
+      this.costoAridos = this.costoArena + this.costoGravilla
+
+      console.log('Costo total:', this.costoTotal);
+      console.log('Costo final:', this.costoFinal);
+    }
+  }
+
+
 }

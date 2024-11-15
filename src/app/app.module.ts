@@ -16,7 +16,6 @@ import { CosteoProductoComponent } from './components/costeo-producto/costeo-pro
 import { DetalleCotizacionComponent } from './components/detalle-cotizacion/detalle-cotizacion.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { RouterModule } from '@angular/router';
-import { CosteoProductoMejillonesComponent } from './components/costeo-producto/costeo-producto-mejillones/costeo-producto-mejillones.component';
 
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -37,7 +36,6 @@ import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.
     CosteoProductoComponent,
     DetalleCotizacionComponent,
     NavbarComponent,
-    CosteoProductoMejillonesComponent,
     MateriaPrimaComponent,
     EditarPreciosMateriasPrimasComponent,
     MenuAreaTecnicaComponent,

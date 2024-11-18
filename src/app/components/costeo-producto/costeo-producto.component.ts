@@ -14,7 +14,7 @@ export class CosteoProductoComponent {
     { id: 1, nombre: 'TALTAL' },
     { id: 2, nombre: 'MEJILLONES' },
     { id: 3, nombre: 'ANTOFAGASTA' },
-    { id: 4, nombre: 'MARIA ELENA' },
+    { id: 4, nombre: 'MARIA-ELENA' },
     { id: 5, nombre: 'CALAMA' },
     { id: 6, nombre: 'TOCOPILLA' },
   ];
@@ -34,8 +34,14 @@ export class CosteoProductoComponent {
   densidadGravilla: number = 0;
   densidadGrava: number = 0;
   densidadAgua: number = 0.36;
+  precioAditivoBase: number = 0;
   ufValue: number = 0;
   ufLaboratorio: number = 0.1;
+  nombreAditivo2: string | null = null;
+  nombreAditivo3: string | null = null;
+  nombreAditivo4: string | null = null;
+  nombreAditivo5: string | null = null;
+
 
   costoCemento: number = 0;
   costoAgua: number = 0;
@@ -45,6 +51,7 @@ export class CosteoProductoComponent {
   costoTotal: number = 0;
   costoFinal: number = 0;
   costoAridos: number = 0;
+  costoAditivoBase: number = 0;
 
   porcentajeDePerdida: number = 0.02;
 
@@ -111,7 +118,10 @@ export class CosteoProductoComponent {
             const agua = materias.find((m) => m.nombre === 'AGUA');
             const arena = materias.find((m) => m.nombre === 'ARENA');
             const gravilla = materias.find((m) => m.nombre === 'GRAVILLA');
-            const grava = materias.find((m) => m.nombre === 'GRAVA');
+            //const grava = materias.find((m) => m.nombre === 'GRAVA');
+            const aditivoBase = materias.find(
+              (m) => m.nombre === 'ADITIVO BASE'
+            );
 
             if (cemento) this.precioCemento = cemento.precio;
             if (agua) this.precioAgua = agua.precio;
@@ -123,9 +133,17 @@ export class CosteoProductoComponent {
               this.precioGravilla = gravilla.precio;
               this.densidadGravilla = gravilla.densidad;
             }
-            if (grava) {
-              this.precioGrava = grava.precio;
-              this.densidadGrava = grava.densidad;
+            if (aditivoBase) this.precioAditivoBase = aditivoBase.precio;
+            //if (grava) {
+            //this.precioGrava = grava.precio;
+            //this.densidadGrava = grava.densidad;
+            //}
+
+            if (this.dosificacion) {
+              this.nombreAditivo2 = this.dosificacion.nombreAditivo2 || null;
+              this.nombreAditivo3 = this.dosificacion.nombreAditivo3 || null;
+              this.nombreAditivo4 = this.dosificacion.nombreAditivo4 || null;
+              this.nombreAditivo5 = this.dosificacion.nombreAditivo5 || null;
             }
 
             this.calcularCostos();
@@ -146,7 +164,7 @@ export class CosteoProductoComponent {
       this.costoCemento =
         (this.dosificacion.cemento * this.precioCemento) / this.ufValue;
 
-      this.costoAgua = 0.36 * this.precioAgua /this.ufValue;
+      this.costoAgua = (0.36 * this.precioAgua) / this.ufValue;
 
       const arenaAjustada = this.dosificacion.arena / this.densidadArena;
       this.costoArena = (arenaAjustada * this.precioArena) / this.ufValue;
@@ -156,22 +174,23 @@ export class CosteoProductoComponent {
       this.costoGravilla =
         (gravillaAjustada * this.precioGravilla) / this.ufValue;
 
+      this.costoAditivoBase =
+      ((this.dosificacion?.aditivo1 || 0) * this.precioAditivoBase) / this.ufValue;
+
       this.costoTotal =
         this.costoCemento +
         this.costoAgua +
         this.costoArena +
         this.costoGravilla +
-        this.ufLaboratorio +
-        this.costoGrava;
+        this.costoAditivoBase +
+        this.ufLaboratorio;
 
       this.costoFinal = this.costoTotal;
 
-      this.costoAridos = this.costoArena + this.costoGravilla
+      this.costoAridos = this.costoArena + this.costoGravilla;
 
       console.log('Costo total:', this.costoTotal);
       console.log('Costo final:', this.costoFinal);
     }
   }
-
-
 }

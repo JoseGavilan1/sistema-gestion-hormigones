@@ -4,6 +4,7 @@ import { ApiService } from '../../services/api/api.service';
 import { Producto } from '../../models/producto.model';
 import Swal from 'sweetalert2';
 import { Dosificacion } from '../../models/dosificacion.model';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-carga-maestro',
@@ -108,10 +109,13 @@ export class CargaMaestroComponent {
         descripcionATecnica: nomenclatura,
         idProducto: 0,
       };
-
+  
       this.productos.push(producto);
     }
+
+    console.log('Productos cargados:', this.productos); // Verifica que todos los productos se han cargado
   }
+
 
   async crearDosificacionesDesdeExcel(excelData: any[]) {
     // Limpiamos las dosificaciones cargadas previamente
@@ -160,7 +164,8 @@ export class CargaMaestroComponent {
     let productosCreados = 0;
     let productosExistentes: Producto[] = [];
 
-    const promesas = this.productosFiltrados.map(async (producto) => {
+    // Reemplazamos Promise.all por un for loop para insertar de manera secuencial
+    for (const producto of this.productosFiltrados) {
       try {
         const existingProducto = await this.apiService
           .getProductoByNumeroFormula(producto.numeroFormula)
@@ -174,9 +179,8 @@ export class CargaMaestroComponent {
       } catch (error) {
         console.error('Error al insertar producto:', producto, error);
       }
-    });
+    }
 
-    await Promise.all(promesas);
     Swal.close();
 
     if (productosExistentes.length > 0) {
@@ -208,6 +212,7 @@ export class CargaMaestroComponent {
     );
   }
 
+
   actualizarProductos(productosExistentes: Producto[]) {
     throw new Error('Method not implemented.');
   }
@@ -229,94 +234,75 @@ export class CargaMaestroComponent {
     let creadasCorrectamente = 0;
     let actualizadasCorrectamente = 0;
     let omitidas = 0;
-    let dosificacionesExistentes: any[] = [];
 
-    // Creamos un array de promesas para insertar o actualizar las dosificaciones
     const promesas = this.dosificaciones.map(async (dosificacion) => {
       try {
-        // Verificar si la dosificación ya existe
-        const existingDosificacion = await this.apiService
-          .getDosificacionByProducto(dosificacion.idProducto)
-          .toPromise();
+        // Validar y asignar valores predeterminados para campos opcionales
+        dosificacion.cemento = dosificacion.cemento ?? 0;
+        dosificacion.aguaTotal = dosificacion.aguaTotal ?? 0;
+        dosificacion.arena = dosificacion.arena ?? 0;
+        dosificacion.gravilla = dosificacion.gravilla ?? 0;
+        dosificacion.aditivo1 = dosificacion.aditivo1 ?? 0;
+        dosificacion.aditivo2 = dosificacion.aditivo2 ?? 0;
+        dosificacion.aditivo3 = dosificacion.aditivo3 ?? 0;
+        dosificacion.aditivo4 = dosificacion.aditivo4 ?? 0;
+        dosificacion.aditivo5 = dosificacion.aditivo5 ?? 0;
+        dosificacion.descripcion = dosificacion.descripcion ?? '';  // Descripción no puede ser undefined
+        dosificacion.idPlanta = dosificacion.idPlanta ?? 1;
+        dosificacion.idProducto = dosificacion.idProducto ?? 0;
 
-        if (existingDosificacion) {
-          // Si existe, actualizamos la dosificación
-          console.log('Actualizando dosificación:', dosificacion);
-          await this.apiService
-            .updateDosificacionPorNumeroFormula(
-              dosificacion.idProducto,
-              dosificacion
-            )
-            .toPromise();
+        // Verifica si el objeto `producto` está correctamente estructurado
+        const producto = {
+          numeroFormula: dosificacion.idProducto,  // Asegúrate de usar los valores correctos
+          familia: 0,  // Si es necesario asignar familia aquí
+          descripcionATecnica: dosificacion.descripcion,  // Asegúrate de pasar la descripción correcta
+          insertDate: new Date().toISOString(),  // Asignar la fecha actual si es necesario
+        };
 
-          actualizadasCorrectamente++; // Contamos como actualizada
-        } else {
-          // Si no existe, creamos la nueva dosificación
-          console.log('Creando dosificación:', dosificacion);
-          await this.apiService.createDosificacion(dosificacion).toPromise();
-          creadasCorrectamente++;
-        }
-      } catch (error: any) {
-        // Verificamos si el error es un 404 (no encontrado)
-        if (error.status === 404) {
-          // Si es un 404, es porque la dosificación no existe, entonces la insertamos
-          console.log('Dosificación no encontrada, insertando:', dosificacion);
-          try {
-            await this.apiService.createDosificacion(dosificacion).toPromise();
-            creadasCorrectamente++; // Contamos como creada
-          } catch (insertError) {
-            console.error('Error al insertar dosificación:', insertError);
-            omitidas++; // Si ocurre un error al insertar, omitimos
-          }
-        } else {
-          console.error('Error al insertar o actualizar dosificación:', dosificacion, error);
-          omitidas++; // Si hay otro error, omitimos
-        }
+        // Construir el objeto para el `POST` en el formato correcto
+        const dosificacionPayload = {
+          idDosificacion: dosificacion.idDosificacion ?? 0,
+          idProducto: dosificacion.idProducto,
+          cemento: dosificacion.cemento,
+          aguaTotal: dosificacion.aguaTotal,
+          arena: dosificacion.arena,
+          gravilla: dosificacion.gravilla,
+          aditivo1: dosificacion.aditivo1,
+          aditivo2: dosificacion.aditivo2,
+          aditivo3: dosificacion.aditivo3,
+          aditivo4: dosificacion.aditivo4,
+          aditivo5: dosificacion.aditivo5,
+          nombreAditivo2: dosificacion.nombreAditivo2 ?? 'string',
+          nombreAditivo3: dosificacion.nombreAditivo3 ?? 'string',
+          nombreAditivo4: dosificacion.nombreAditivo4 ?? 'string',
+          nombreAditivo5: dosificacion.nombreAditivo5 ?? 'string',
+          descripcion: dosificacion.descripcion ?? 'string',
+          idPlanta: dosificacion.idPlanta,
+          producto: producto,  // Asegúrate de incluir el objeto `producto` con todos los campos
+        };
+
+        // Realizar la solicitud POST
+        await this.apiService.createDosificacion(dosificacionPayload).toPromise();
+        creadasCorrectamente++;
+      } catch (error: unknown) {
+        console.error('Error al insertar dosificación:', error);
+        omitidas++;
       }
     });
 
-    // Esperamos que todas las promesas se resuelvan
+    // Esperar que todas las promesas terminen
     await Promise.all(promesas);
+    Swal.close();
 
-    Swal.close(); // Cerramos el spinner
-
-    // Si hay dosificaciones existentes, mostramos la alerta de actualización
-    if (dosificacionesExistentes.length > 0) {
-      await Swal.fire({
-        title: 'Algunas dosificaciones ya existen',
-        text: 'Las siguientes dosificaciones ya existen en la base de datos. ¿Deseas actualizar estas dosificaciones?',
-        icon: 'warning',
-        html: dosificacionesExistentes
-          .map(
-            (d) =>
-              `<div>Dosificación para producto ${d.numeroFormula}: ${d.descripcion}</div>`
-          )
-          .join(''),
-        showCancelButton: true,
-        confirmButtonText: 'Actualizar',
-        cancelButtonText: 'Omitir actualizaciones',
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          // Si se confirma, se actualizan las dosificaciones
-          for (let dosificacion of dosificacionesExistentes) {
-            await this.apiService
-              .updateDosificacionPorNumeroFormula(
-                dosificacion.numeroFormula,
-                dosificacion
-              )
-              .toPromise();
-          }
-        }
-      });
-    }
-
-    // Alerta de resumen
+    // Mostrar el resultado final
     Swal.fire(
       'Finalizado',
-      `${creadasCorrectamente} dosificaciones fueron creadas correctamente, ${actualizadasCorrectamente} fueron actualizadas y ${omitidas} omitidas.`,
+      `${creadasCorrectamente} dosificaciones fueron creadas correctamente y ${omitidas} omitidas.`,
       'success'
     );
   }
+
+
 
 
   mostrarAlertaDosificacionesExistentes(dosificaciones: any[]) {

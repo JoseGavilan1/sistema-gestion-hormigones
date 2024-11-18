@@ -30,6 +30,21 @@ export class DosificacionComponent implements OnInit {
     descripcion: 'N/A',
   };
 
+  listaAditivos: string[] = [
+    'Viscocrete',
+    'Darafill',
+    'Sikafiber force-48',
+    'Sika aer',
+    'Sika wt240',
+    'Delvo',
+    'SIKA 100',
+    'PERLAS',
+    'SIKA CNI',
+    'BARCHIP54',
+    'EUCON CIA',
+  ];
+
+
   constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {

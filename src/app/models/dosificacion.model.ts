@@ -1,15 +1,19 @@
 export interface Dosificacion {
-  idDosificacion: number;     // Coincide con el backend
-  idProducto: number;         // Coincide con el backend
-  cemento: number;            // Coincide con el backend
-  aguaTotal: number;          // Coincide con el backend
-  arena: number;              // Coincide con el backend
-  gravilla: number;           // Coincide con el backend
-  aditivo1?: number | null;   // Coincide con el backend
-  aditivo2?: number | null;   // Coincide con el backend
-  aditivo3?: number | null;   // Coincide con el backend
-  aditivo4?: number | null;   // Coincide con el backend
-  aditivo5?: number | null;   // Coincide con el backend
-  idPlanta?: number | null;   // Coincide con el backend
-  descripcion: string;        // Coincide con el backend
+  idDosificacion: number;
+  idProducto: number;
+  cemento: number;
+  aguaTotal: number;
+  arena: number;
+  gravilla: number;
+  aditivo1: number;
+  nombreAditivo2?: string;
+  aditivo2?: number;
+  nombreAditivo3?: string;
+  aditivo3?: number;
+  nombreAditivo4?: string;
+  aditivo4?: number;
+  nombreAditivo5?: string;
+  aditivo5?: number;
+  idPlanta: number;
+  descripcion: string;
 }

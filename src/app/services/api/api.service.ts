@@ -11,7 +11,9 @@ import { AditivoEspecial } from '../../models/aditivoEspecial.model';
   providedIn: 'root',
 })
 export class ApiService {
-  private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
+  private apiUrlBase = 'https://localhost:44364/api/';
+
+  //private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
 
   constructor(private http: HttpClient) {}
 
@@ -57,7 +59,7 @@ export class ApiService {
   }
 
   getDosificacionByProductoYPlanta(idProducto: number, idPlanta: number): Observable<Dosificacion> {
-    return this.http.get<Dosificacion>(`${this.apiUrlBase}Dosificacion/${idProducto}/${idPlanta}`);
+    return this.http.get<Dosificacion>(`${this.apiUrlBase}dosificacion/${idProducto}/${idPlanta}`);
   }
 
   updateDosificacionPorNumeroFormula(numeroFormula: number, dosificacion: Dosificacion): Observable<Dosificacion> {
@@ -90,8 +92,9 @@ getAditivoEspecialById(id: number): Observable<AditivoEspecial> {
 
   actualizarPrecio(plantaId: number, productoId: number, precio: number): Observable<any> {
     const url = `${this.apiUrlBase}MateriaPrima/actualizar/${plantaId}/${productoId}`;
-    return this.http.put(url, { precio }, {
-      headers: { 'Content-Type': 'application/json' },
+    return this.http.put(url, precio, {
+        headers: { 'Content-Type': 'application/json' },
     });
-  }
+}
+
 }

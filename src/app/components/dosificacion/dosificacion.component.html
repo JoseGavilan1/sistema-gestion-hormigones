@@ -59,7 +59,7 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="aditivo1">Aditivo 1 (kg)</label>
+          <label for="aditivo1">Aditivo Base 1 (kg)</label>
           <input
             type="number"
             id="aditivo1"
@@ -70,53 +70,99 @@
         </div>
 
         <div class="form-group">
-          <label for="aditivo2">Aditivo 2 (kg)</label>
-          <input
-            type="number"
+          <label for="aditivo2">Aditivo 2</label>
+          <select
             id="aditivo2"
+            [(ngModel)]="dosificacion.nombreAditivo2"
+            name="nombreAditivo2"
+            class="form-control"
+          >
+            <option *ngFor="let aditivo of listaAditivos" [value]="aditivo">
+              {{ aditivo }}
+            </option>
+          </select>
+          <input
+            type="number"
+            id="aditivo2Cantidad"
             [(ngModel)]="dosificacion.aditivo2"
-            name="aditivo2"
-            class="form-control"
+            name="aditivo2Cantidad"
+            placeholder="Cantidad (kg)"
+            class="form-control mt-2"
           />
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label for="aditivo3">Aditivo 3 (kg)</label>
-          <input
-            type="number"
+          <label for="aditivo3">Aditivo 3</label>
+          <select
             id="aditivo3"
-            [(ngModel)]="dosificacion.aditivo3"
-            name="aditivo3"
+            [(ngModel)]="dosificacion.nombreAditivo3"
+            name="nombreAditivo3"
             class="form-control"
+          >
+            <option *ngFor="let aditivo of listaAditivos" [value]="aditivo">
+              {{ aditivo }}
+            </option>
+          </select>
+          <input
+            type="number"
+            id="aditivo3Cantidad"
+            [(ngModel)]="dosificacion.aditivo3"
+            name="aditivo3Cantidad"
+            placeholder="Cantidad (kg)"
+            class="form-control mt-2"
           />
         </div>
 
         <div class="form-group">
-          <label for="aditivo4">Aditivo 4 (kg)</label>
+          <label for="aditivo4">Aditivo 4</label>
+          <select
+            id="aditivo4"
+            [(ngModel)]="dosificacion.nombreAditivo4"
+            name="nombreAditivo4"
+            class="form-control"
+          >
+            <option *ngFor="let aditivo of listaAditivos" [value]="aditivo">
+              {{ aditivo }}
+            </option>
+          </select>
           <input
             type="number"
-            id="aditivo4"
+            id="aditivo4Cantidad"
             [(ngModel)]="dosificacion.aditivo4"
-            name="aditivo4"
-            class="form-control"
+            name="aditivo4Cantidad"
+            placeholder="Cantidad (kg)"
+            class="form-control mt-2"
           />
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label for="aditivo5">Aditivo 5 (kg)</label>
+          <label for="aditivo5">Aditivo 5</label>
+          <select
+            id="aditivo5"
+            [(ngModel)]="dosificacion.nombreAditivo5"
+            name="nombreAditivo5"
+            class="form-control"
+          >
+            <option *ngFor="let aditivo of listaAditivos" [value]="aditivo">
+              {{ aditivo }}
+            </option>
+          </select>
           <input
             type="number"
-            id="aditivo5"
+            id="aditivo5Cantidad"
             [(ngModel)]="dosificacion.aditivo5"
-            name="aditivo5"
-            class="form-control"
+            name="aditivo5Cantidad"
+            placeholder="Cantidad (kg)"
+            class="form-control mt-2"
           />
         </div>
+      </div>
 
+      <div class="form-row">
         <div class="form-group">
           <label for="descripcion">Descripción</label>
           <textarea
@@ -146,7 +192,6 @@
         </div>
       </div>
 
-
       <div class="text-center">
         <button type="submit" class="btn btn-success">
           {{ isUpdating ? "Actualizar Dosificación" : "Registrar Dosificación" }}
@@ -162,7 +207,9 @@
     </form>
   </div>
   <div class="container">
-    <h4 class="mt-3 text-center">Ingresar o actualizar una dosificacion para un producto en especifico</h4>
+    <h4 class="mt-3 text-center">
+      Ingresar o actualizar una dosificación para un producto en específico
+    </h4>
     <div class="form-group">
       <label for="arena">N° Formula</label>
       <input
@@ -173,7 +220,5 @@
         class="form-control w-25"
       />
     </div>
-
   </div>
 </div>
-

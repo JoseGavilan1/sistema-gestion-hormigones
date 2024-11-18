@@ -109,7 +109,7 @@ export class CargaMaestroComponent {
         descripcionATecnica: nomenclatura,
         idProducto: 0,
       };
-  
+
       this.productos.push(producto);
     }
 
@@ -235,7 +235,10 @@ export class CargaMaestroComponent {
     let actualizadasCorrectamente = 0;
     let omitidas = 0;
 
-    const promesas = this.dosificaciones.map(async (dosificacion) => {
+    // Usamos un for loop para insertar las dosificaciones de manera secuencial
+    for (const dosificacion of this.dosificaciones) {
+      console.log('Enviando dosificación:', dosificacion); // Depuración: Verifica qué dosificación se está enviando
+
       try {
         // Validar y asignar valores predeterminados para campos opcionales
         dosificacion.cemento = dosificacion.cemento ?? 0;
@@ -247,16 +250,16 @@ export class CargaMaestroComponent {
         dosificacion.aditivo3 = dosificacion.aditivo3 ?? 0;
         dosificacion.aditivo4 = dosificacion.aditivo4 ?? 0;
         dosificacion.aditivo5 = dosificacion.aditivo5 ?? 0;
-        dosificacion.descripcion = dosificacion.descripcion ?? '';  // Descripción no puede ser undefined
+        dosificacion.descripcion = dosificacion.descripcion ?? ''; // Descripción no puede ser undefined
         dosificacion.idPlanta = dosificacion.idPlanta ?? 1;
         dosificacion.idProducto = dosificacion.idProducto ?? 0;
 
-        // Verifica si el objeto `producto` está correctamente estructurado
+        // Verificar si el objeto `producto` está correctamente estructurado
         const producto = {
-          numeroFormula: dosificacion.idProducto,  // Asegúrate de usar los valores correctos
-          familia: 0,  // Si es necesario asignar familia aquí
-          descripcionATecnica: dosificacion.descripcion,  // Asegúrate de pasar la descripción correcta
-          insertDate: new Date().toISOString(),  // Asignar la fecha actual si es necesario
+          numeroFormula: dosificacion.idProducto, // Asegúrate de usar los valores correctos
+          familia: 0, // Si es necesario asignar familia aquí
+          descripcionATecnica: dosificacion.descripcion, // Asegúrate de pasar la descripción correcta
+          insertDate: new Date().toISOString(), // Asignar la fecha actual si es necesario
         };
 
         // Construir el objeto para el `POST` en el formato correcto
@@ -278,7 +281,7 @@ export class CargaMaestroComponent {
           nombreAditivo5: dosificacion.nombreAditivo5 ?? 'string',
           descripcion: dosificacion.descripcion ?? 'string',
           idPlanta: dosificacion.idPlanta,
-          producto: producto,  // Asegúrate de incluir el objeto `producto` con todos los campos
+          producto: producto, // Asegúrate de incluir el objeto `producto` con todos los campos
         };
 
         // Realizar la solicitud POST
@@ -288,10 +291,8 @@ export class CargaMaestroComponent {
         console.error('Error al insertar dosificación:', error);
         omitidas++;
       }
-    });
+    }
 
-    // Esperar que todas las promesas terminen
-    await Promise.all(promesas);
     Swal.close();
 
     // Mostrar el resultado final
@@ -301,6 +302,7 @@ export class CargaMaestroComponent {
       'success'
     );
   }
+
 
 
 

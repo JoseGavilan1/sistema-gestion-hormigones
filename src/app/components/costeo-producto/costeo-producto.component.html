@@ -1,99 +1,178 @@
 <app-navbar></app-navbar>
 <div class="container mt-4">
-  <button class="btn btn-primary" [routerLink]="['/home']">Volver atrás</button>
-  <h1 class="mt-4">Costeo de producto</h1>
+  <button class="btn btn-secondary mb-3" [routerLink]="['/home']">
+    <i class="fas fa-arrow-left"></i> Volver atrás
+  </button>
+  <h1 class="text-center mb-4">Costeo de Producto</h1>
 
-  <!-- Selección de Planta -->
-  <h5 class="mt-4">Seleccione planta</h5>
-  <div class="row mt-5">
-    <div class="col text-center" *ngFor="let planta of plantas">
-      <button class="btn btn-primary" (click)="seleccionarPlanta(planta.id)">
-        {{ planta.nombre }}
-      </button>
+  <!-- Contenedor principal dividido en dos columnas -->
+  <div class="row">
+    <!-- Columna izquierda: Selección de planta y búsqueda de producto -->
+    <div class="col-md-6">
+      <!-- Tarjeta para la selección -->
+      <div class="card shadow mb-4 animate__animated animate__fadeInLeft">
+        <div class="card-body">
+          <!-- Selección de Planta -->
+          <h4 class="mb-3 text-primary">Seleccione Planta</h4>
+          <div class="row mb-4">
+            <div class="col-6 mb-2" *ngFor="let planta of plantas">
+              <button
+                class="btn btn-outline-primary w-100 planta-btn"
+                [class.active]="plantaSeleccionada === planta.id"
+                (click)="seleccionarPlanta(planta.id)"
+              >
+                {{ planta.nombre }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Input para ID de producto y botón de costeo -->
+          <div *ngIf="plantaSeleccionada" class="mt-4">
+            <h5>Costear producto en {{ nombrePlantaSeleccionada }}</h5>
+            <div class="input-group mb-3 mt-3">
+              <span class="input-group-text">
+                <i class="fas fa-barcode"></i>
+              </span>
+              <input
+                type="number"
+                [(ngModel)]="idProducto"
+                placeholder="Ingresa el ID del producto"
+                class="form-control"
+              />
+            </div>
+            <button class="btn btn-success w-100" (click)="costearProducto()">
+              <i class="fas fa-calculator"></i> Costear Producto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Resultados del costeo -->
+    <div class="col-md-6">
+      <!-- Tarjeta para los resultados -->
+      <div
+        *ngIf="dosificacion"
+        class="card shadow mb-4 animate__animated animate__fadeInRight"
+      >
+        <div class="card-body">
+          <!-- Tabla para mostrar la dosificación -->
+          <h4 class="mb-3 text-primary">
+            Dosificación para el producto {{ idProducto }} en
+            {{ nombrePlantaSeleccionada }}
+          </h4>
+          <!-- Agregamos el contenedor 'table-responsive' -->
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th>Cemento</th>
+                  <th>Agua Total</th>
+                  <th>Arena</th>
+                  <th>Gravilla</th>
+                  <th>Aditivo 1 (Base)</th>
+                  <th *ngIf="nombreAditivo2">
+                    Aditivo 2 ({{ nombreAditivo2 }})
+                  </th>
+                  <th *ngIf="nombreAditivo3">
+                    Aditivo 3 ({{ nombreAditivo3 }})
+                  </th>
+                  <th *ngIf="nombreAditivo4">
+                    Aditivo 4 ({{ nombreAditivo4 }})
+                  </th>
+                  <th *ngIf="nombreAditivo5">
+                    Aditivo 5 ({{ nombreAditivo5 }})
+                  </th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{ dosificacion.cemento }}</td>
+                  <td>{{ dosificacion.aguaTotal }}</td>
+                  <td>{{ dosificacion.arena }}</td>
+                  <td>{{ dosificacion.gravilla }}</td>
+                  <td>{{ dosificacion.aditivo1 }}</td>
+                  <td *ngIf="nombreAditivo2">{{ dosificacion.aditivo2 }}</td>
+                  <td *ngIf="nombreAditivo3">{{ dosificacion.aditivo3 }}</td>
+                  <td *ngIf="nombreAditivo4">{{ dosificacion.aditivo4 }}</td>
+                  <td *ngIf="nombreAditivo5">{{ dosificacion.aditivo5 }}</td>
+                  <td>{{ dosificacion.descripcion }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Fin del contenedor 'table-responsive' -->
+
+          <!-- Detalles del cálculo de costeo -->
+          <h4 class="mb-3 mt-4 text-primary">Detalles del Cálculo de Costeo</h4>
+          <ul class="list-group">
+            <!-- Costo Final: siempre visible -->
+            <li class="list-group-item list-group-item-dark">
+              <strong>Costo Final:</strong>
+              <span class="float-end">
+                {{ costoFinal | number : "1.2-2" }} UF
+              </span>
+            </li>
+
+            <!-- Botón para mostrar/ocultar detalles -->
+            <button class="btn btn-primary mt-2" (click)="toggleDetalles()">
+              {{ mostrarDetalles ? 'Ver menos' : 'Ver más' }}
+            </button>
+
+
+            <!-- Otros detalles: visibles solo si mostrarDetalles es true -->
+            <div *ngIf="mostrarDetalles" [@detalleAnimation]>
+              <li class="list-group-item">
+                <strong>Costo de Cemento:</strong>
+                <span class="float-end">
+                  {{ costoCemento | number : "1.2-2" }} UF
+                </span>
+              </li>
+              <li class="list-group-item">
+                <strong>Costo de Agua:</strong>
+                <span class="float-end">
+                  {{ costoAgua | number : "1.2-2" }} UF
+                </span>
+              </li>
+              <li class="list-group-item">
+                <strong>Costo de Arena:</strong>
+                <span class="float-end">
+                  {{ costoArena | number : "1.2-2" }} UF
+                </span>
+              </li>
+              <li class="list-group-item">
+                <strong>Costo de Gravilla:</strong>
+                <span class="float-end">
+                  {{ costoGravilla | number : "1.2-2" }} UF
+                </span>
+              </li>
+              <li class="list-group-item">
+                <strong>Costo Aditivo Base:</strong>
+                <span class="float-end">
+                  {{ costoAditivoBase | number : "1.2-2" }} UF
+                </span>
+              </li>
+              <li class="list-group-item">
+                <strong>Costo de los Áridos:</strong>
+                <span class="float-end">
+                  {{ costoAridos | number : "1.2-2" }} UF
+                </span>
+              </li>
+            </div>
+          </ul>
+          
+        </div>
+      </div>
+
+      <!-- Mensaje si no se encuentra dosificación -->
+      <div
+        *ngIf="!dosificacion && idProducto"
+        class="alert alert-warning mt-4 animate__animated animate__shakeX"
+      >
+        No se encontró la dosificación para este producto en la planta
+        seleccionada.
+      </div>
     </div>
   </div>
-
-  <!-- Input para ID de producto y botón de costeo -->
-  <div *ngIf="plantaSeleccionada" class="mt-4">
-    <label>Costear producto en {{ nombrePlantaSeleccionada }}</label>
-    <input
-      type="number"
-      [(ngModel)]="idProducto"
-      placeholder="Ingresa el ID del producto"
-      class="form-control mb-3"
-    />
-    <button class="btn btn-success" (click)="costearProducto()">
-      Costear Producto
-    </button>
-  </div>
-
-  <!-- Tabla para mostrar la dosificación -->
-  <div *ngIf="dosificacion" class="mt-4">
-    <h5>
-      Dosificación para el producto {{ idProducto }} en
-      {{ nombrePlantaSeleccionada }}
-    </h5>
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Cemento</th>
-          <th>Agua Total</th>
-          <th>Arena</th>
-          <th>Gravilla</th>
-          <th>Aditivo 1 (base)</th>
-          <th>Aditivo 2 {{ nombreAditivo2 }}</th>
-          <th>Aditivo 3 {{ nombreAditivo3 }}</th>
-          <th>Aditivo 4 {{ nombreAditivo4 }}</th>
-          <th>Aditivo 5 {{ nombreAditivo5 }}</th>
-          <th>Descripción</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{{ dosificacion.cemento }}</td>
-          <td>{{ dosificacion.aguaTotal }}</td>
-          <td>{{ dosificacion.arena }}</td>
-          <td>{{ dosificacion.gravilla }}</td>
-          <td>{{ dosificacion.aditivo1 }}</td>
-          <td>{{ dosificacion.aditivo2 }}</td>
-          <td>{{ dosificacion.aditivo3 }}</td>
-          <td>{{ dosificacion.aditivo4 }}</td>
-          <td>{{ dosificacion.aditivo5 }}</td>
-          <td>{{ dosificacion.descripcion }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Mensaje si no se encuentra dosificación -->
-  <div *ngIf="!dosificacion && idProducto" class="alert alert-warning mt-4">
-    No se encontró la dosificación para este producto en la planta seleccionada.
-  </div>
-
-  <div *ngIf="dosificacion">
-    <h2>Detalles del Cálculo de Costeo</h2>
-
-    <p>
-      <strong>Costo de Cemento:</strong> {{ costoCemento | number : "1.2-2" }}
-    </p>
-    <p><strong>Costo de Agua:</strong> {{ costoAgua | number : "1.2-2" }}</p>
-    <p><strong>Costo de Arena:</strong> {{ costoArena | number : "1.2-2" }}</p>
-    <p>
-      <strong>Costo de Gravilla:</strong> {{ costoGravilla | number : "1.2-2" }}
-    </p>
-    <!--<p><strong>Costo de Grava:</strong> {{ costoGrava | number: '1.2-2' }} </p>-->
-    <p>
-      <strong>Costo aditivo base:</strong>
-      {{ costoAditivoBase | number : "1.2-2" }}
-    </p>
-
-    <p>
-      <strong>Costo Final (dividido por UF):</strong>
-      {{ costoFinal | number : "1.2-2" }}
-    </p>
-    <p><strong>Costo de los aridos:</strong> {{ costoAridos }}</p>
-  </div>
-
-  <!-- Cemento (no se realiza división por densidad) -->
-  <!-- Cemento -->
 </div>

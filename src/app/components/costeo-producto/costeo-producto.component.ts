@@ -1,13 +1,26 @@
 import { Component } from '@angular/core';
-import * as XLSX from 'xlsx';
 import { ApiService } from '../../services/api/api.service';
 import { Dosificacion } from '../../models/dosificacion.model';
 import { UfService } from '../../services/uf/uf-service.service';
+import Swal from 'sweetalert2';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+
 
 @Component({
   selector: 'app-costeo-producto',
   templateUrl: './costeo-producto.component.html',
   styleUrls: ['./costeo-producto.component.css'],
+  animations: [
+    trigger('detalleAnimation', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms ease-in', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [
+        animate('300ms ease-out', style({ opacity: 0 })),
+      ]),
+    ]),
+  ],
 })
 export class CosteoProductoComponent {
   plantas = [
@@ -54,24 +67,41 @@ export class CosteoProductoComponent {
 
   porcentajeDePerdida: number = 0.02;
 
+  mostrarDetalles: boolean = false;
+
   constructor(private apiService: ApiService, private ufService: UfService) {}
+
+  toggleDetalles() {
+    this.mostrarDetalles = !this.mostrarDetalles;
+  }
 
   seleccionarPlanta(idPlanta: number) {
     const planta = this.plantas.find((p) => p.id === idPlanta);
     if (planta) {
       this.plantaSeleccionada = idPlanta;
       this.nombrePlantaSeleccionada = planta.nombre;
+      // Mostrar mensaje de selección exitosa
+      Swal.fire({
+        icon: 'success',
+        title: 'Planta seleccionada',
+        text: `Has seleccionado la planta ${this.nombrePlantaSeleccionada}`,
+        timer: 1500,
+        showConfirmButton: false,
+      });
     }
   }
 
   costearProducto() {
     if (this.idProducto && this.plantaSeleccionada !== null) {
-      console.log(
-        'Buscando dosificación para:',
-        this.idProducto,
-        'en planta:',
-        this.plantaSeleccionada
-      );
+      // Mostrar mensaje de carga
+      Swal.fire({
+        title: 'Cargando dosificación...',
+        text: 'Por favor espera',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
 
       this.apiService
         .getDosificacionByProductoYPlanta(
@@ -81,34 +111,61 @@ export class CosteoProductoComponent {
         .subscribe({
           next: (dosificacion) => {
             this.dosificacion = dosificacion;
-            console.log('Dosificación encontrada:', dosificacion);
+            Swal.close(); // Cerrar el loading
+            // Mostrar mensaje de éxito al cargar dosificación
+            Swal.fire({
+              icon: 'success',
+              title: 'Dosificación cargada',
+              text: `Se ha cargado la dosificación para el producto ${this.idProducto}`,
+              timer: 1500,
+              showConfirmButton: false,
+            });
 
+            // Obtener valor UF y continuar con el costeo
             this.ufService.getUfValue().subscribe({
               next: (ufData) => {
                 this.ufValue = ufData;
-                console.log('Valor de la UF:', this.ufValue);
                 this.obtenerPreciosMateriasPrimas();
               },
               error: (err) => {
-                console.log('Error al obtener el valor de la UF:', err);
-                alert('No se pudo obtener el valor de la UF.');
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'No se pudo obtener el valor de la UF.',
+                });
               },
             });
           },
           error: (err) => {
-            console.log('Error al obtener dosificación:', err);
-            alert(
-              'No se encontró la dosificación para este producto en la planta seleccionada.'
-            );
+            Swal.close(); // Cerrar el loading
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text:
+                'No se encontró la dosificación para este producto en la planta seleccionada.',
+            });
           },
         });
     } else {
-      alert('Por favor, selecciona una planta e ingresa el ID del producto.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Información incompleta',
+        text: 'Por favor, selecciona una planta e ingresa el ID del producto.',
+      });
     }
   }
 
   obtenerPreciosMateriasPrimas() {
     if (this.nombrePlantaSeleccionada) {
+      Swal.fire({
+        title: 'Calculando costeo...',
+        text: 'Por favor espera',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
       this.apiService
         .getMateriasPrimas(this.nombrePlantaSeleccionada)
         .subscribe({
@@ -146,13 +203,24 @@ export class CosteoProductoComponent {
             }
 
             this.calcularCostos();
+            Swal.close(); // Cerrar el loading
+
+            // Mostrar mensaje de éxito al finalizar el cálculo
+            Swal.fire({
+              icon: 'success',
+              title: 'Costeo completado',
+              text: 'Se ha calculado el costeo del producto correctamente.',
+              timer: 1500,
+              showConfirmButton: false,
+            });
           },
           error: (err) => {
-            console.log(
-              'Error al obtener los precios de las materias primas:',
-              err
-            );
-            alert('No se pudieron obtener los precios de las materias primas.');
+            Swal.close(); // Cerrar el loading
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudieron obtener los precios de las materias primas.',
+            });
           },
         });
     }

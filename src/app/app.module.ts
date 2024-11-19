@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ApiService } from './services/api/api.service';
 
@@ -49,6 +51,8 @@ import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.
     FormsModule,
     RouterModule,
     MatProgressSpinnerModule,
+    FontAwesomeModule,
+    BrowserAnimationsModule,
   ],
   providers: [ApiService, provideAnimationsAsync()],
   bootstrap: [AppComponent],

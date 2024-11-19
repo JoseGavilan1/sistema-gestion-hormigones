@@ -1,0 +1,41 @@
+/* Asegurar que la tabla ocupe el 100% del ancho disponible */
+.table-responsive {
+  overflow-x: auto;
+}
+
+/* Ajustar las celdas para que el texto no cause desbordamiento */
+.table-responsive table td,
+.table-responsive table th {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* Ajuste opcional para permitir que el texto se ajuste en varias líneas */
+.table-responsive table td,
+.table-responsive table th {
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+/* Estilos para mejorar la apariencia de la tabla */
+.table thead th {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.table tbody td {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+

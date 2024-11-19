@@ -253,7 +253,7 @@ export class CargaMaestroComponent {
 
         const dosificacionPayload = {
           idDosificacion: dosificacion.idDosificacion ?? 0,
-          idProducto: dosificacion.idProducto,
+          idProducto: dosificacion.idProducto, 
           cemento: dosificacion.cemento,
           aguaTotal: dosificacion.aguaTotal,
           arena: dosificacion.arena,

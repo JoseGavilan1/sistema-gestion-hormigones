@@ -44,12 +44,13 @@ export class NewProductAtComponent implements OnInit {
   }
 
   cargarFamiliasNuevas(): void {
-    // Asumiendo que las nuevas familias son del 2000 al 10000 en múltiplos de mil
+    // Extender el rango de nuevas familias hasta 80000
     this.familiasNuevas = Array.from(
-      { length: (10000 - 2000) / 1000 + 1 },
+      { length: (80000 - 2000) / 1000 + 1 }, // Ajusta el rango aquí
       (_, i) => 2000 + i * 1000
     );
   }
+
 
   onFamiliaChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;

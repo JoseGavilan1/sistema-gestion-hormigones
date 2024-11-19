@@ -6,10 +6,9 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-
   loginForm: FormGroup;
   registerForm: FormGroup;
   loginError: string = '';
@@ -21,12 +20,12 @@ export class LoginComponent {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
+      password: ['', [Validators.required]],
     });
 
     this.registerForm = this.fb.group({
       registerUsername: ['', [Validators.required]],
-      registerPassword: ['', [Validators.required]]
+      registerPassword: ['', [Validators.required]],
     });
   }
 
@@ -47,7 +46,7 @@ export class LoginComponent {
         },
         error: () => {
           this.loginError = 'Ocurrió un error en la autenticación';
-        }
+        },
       });
     }
   }
@@ -67,7 +66,7 @@ export class LoginComponent {
         error: () => {
           // Manejar errores de registro aquí
           console.error('Error al registrar usuario');
-        }
+        },
       });
     }
   }

@@ -4,11 +4,10 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-cotizaciones',
   templateUrl: './cotizaciones.component.html',
-  styleUrls: ['./cotizaciones.component.css']
+  styleUrls: ['./cotizaciones.component.css'],
 })
 export class CotizacionesComponent {
-
-  constructor(private router: Router){}
+  constructor(private router: Router) {}
   logout() {
     // Lógica para cerrar sesión, como limpiar tokens, etc.
     // Luego redirigir al login
@@ -21,10 +20,10 @@ export class CotizacionesComponent {
       seller: 'Vendedor A',
       client: 'Cliente 1',
       items: [
-        { product: 'Producto 1', quantity: 1, price: 12345, total: 12345 }
+        { product: 'Producto 1', quantity: 1, price: 12345, total: 12345 },
       ],
       total: 12345,
-      observations: 'Observaciones de la cotización 1'
+      observations: 'Observaciones de la cotización 1',
     },
     {
       nombre: 'Cotización 2',
@@ -32,11 +31,11 @@ export class CotizacionesComponent {
       seller: 'Vendedor B',
       client: 'Cliente 2',
       items: [
-        { product: 'Producto 2', quantity: 2, price: 54321, total: 108642 }
+        { product: 'Producto 2', quantity: 2, price: 54321, total: 108642 },
       ],
       total: 108642,
-      observations: 'Observaciones de la cotización 2'
-    }
+      observations: 'Observaciones de la cotización 2',
+    },
   ];
 
   cotizacionSeleccionada: any = null;

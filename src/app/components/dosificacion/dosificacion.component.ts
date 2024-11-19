@@ -44,7 +44,6 @@ export class DosificacionComponent implements OnInit {
     'EUCON CIA',
   ];
 
-
   constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {
@@ -147,5 +146,4 @@ export class DosificacionComponent implements OnInit {
         );
     }
   }
-
 }

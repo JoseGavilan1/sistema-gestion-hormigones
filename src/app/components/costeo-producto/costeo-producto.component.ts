@@ -42,7 +42,6 @@ export class CosteoProductoComponent {
   nombreAditivo4: string | null = null;
   nombreAditivo5: string | null = null;
 
-
   costoCemento: number = 0;
   costoAgua: number = 0;
   costoArena: number = 0;
@@ -175,7 +174,8 @@ export class CosteoProductoComponent {
         (gravillaAjustada * this.precioGravilla) / this.ufValue;
 
       this.costoAditivoBase =
-      ((this.dosificacion?.aditivo1 || 0) * this.precioAditivoBase) / this.ufValue;
+        ((this.dosificacion?.aditivo1 || 0) * this.precioAditivoBase) /
+        this.ufValue;
 
       this.costoTotal =
         this.costoCemento +

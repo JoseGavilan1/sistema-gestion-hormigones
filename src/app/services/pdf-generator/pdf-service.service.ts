@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { jsPDF } from 'jspdf';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PdfService {
-
-  constructor() { }
+  constructor() {}
 
   public generateQuotePDF(quoteData: any, fileName: string) {
     const pdf = new jsPDF('p', 'mm', 'a4');
@@ -57,7 +56,6 @@ export class PdfService {
     // Lógica para dividir el texto de las observaciones si es muy largo (automático)
     const splitObservations = pdf.splitTextToSize(obsText, 180);
     pdf.text(splitObservations, 15, startY + 30); // Ajustar la posición según la tabla
-
 
     // Pie de página
     pdf.setFontSize(10);

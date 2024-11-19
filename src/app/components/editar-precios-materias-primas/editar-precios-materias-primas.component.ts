@@ -27,7 +27,7 @@ export class EditarPreciosMateriasPrimasComponent implements OnInit {
   producto!: MateriaPrima;
   plantaSeleccionada!: string;
 
-  private adminPassword = 'admin123'; 
+  private adminPassword = 'admin123';
 
   constructor(private router: Router, private apiService: ApiService) {
     const navigation = this.router.getCurrentNavigation();
@@ -35,7 +35,7 @@ export class EditarPreciosMateriasPrimasComponent implements OnInit {
 
     this.producto = state?.producto;
     this.plantaSeleccionada = state?.planta;
-    console.log(this.plantaSeleccionada)
+    console.log(this.plantaSeleccionada);
   }
 
   ngOnInit(): void {

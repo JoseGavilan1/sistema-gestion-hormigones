@@ -16,13 +16,23 @@
   <!-- Input para ID de producto y botón de costeo -->
   <div *ngIf="plantaSeleccionada" class="mt-4">
     <label>Costear producto en {{ nombrePlantaSeleccionada }}</label>
-    <input type="number" [(ngModel)]="idProducto" placeholder="Ingresa el ID del producto" class="form-control mb-3"/>
-    <button class="btn btn-success" (click)="costearProducto()">Costear Producto</button>
+    <input
+      type="number"
+      [(ngModel)]="idProducto"
+      placeholder="Ingresa el ID del producto"
+      class="form-control mb-3"
+    />
+    <button class="btn btn-success" (click)="costearProducto()">
+      Costear Producto
+    </button>
   </div>
 
   <!-- Tabla para mostrar la dosificación -->
   <div *ngIf="dosificacion" class="mt-4">
-    <h5>Dosificación para el producto {{ idProducto }} en {{ nombrePlantaSeleccionada }}</h5>
+    <h5>
+      Dosificación para el producto {{ idProducto }} en
+      {{ nombrePlantaSeleccionada }}
+    </h5>
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -31,10 +41,10 @@
           <th>Arena</th>
           <th>Gravilla</th>
           <th>Aditivo 1 (base)</th>
-          <th>Aditivo 2 {{nombreAditivo2}}</th>
-          <th>Aditivo 3 {{nombreAditivo3}}</th>
-          <th>Aditivo 4 {{nombreAditivo4}}</th>
-          <th>Aditivo 5 {{nombreAditivo5}}</th>
+          <th>Aditivo 2 {{ nombreAditivo2 }}</th>
+          <th>Aditivo 3 {{ nombreAditivo3 }}</th>
+          <th>Aditivo 4 {{ nombreAditivo4 }}</th>
+          <th>Aditivo 5 {{ nombreAditivo5 }}</th>
           <th>Descripción</th>
         </tr>
       </thead>
@@ -63,30 +73,27 @@
   <div *ngIf="dosificacion">
     <h2>Detalles del Cálculo de Costeo</h2>
 
-    <p><strong>Costo de Cemento:</strong> {{ costoCemento | number: '1.2-2' }} </p>
-    <p><strong>Costo de Agua:</strong> {{ costoAgua | number: '1.2-2' }} </p>
-    <p><strong>Costo de Arena:</strong> {{ costoArena | number: '1.2-2' }} </p>
-    <p><strong>Costo de Gravilla:</strong> {{ costoGravilla | number: '1.2-2' }} </p>
+    <p>
+      <strong>Costo de Cemento:</strong> {{ costoCemento | number : "1.2-2" }}
+    </p>
+    <p><strong>Costo de Agua:</strong> {{ costoAgua | number : "1.2-2" }}</p>
+    <p><strong>Costo de Arena:</strong> {{ costoArena | number : "1.2-2" }}</p>
+    <p>
+      <strong>Costo de Gravilla:</strong> {{ costoGravilla | number : "1.2-2" }}
+    </p>
     <!--<p><strong>Costo de Grava:</strong> {{ costoGrava | number: '1.2-2' }} </p>-->
-    <p><strong>Costo aditivo base:</strong> {{costoAditivoBase | number:'1.2-2'}}</p>
+    <p>
+      <strong>Costo aditivo base:</strong>
+      {{ costoAditivoBase | number : "1.2-2" }}
+    </p>
 
-    <p><strong>Costo Final (dividido por UF):</strong> {{ costoFinal | number: '1.2-2' }} </p>
-    <p><strong>Costo de los aridos:</strong> {{costoAridos}}</p>
+    <p>
+      <strong>Costo Final (dividido por UF):</strong>
+      {{ costoFinal | number : "1.2-2" }}
+    </p>
+    <p><strong>Costo de los aridos:</strong> {{ costoAridos }}</p>
   </div>
 
   <!-- Cemento (no se realiza división por densidad) -->
-<!-- Cemento -->
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <!-- Cemento -->
 </div>

@@ -11,7 +11,8 @@ import { AditivoEspecial } from '../../models/aditivoEspecial.model';
   providedIn: 'root',
 })
 export class ApiService {
-  private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
+  private apiUrlBase =
+    'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
 
   //private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
 
@@ -24,7 +25,9 @@ export class ApiService {
 
   getUltimoNumeroFormula(familia: number): Observable<number> {
     return this.http
-      .get<number>(`${this.apiUrlBase}producto/ultimo-numero-formula/${familia}`)
+      .get<number>(
+        `${this.apiUrlBase}producto/ultimo-numero-formula/${familia}`
+      )
       .pipe(catchError(() => of(1000)));
   }
 
@@ -38,14 +41,19 @@ export class ApiService {
       .pipe(catchError(() => of(null)));
   }
 
-  getProductoByNumeroFormula(numeroFormula: number): Observable<Producto | null> {
+  getProductoByNumeroFormula(
+    numeroFormula: number
+  ): Observable<Producto | null> {
     return this.http
       .get<Producto | null>(`${this.apiUrlBase}producto/${numeroFormula}`)
       .pipe(catchError(() => of(null)));
   }
 
   createMultipleProductos(productos: Producto[]): Observable<void> {
-    return this.http.post<void>(`${this.apiUrlBase}producto/multiples`, productos);
+    return this.http.post<void>(
+      `${this.apiUrlBase}producto/multiples`,
+      productos
+    );
   }
 
   // Métodos relacionados con Dosificacion
@@ -55,18 +63,34 @@ export class ApiService {
   }
 
   getDosificacionByProducto(idProducto: number): Observable<Dosificacion> {
-    return this.http.get<Dosificacion>(`${this.apiUrlBase}dosificacion/${idProducto}`);
+    return this.http.get<Dosificacion>(
+      `${this.apiUrlBase}dosificacion/${idProducto}`
+    );
   }
 
-  getDosificacionByProductoYPlanta(idProducto: number, idPlanta: number): Observable<Dosificacion> {
-    return this.http.get<Dosificacion>(`${this.apiUrlBase}dosificacion/${idProducto}/${idPlanta}`);
+  getDosificacionByProductoYPlanta(
+    idProducto: number,
+    idPlanta: number
+  ): Observable<Dosificacion> {
+    return this.http.get<Dosificacion>(
+      `${this.apiUrlBase}dosificacion/${idProducto}/${idPlanta}`
+    );
   }
 
-  updateDosificacionPorNumeroFormula(numeroFormula: number, dosificacion: Dosificacion): Observable<Dosificacion> {
-    return this.http.put<Dosificacion>(`${this.apiUrlBase}dosificacion/${numeroFormula}`, dosificacion);
+  updateDosificacionPorNumeroFormula(
+    numeroFormula: number,
+    dosificacion: Dosificacion
+  ): Observable<Dosificacion> {
+    return this.http.put<Dosificacion>(
+      `${this.apiUrlBase}dosificacion/${numeroFormula}`,
+      dosificacion
+    );
   }
 
-  actualizarDosificacion(numeroFormula: number, dosificacion: Dosificacion): Observable<void> {
+  actualizarDosificacion(
+    numeroFormula: number,
+    dosificacion: Dosificacion
+  ): Observable<void> {
     return this.http.put<void>(
       `${this.apiUrlBase}dosificacion/${numeroFormula}`,
       dosificacion
@@ -75,14 +99,17 @@ export class ApiService {
 
   // Método adicional para obtener los precios de los aditivos especiales
   getAditivosEspeciales(): Observable<AditivoEspecial[]> {
-    return this.http.get<AditivoEspecial[]>(`${this.apiUrlBase}aditivoespecial`);
+    return this.http.get<AditivoEspecial[]>(
+      `${this.apiUrlBase}aditivoespecial`
+    );
   }
 
   // Método en ApiService para obtener un aditivo especial por su ID
-getAditivoEspecialById(id: number): Observable<AditivoEspecial> {
-  return this.http.get<AditivoEspecial>(`${this.apiUrlBase}aditivoespecial/${id}`);
-}
-
+  getAditivoEspecialById(id: number): Observable<AditivoEspecial> {
+    return this.http.get<AditivoEspecial>(
+      `${this.apiUrlBase}aditivoespecial/${id}`
+    );
+  }
 
   // Métodos relacionados con Materia Prima
   getMateriasPrimas(planta: string): Observable<MateriaPrima[]> {
@@ -90,11 +117,14 @@ getAditivoEspecialById(id: number): Observable<AditivoEspecial> {
     return this.http.get<MateriaPrima[]>(url);
   }
 
-  actualizarPrecio(plantaId: number, productoId: number, precio: number): Observable<any> {
+  actualizarPrecio(
+    plantaId: number,
+    productoId: number,
+    precio: number
+  ): Observable<any> {
     const url = `${this.apiUrlBase}MateriaPrima/actualizar/${plantaId}/${productoId}`;
     return this.http.put(url, precio, {
-        headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
     });
-}
-
+  }
 }

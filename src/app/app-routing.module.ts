@@ -13,37 +13,32 @@ import { NewProductAtComponent } from './components/new-product-at/new-product-a
 import { DosificacionComponent } from './components/dosificacion/dosificacion.component';
 import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.component';
 
-
-
 const routes: Routes = [
-  { path: 'login', component: LoginComponent},
+  { path: 'login', component: LoginComponent },
 
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
 
+  { path: 'cotizaciones', component: CotizacionesComponent },
 
-  {path: 'cotizaciones', component: CotizacionesComponent},
+  { path: 'costeo-producto', component: CosteoProductoComponent },
 
-  {path: 'costeo-producto', component: CosteoProductoComponent},
+  { path: 'materias-primas/:planta', component: MateriaPrimaComponent },
 
-  {path:'materias-primas/:planta', component: MateriaPrimaComponent},
+  { path: 'editar-precio', component: EditarPreciosMateriasPrimasComponent },
 
-  {path:'editar-precio', component: EditarPreciosMateriasPrimasComponent},
+  { path: 'menu-area-tecnica', component: MenuAreaTecnicaComponent },
 
-  {path:'menu-area-tecnica', component: MenuAreaTecnicaComponent},
+  { path: 'nuevo-producto-at', component: NewProductAtComponent },
 
-  {path: 'nuevo-producto-at', component: NewProductAtComponent},
+  { path: 'dosificacion', component: DosificacionComponent },
 
-  {path: 'dosificacion', component: DosificacionComponent},
-
-  {path: 'carga-maestro', component: CargaMaestroComponent}
-
-
+  { path: 'carga-maestro', component: CargaMaestroComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

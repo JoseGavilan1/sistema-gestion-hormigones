@@ -4,7 +4,7 @@ import { PdfService } from '../../services/pdf-generator/pdf-service.service';
 @Component({
   selector: 'app-detalle-cotizacion',
   templateUrl: './detalle-cotizacion.component.html',
-  styleUrls: ['./detalle-cotizacion.component.css']
+  styleUrls: ['./detalle-cotizacion.component.css'],
 })
 export class DetalleCotizacionComponent {
   @Input() data: any;
@@ -19,7 +19,7 @@ export class DetalleCotizacionComponent {
       client: this.data.client,
       items: this.data.items,
       total: this.data.total,
-      observations: this.data.observations
+      observations: this.data.observations,
     };
     const fileName = this.data.nombre || 'cotizacion';
     this.pdfService.generateQuotePDF(quoteData, fileName);

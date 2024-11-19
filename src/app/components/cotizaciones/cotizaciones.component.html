@@ -13,7 +13,9 @@
       <!-- Listado de cotizaciones -->
       <div *ngFor="let cotizacion of cotizaciones" class="mt-5">
         <p>{{ cotizacion.nombre }}</p>
-        <button class="btn btn-primary" (click)="verDetalles(cotizacion)">Ver detalles</button>
+        <button class="btn btn-primary" (click)="verDetalles(cotizacion)">
+          Ver detalles
+        </button>
       </div>
     </div>
 
@@ -22,7 +24,8 @@
       <!-- Aquí se incluye el componente detalle-cotizacion con los datos -->
       <app-detalle-cotizacion
         [data]="cotizacionSeleccionada"
-        (cerrarDetallesEvent)="cotizacionSeleccionada = null">
+        (cerrarDetallesEvent)="cotizacionSeleccionada = null"
+      >
       </app-detalle-cotizacion>
     </div>
   </div>

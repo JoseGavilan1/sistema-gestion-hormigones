@@ -1,18 +1,38 @@
 <app-navbar></app-navbar>
 <div class="container mt-3 formulario-container" *ngIf="producto">
-  <h3 class="text-center">Editar precio de {{ producto.nombre }} planta {{ plantaSeleccionada.toUpperCase() }}</h3>
+  <h3 class="text-center">
+    Editar precio de {{ producto.nombre }} planta
+    {{ plantaSeleccionada.toUpperCase() }}
+  </h3>
   <form (ngSubmit)="guardarCambios()">
     <div class="form-group">
       <label for="nombre">Producto</label>
-      <input type="text" id="nombre" class="form-control" [value]="producto.nombre" readonly />
+      <input
+        type="text"
+        id="nombre"
+        class="form-control"
+        [value]="producto.nombre"
+        readonly
+      />
     </div>
     <div class="form-group">
       <label for="precio">Precio</label>
-      <input type="number" id="precio" class="form-control" [(ngModel)]="producto.precio" name="precio" required />
+      <input
+        type="number"
+        id="precio"
+        class="form-control"
+        [(ngModel)]="producto.precio"
+        name="precio"
+        required
+      />
     </div>
     <div class="d-flex justify-content-between">
-      <button type="submit" class="btn btn-success mt-3">Guardar Cambios</button>
-      <button type="button" class="btn btn-danger mt-3" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn btn-success mt-3">
+        Guardar Cambios
+      </button>
+      <button type="button" class="btn btn-danger mt-3" (click)="cancelar()">
+        Cancelar
+      </button>
     </div>
   </form>
 </div>

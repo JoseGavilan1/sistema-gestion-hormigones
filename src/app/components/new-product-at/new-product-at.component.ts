@@ -21,7 +21,6 @@ export class NewProductAtComponent implements OnInit {
       nuevaFamilia: [false], // Inicialmente no hay nueva familia
       familiaSeleccionada: [''], // Para la nueva familia seleccionada
     });
-
   }
 
   ngOnInit(): void {
@@ -64,7 +63,7 @@ export class NewProductAtComponent implements OnInit {
         // Consulta al último número de fórmula para esta familia
         this.apiService.getUltimoNumeroFormula(familiaId).subscribe(
           (numero) => {
-            this.numeroFormula = numero ; // Asignar el siguiente número de fórmula
+            this.numeroFormula = numero; // Asignar el siguiente número de fórmula
           },
           (error) => {
             console.error('Error al obtener el número de fórmula', error);
@@ -74,8 +73,6 @@ export class NewProductAtComponent implements OnInit {
       }
     }
   }
-
-
 
   onNuevaFamiliaChange(event: Event): void {
     const checkboxElement = event.target as HTMLInputElement;
@@ -87,7 +84,6 @@ export class NewProductAtComponent implements OnInit {
       this.productoForm.get('familia')?.enable(); // Habilitar el control de familia si no está marcado
     }
   }
-
 
   onNuevaFamiliaSeleccionadaChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
@@ -107,65 +103,65 @@ export class NewProductAtComponent implements OnInit {
   guardarProducto(): void {
     // Verificar si el formulario es inválido o si numeroFormula no está definido
     if (this.productoForm.invalid || this.numeroFormula === undefined) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Formulario inválido',
-            text: this.numeroFormula === undefined
-                ? 'El número de fórmula no está disponible. Selecciona una familia válida.'
-                : 'Por favor, completa todos los campos requeridos.',
-            confirmButtonText: 'Aceptar'
-        });
-        return;
+      Swal.fire({
+        icon: 'error',
+        title: 'Formulario inválido',
+        text:
+          this.numeroFormula === undefined
+            ? 'El número de fórmula no está disponible. Selecciona una familia válida.'
+            : 'Por favor, completa todos los campos requeridos.',
+        confirmButtonText: 'Aceptar',
+      });
+      return;
     }
 
     const familia = this.productoForm.value.nuevaFamilia
-                    ? this.productoForm.value.familiaSeleccionada
-                    : this.productoForm.value.familia;
+      ? this.productoForm.value.familiaSeleccionada
+      : this.productoForm.value.familia;
 
     // Crear el nuevo producto, asegurando que numeroFormula sea un número
     const nuevoProducto = {
       idProducto: 0, // O `null`, si lo prefieres
       familia: familia,
       descripcionATecnica: this.productoForm.value.nomenclatura,
-      numeroFormula: this.numeroFormula // Este valor debe estar definido aquí
+      numeroFormula: this.numeroFormula, // Este valor debe estar definido aquí
     };
 
     console.log('Nuevo producto a guardar:', nuevoProducto);
 
     this.apiService.createProducto(nuevoProducto).subscribe(
-        () => {
-            // Agregar nueva familia si es necesario
-            if (this.productoForm.value.nuevaFamilia) {
-                const nuevaFamilia = this.productoForm.value.familiaSeleccionada;
-                if (!this.familias.includes(nuevaFamilia)) {
-                    this.familias.push(nuevaFamilia);
-                }
-            }
-
-            // Habilitar de nuevo el control de familia
-            this.productoForm.get('familia')?.enable();
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Producto guardado',
-                text: 'El producto se ha guardado correctamente.',
-                confirmButtonText: 'Aceptar'
-            });
-            this.productoForm.reset();
-            this.numeroFormula = undefined; // Resetea el número de fórmula después de guardar
-        },
-        error => {
-            console.error('Error al guardar el producto', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al guardar el producto',
-                text: 'No se pudo guardar el producto: ' + (error.error || 'Error desconocido'),
-                confirmButtonText: 'Aceptar'
-            });
+      () => {
+        // Agregar nueva familia si es necesario
+        if (this.productoForm.value.nuevaFamilia) {
+          const nuevaFamilia = this.productoForm.value.familiaSeleccionada;
+          if (!this.familias.includes(nuevaFamilia)) {
+            this.familias.push(nuevaFamilia);
+          }
         }
+
+        // Habilitar de nuevo el control de familia
+        this.productoForm.get('familia')?.enable();
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Producto guardado',
+          text: 'El producto se ha guardado correctamente.',
+          confirmButtonText: 'Aceptar',
+        });
+        this.productoForm.reset();
+        this.numeroFormula = undefined; // Resetea el número de fórmula después de guardar
+      },
+      (error) => {
+        console.error('Error al guardar el producto', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al guardar el producto',
+          text:
+            'No se pudo guardar el producto: ' +
+            (error.error || 'Error desconocido'),
+          confirmButtonText: 'Aceptar',
+        });
+      }
     );
-}
-
-
-
+  }
 }

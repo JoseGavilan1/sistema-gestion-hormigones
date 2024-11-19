@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-
 import { ApiService } from './services/api/api.service';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -26,7 +25,6 @@ import { NewProductAtComponent } from './components/new-product-at/new-product-a
 import { DosificacionComponent } from './components/dosificacion/dosificacion.component';
 import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,7 +39,7 @@ import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.
     MenuAreaTecnicaComponent,
     NewProductAtComponent,
     DosificacionComponent,
-    CargaMaestroComponent
+    CargaMaestroComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,10 +49,8 @@ import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.
     FormsModule,
     RouterModule,
     MatProgressSpinnerModule,
-
-
   ],
   providers: [ApiService, provideAnimationsAsync()],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

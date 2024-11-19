@@ -1,52 +1,28 @@
-/* Estilo del contenedor del formulario */
-.formulario-container {
-  max-width: 450px; /* Ancho máximo reducido */
-  margin: 0 auto; /* Centra el formulario */
-  padding: 15px; /* Padding reducido */
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+/* Estilo para centrar el contenido */
+.container {
+  max-width: 800px;
 }
 
-/* Estilos para los campos del formulario */
-.form-row {
-  display: flex; /* Usar flexbox para alinear elementos en fila */
-  justify-content: space-between; /* Espacio entre columnas */
-  margin-bottom: 10px; /* Espacio entre filas */
-}
-
-.form-group {
-  flex: 1; /* Permite que cada input ocupe la misma cantidad de espacio */
-  margin-right: 10px; /* Espacio entre las columnas */
-}
-
-/* Eliminar margen derecho del último elemento */
-.form-group:last-child {
-  margin-right: 0; /* Sin margen derecho en el último elemento */
-}
-
-.form-group label {
-  font-weight: bold;
+/* Estilo para los títulos */
+h3, h4 {
   color: #343a40;
+  font-weight: bold;
 }
 
-.form-control {
-  border: 1px solid #ced4da;
-  border-radius: 5px;
-  padding: 8px; /* Padding reducido */
+/* Espaciado entre los elementos del formulario */
+.form-group {
+  margin-bottom: 1rem;
 }
 
-/* Botones */
-.btn {
-  padding: 8px 16px; /* Tamaño de botones ajustado */
-  border-radius: 5px;
-  font-size: 14px; /* Tamaño de texto reducido */
-}
-
+/* Estilo para los botones */
 .btn-success {
   background-color: #28a745;
   border-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
 }
 
 .btn-danger {
@@ -54,9 +30,79 @@
   border-color: #dc3545;
 }
 
-/* Título centrado */
-h3.text-center {
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+/* Iconos en los botones */
+.btn i {
+  margin-right: 5px;
+}
+
+/* Estilo para los inputs */
+.form-control {
+  border-radius: 0.25rem;
+}
+
+/* Estilo para los selects */
+.form-control {
+  border-radius: 0.25rem;
+}
+
+/* Estilo para el card */
+.card {
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card .card-body {
+  padding: 1.5rem;
+}
+
+/* Estilo para centrar el formulario de N° Fórmula */
+#nFormula {
   text-align: center;
-  margin-bottom: 15px; /* Margen reducido */
-  color: #343a40;
+}
+
+/* Ajustes para dispositivos móviles */
+@media (max-width: 576px) {
+  .form-group {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Estilo para tablas */
+.table-responsive {
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+}
+
+.table thead th {
+  text-align: center;
+  background-color: #343a40;
+  color: white;
+}
+
+.table tbody td {
+  text-align: center;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  margin: 20px auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.table-active {
+  background-color: #f8f9fa !important;
 }

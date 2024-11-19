@@ -12,7 +12,7 @@ import { AditivoEspecial } from '../../models/aditivoEspecial.model';
 })
 export class ApiService {
   private apiUrlBase =
-    'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
+    'https://localhost:44364/api/';
 
   //private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
 
@@ -127,4 +127,9 @@ export class ApiService {
       headers: { 'Content-Type': 'application/json' },
     });
   }
+
+  getDosificaciones(): Observable<Dosificacion[]> {
+    return this.http.get<Dosificacion[]>(`${this.apiUrlBase}dosificacion`);
+  }
+
 }

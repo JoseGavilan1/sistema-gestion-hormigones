@@ -4,6 +4,7 @@ import { Producto } from '../../models/producto.model';
 import { Dosificacion } from '../../models/dosificacion.model';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-dosificacion',
@@ -11,6 +12,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./dosificacion.component.css'],
 })
 export class DosificacionComponent implements OnInit {
+
+  dosificaciones: Dosificacion[] = [];
+  isLoading: boolean = false; // Indica si las dosificaciones están cargando
+  filtroIdProducto: string = ''; // Almacena el valor del input de búsqueda
+
+  faSave = faSave;
+  faTimes = faTimes;
   isUpdating = false;
   isCheckingExisting = false; // Nueva variable para controlar la verificación inicial
   ultimoProducto: Producto | null = null;
@@ -48,7 +56,43 @@ export class DosificacionComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarUltimoProducto();
+    this.cargarDosificaciones();
   }
+
+  cargarDosificaciones(): void {
+    this.isLoading = true;
+    this.apiService.getDosificaciones().subscribe(
+      (data) => {
+        this.dosificaciones = data;
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error al cargar las dosificaciones:', error);
+        this.isLoading = false;
+      }
+    );
+  }
+
+  buscarDosificacion(): void {
+    const filtro = this.filtroIdProducto.trim();
+
+    if (filtro === '') {
+      // Si no hay filtro, recarga todas las dosificaciones
+      this.cargarDosificaciones();
+    } else {
+      // Filtra las dosificaciones por el ID de Producto
+      this.dosificaciones = this.dosificaciones.filter((d) =>
+        d.idProducto.toString().includes(filtro)
+      );
+    }
+  }
+
+
+  seleccionarDosificacion(dosificacion: Dosificacion): void {
+    this.dosificacion = { ...dosificacion }; // Carga los datos en el formulario
+    this.isUpdating = true; // Cambia el estado para habilitar la actualización
+  }
+  
 
   cargarUltimoProducto(): void {
     this.apiService.getUltimoProducto().subscribe(

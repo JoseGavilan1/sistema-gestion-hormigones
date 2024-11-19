@@ -93,11 +93,15 @@ export class DosificacionComponent implements OnInit {
     } else if (!this.isCheckingExisting) {
       // Si no está en modo de actualización y no se ha verificado la existencia
       this.isCheckingExisting = true;
+
       this.apiService
-        .getDosificacionByProducto(this.dosificacion.idProducto)
+        .getDosificacionByProductoYPlanta(
+          this.dosificacion.idProducto,
+          this.dosificacion.idPlanta
+        )
         .subscribe(
           (existingDosificacion) => {
-            // Si existe, carga la dosificación para editar
+            // Si existe para el mismo idProducto e idPlanta
             Swal.fire({
               title: 'Dosificación existente',
               text: '¿Deseas actualizar la dosificación existente o ingresar un nuevo producto?',
@@ -118,7 +122,7 @@ export class DosificacionComponent implements OnInit {
           },
           (error) => {
             if (error.status === 404) {
-              // Si no existe la dosificación, crea una nueva
+              // Si no existe la dosificación para este idProducto e idPlanta, crea una nueva
               this.apiService.createDosificacion(this.dosificacion).subscribe(
                 () => {
                   Swal.fire({
@@ -138,8 +142,10 @@ export class DosificacionComponent implements OnInit {
                 }
               );
             }
+            this.isCheckingExisting = false; // Reinicia el estado
           }
         );
     }
   }
+
 }

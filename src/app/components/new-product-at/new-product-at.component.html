@@ -1,6 +1,7 @@
 <app-navbar></app-navbar>
 <div class="container mt-3 formulario-container">
-  <h3>Ingrese el nuevo producto</h3>
+  <button class="btn btn-danger" [routerLink]="['/menu-area-tecnica']">Volver atras</button>
+  <h3 class="mt-3">Ingrese el nuevo producto</h3>
   <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()">
     <div class="form-group">
       <label for="familia">Familia</label>
@@ -73,9 +74,9 @@
       <button
         type="button"
         class="btn btn-danger mt-3"
-        [routerLink]="['/menu-area-tecnica']"
+        (click)="resetearFormulario()"
       >
-        Cancelar
+        Resetear campos
       </button>
     </div>
   </form>

@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 <div class="container">
-  <button class="btn btn-primary mt-3" [routerLink]="['/home']">
+  <button class="btn btn-danger mt-3" [routerLink]="['/home']">
     Volver atras
   </button>
   <h3 class="mt-3">
@@ -30,6 +30,7 @@
         <th>Producto</th>
         <th>Precio</th>
         <th>Densidad</th>
+        <th>% Perdida</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -38,6 +39,7 @@
         <td>{{ materiaPrima.nombre }}</td>
         <td>${{ materiaPrima.precio }}</td>
         <td>{{ materiaPrima.densidad }}</td>
+        <td>{{ materiaPrima.perdida }}</td>
         <td>
           <button
             class="btn btn-primary"

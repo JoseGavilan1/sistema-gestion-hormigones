@@ -13,6 +13,19 @@ import { faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 })
 export class DosificacionComponent implements OnInit {
 
+  showScrollToTop: boolean = false;
+
+
+  plantasMap: { [key: number]: string } = {
+    1: 'Planta Taltal',
+    2: 'Planta Mejillones',
+    3: 'Planta Antofagasta',
+    4: 'Planta Maria Elena',
+    5: 'Planta Calama',
+    6: 'Planta Tocopilla'
+  };
+
+
   dosificaciones: Dosificacion[] = [];
   isLoading: boolean = false; // Indica si las dosificaciones están cargando
   filtroIdProducto: string = ''; // Almacena el valor del input de búsqueda
@@ -57,6 +70,19 @@ export class DosificacionComponent implements OnInit {
   ngOnInit(): void {
     this.cargarUltimoProducto();
     this.cargarDosificaciones();
+    window.addEventListener('scroll', this.checkScroll.bind(this));
+  }
+
+  checkScroll(): void {
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    this.showScrollToTop = scrollPosition > 200; // Mostrar botón si el scroll es mayor a 200px
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth', // Desplazamiento suave
+    });
   }
 
   cargarDosificaciones(): void {
@@ -92,7 +118,7 @@ export class DosificacionComponent implements OnInit {
     this.dosificacion = { ...dosificacion }; // Carga los datos en el formulario
     this.isUpdating = true; // Cambia el estado para habilitar la actualización
   }
-  
+
 
   cargarUltimoProducto(): void {
     this.apiService.getUltimoProducto().subscribe(

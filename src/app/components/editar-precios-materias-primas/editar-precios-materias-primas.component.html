@@ -26,6 +26,18 @@
         required
       />
     </div>
+    <div class="form-group">
+      <label for="perdida">Porcentaje de Pérdida</label>
+      <input
+        type="number"
+        id="perdida"
+        class="form-control"
+        [(ngModel)]="producto.perdida"
+        name="perdida"
+        required
+      />
+    </div>
+
     <div class="d-flex justify-content-between">
       <button type="submit" class="btn btn-success mt-3">
         Guardar Cambios

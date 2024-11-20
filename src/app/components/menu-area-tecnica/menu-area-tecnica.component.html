@@ -1,19 +1,22 @@
 <app-navbar></app-navbar>
-<div class="container">
-  <button class="btn btn-primary mt-3" [routerLink]="['/home']">
-    Volver atras
-  </button>
-  <h3 class="mt-3">Bienvenido al Area Tecnica</h3>
-  <h6>Seleccione una opcion</h6>
-  <div class="d-flex justify-content-between">
-    <button class="btn btn-primary" [routerLink]="['/nuevo-producto-at']">
-      Ingresar producto
+<div class="">
+  <div class="container">
+    <button class="btn btn-danger mt-3" [routerLink]="['/home']">
+      Volver atras
     </button>
-    <button class="btn btn-primary" [routerLink]="['/dosificacion']">
-      Ingresar dosificacion
-    </button>
-    <button class="btn btn-primary" [routerLink]="['/carga-maestro']">
-      Cargar maestro
-    </button>
+    <h3 class="mt-3">Bienvenido al Area Tecnica</h3>
+    <h6>Seleccione una opcion</h6>
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-primary" [routerLink]="['/nuevo-producto-at']">
+        Ingresar producto
+      </button>
+      <button class="btn btn-primary" [routerLink]="['/dosificacion']">
+        Ingresar dosificacion
+      </button>
+      <button class="btn btn-primary" [routerLink]="['/carga-maestro']">
+        Cargar maestro
+      </button>
+    </div>
   </div>
+
 </div>

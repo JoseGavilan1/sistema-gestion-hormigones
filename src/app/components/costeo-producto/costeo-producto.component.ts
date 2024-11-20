@@ -65,6 +65,10 @@ export class CosteoProductoComponent {
   costoAridos: number = 0;
   costoAditivoBase: number = 0;
 
+  cementoAjustado: number = 0;
+  gravillaAjustadaConPerdida: number = 0;
+  arenaAjustadaConPerdida: number = 0;
+
   porcentajeDePerdida: number = 0.02;
 
   mostrarDetalles: boolean = false;
@@ -227,38 +231,100 @@ export class CosteoProductoComponent {
   }
 
   calcularCostos() {
-    if (this.dosificacion) {
-      this.costoCemento =
-        (this.dosificacion.cemento * this.precioCemento) / this.ufValue;
+    if (this.dosificacion && this.plantaSeleccionada !== null) {
+      const plantaId = this.plantaSeleccionada;
 
-      this.costoAgua = (0.36 * this.precioAgua) / this.ufValue;
+      // Extraer propiedades de la dosificación para evitar verificaciones múltiples
+      const { cemento, gravilla, arena } = this.dosificacion;
 
-      const arenaAjustada = this.dosificacion.arena / this.densidadArena;
-      this.costoArena = (arenaAjustada * this.precioArena) / this.ufValue;
+      const materiales = ['CEMENTO', 'GRAVILLA', 'ARENA']; // Materiales dinámicos (sin AGUA porque es un caso especial)
+      materiales.forEach((material) => {
+        this.apiService
+          .getMateriaPrimaPorNombre(plantaId, material)
+          .subscribe((materiaPrima) => {
+            const porcentajePerdida = materiaPrima.perdida ?? 0;
 
-      const gravillaAjustada =
-        this.dosificacion.gravilla / this.densidadGravilla;
-      this.costoGravilla =
-        (gravillaAjustada * this.precioGravilla) / this.ufValue;
+            if (material === 'CEMENTO') {
+              // Cálculo para cemento
+              this.cementoAjustado = this.redondear(
+                cemento * (1 + porcentajePerdida / 100)
+              );
+              this.costoCemento = this.redondear(
+                (this.cementoAjustado * materiaPrima.precio) / this.ufValue
+              );
 
-      this.costoAditivoBase =
-        ((this.dosificacion?.aditivo1 || 0) * this.precioAditivoBase) /
-        this.ufValue;
+              console.log('Cemento ajustado:', this.cementoAjustado);
+            } else if (material === 'GRAVILLA') {
+              // Cálculo para gravilla
+              const gravillaSinAjustar = gravilla / materiaPrima.densidad;
+              this.gravillaAjustadaConPerdida = this.redondear(
+                gravillaSinAjustar * (1 + porcentajePerdida / 100)
+              );
+              this.costoGravilla = this.redondear(
+                (this.gravillaAjustadaConPerdida * materiaPrima.precio) /
+                  this.ufValue
+              );
 
-      this.costoTotal =
-        this.costoCemento +
-        this.costoAgua +
-        this.costoArena +
-        this.costoGravilla +
-        this.costoAditivoBase +
-        this.ufLaboratorio;
+              console.log('Gravilla ajustada:', this.gravillaAjustadaConPerdida);
+            } else if (material === 'ARENA') {
+              // Cálculo para arena
+              const arenaSinAjustar = arena / materiaPrima.densidad;
+              this.arenaAjustadaConPerdida = this.redondear(
+                arenaSinAjustar * (1 + porcentajePerdida / 100)
+              );
+              this.costoArena = this.redondear(
+                (this.arenaAjustadaConPerdida * materiaPrima.precio) / this.ufValue
+              );
 
-      this.costoFinal = this.costoTotal;
+              console.log('Arena ajustada:', this.arenaAjustadaConPerdida);
+            }
 
-      this.costoAridos = this.costoArena + this.costoGravilla;
+            // Calcular costo total parcial
+            this.costoTotal =
+              this.costoCemento +
+              this.costoArena +
+              this.costoGravilla +
+              this.costoAditivoBase +
+              this.ufLaboratorio;
 
-      console.log('Costo total:', this.costoTotal);
-      console.log('Costo final:', this.costoFinal);
+            console.log('Costo total parcial:', this.costoTotal);
+          });
+      });
+
+      // Cálculo del agua (independiente del porcentaje de pérdida)
+      this.apiService
+        .getMateriaPrimaPorNombre(plantaId, 'AGUA')
+        .subscribe((materiaPrima) => {
+          this.precioAgua = materiaPrima.precio;
+
+          // Fórmula específica para el agua
+          this.costoAgua = this.redondear(
+            (0.36 * this.precioAgua) / this.ufValue
+          );
+
+          console.log('Costo agua:', this.costoAgua);
+
+          // Calcular el costo final sumando el agua al total
+          this.costoFinal = this.redondear(this.costoTotal + this.costoAgua);
+          console.log('Costo final:', this.costoFinal);
+        });
+    } else {
+      console.error('Dosificación o planta seleccionada no es válida.');
     }
   }
+
+  // Método para redondear al próximo número si el dígito decimal es >= 5
+  redondear(valor: number): number {
+    return Math.round(valor * 100) / 100;
+  }
+
+
+
+
+
+
+
+
+
+
 }

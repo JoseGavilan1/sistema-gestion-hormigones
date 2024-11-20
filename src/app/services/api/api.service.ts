@@ -11,10 +11,10 @@ import { AditivoEspecial } from '../../models/aditivoEspecial.model';
   providedIn: 'root',
 })
 export class ApiService {
-  //private apiUrlBase =
-    //'https://localhost:44364/api/';
+  private apiUrlBase =
+    'https://localhost:44364/api/';
 
-  private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
+  //private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
 
   constructor(private http: HttpClient) {}
 
@@ -131,5 +131,31 @@ export class ApiService {
   getDosificaciones(): Observable<Dosificacion[]> {
     return this.http.get<Dosificacion[]>(`${this.apiUrlBase}dosificacion`);
   }
+
+  getPorcentajePerdida(plantaId: number, materialId: number): Observable<number> {
+    const url = `${this.apiUrlBase}MateriaPrima/perdida/${plantaId}/${materialId}`;
+    return this.http.get<number>(url);
+  }
+
+  getMateriaPrimaPorNombre(plantaId: number, nombre: string): Observable<MateriaPrima> {
+    const url = `${this.apiUrlBase}MateriaPrima/buscar/${plantaId}/${nombre}`;
+    return this.http.get<MateriaPrima>(url);
+  }
+
+  actualizarMateriaPrima(
+    plantaId: number,
+    productoId: number,
+    precio: number,
+    perdida: number
+  ): Observable<any> {
+    const url = `${this.apiUrlBase}MateriaPrima/actualizar/${plantaId}/${productoId}`;
+    const body = { precio, perdida };
+    return this.http.put(url, body, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+
+
 
 }

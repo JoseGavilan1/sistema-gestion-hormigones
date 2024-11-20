@@ -1,12 +1,10 @@
 <app-navbar></app-navbar>
 <div class="d-flex justify-content-between">
   <div class="container mt-4">
-    <h3 class="text-center">Formulario de Dosificación</h3>
-    <h4 class="text-center mb-4">para el ultimo producto ingresado</h4>
-    <div class="d-flex justify-content-between">
-      <button class="btn btn-primary">Volver atras</button>
+    <button class="btn btn-danger" [routerLink]="['/menu-area-tecnica']">Volver atras</button>
+    <h3 class="text-center text-white">Formulario de Dosificación</h3>
+    <h4 class="text-center mb-4 text-white">para el ultimo producto ingresado</h4>
 
-    </div>
     <!-- Información del último producto -->
     <div class="card mb-4 mt-3">
       <div class="card-body">
@@ -255,20 +253,18 @@
     </form>
   </div>
   <div class="container mt-4">
-    <h3 class="text-center mb-4">Listado de dosificaciones</h3>
+    <h3 class="text-center mb-4 text-white">Listado de dosificaciones</h3>
+    <p class="text-center text-white">Si lo desea, puede actualizar una dosificacion de esta lista, pinchela y se cargaran los datos para actualizar</p>
     <div class="d-flex justify-content-between mb-3">
       <div class="d-flex">
         <input
           type="text"
           class="form-control rounded-2 me-2"
-          placeholder="Buscar por ID de Producto"
+          placeholder="Buscar N° Formula"
           [(ngModel)]="filtroIdProducto"
           (keyup)="buscarDosificacion()"
         />
 
-        <button class="btn btn-primary" (click)="buscarDosificacion()">
-          Buscar
-        </button>
       </div>
     </div>
 
@@ -284,9 +280,10 @@
       <table class="table table-striped table-hover">
         <thead class="table-dark">
           <tr>
-            <th>#</th>
+
             <th>Número de Fórmula</th>
             <th>Descripción</th>
+            <th>Planta</th>
             <th>Cemento (kg)</th>
             <th>Agua Total (L)</th>
             <th>Arena (kg)</th>
@@ -296,14 +293,15 @@
             <th>Aditivo 3 (kg)</th>
             <th>Aditivo 4 (kg)</th>
             <th>Aditivo 5 (kg)</th>
-            <th>Planta</th>
+
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let dosificacion of dosificaciones; let i = index" (click)="seleccionarDosificacion(dosificacion)" [class.table-active]="dosificacion.idDosificacion === this.dosificacion.idDosificacion">
-            <td>{{ i + 1 }}</td>
+
             <td>{{ dosificacion.idProducto }}</td>
             <td>{{ dosificacion.descripcion }}</td>
+            <td>{{ plantasMap[dosificacion.idPlanta] || 'Planta desconocida' }}</td>
             <td>{{ dosificacion.cemento }}</td>
             <td>{{ dosificacion.aguaTotal }}</td>
             <td>{{ dosificacion.arena }}</td>
@@ -313,7 +311,7 @@
             <td>{{ dosificacion.aditivo3 }}</td>
             <td>{{ dosificacion.aditivo4 }}</td>
             <td>{{ dosificacion.aditivo5 }}</td>
-            <td>{{ dosificacion.idPlanta }}</td>
+
           </tr>
         </tbody>
       </table>
@@ -322,5 +320,15 @@
       </div>
 
     </div>
+
   </div>
+  <button
+  class="scroll-to-top"
+  (click)="scrollToTop()"
+  *ngIf="showScrollToTop"
+>
+  ↑
+</button>
 </div>
+
+

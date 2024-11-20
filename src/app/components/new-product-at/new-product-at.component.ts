@@ -165,4 +165,17 @@ export class NewProductAtComponent implements OnInit {
       }
     );
   }
+
+  resetearFormulario(): void {
+    this.productoForm.reset({
+      familia: '',
+      nuevaFamilia: false,
+      familiaSeleccionada: '',
+      nomenclatura: '',
+      numeroFormula: this.numeroFormula || '' // Valor inicial o vacío
+    });
+  }
+
+
+
 }

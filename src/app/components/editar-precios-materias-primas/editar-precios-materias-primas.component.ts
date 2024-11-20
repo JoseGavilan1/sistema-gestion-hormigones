@@ -59,7 +59,7 @@ export class EditarPreciosMateriasPrimasComponent implements OnInit {
 
         // Verificar la contraseña
         if (password === this.adminPassword) {
-          this.actualizarPrecio(); // Si la contraseña es correcta, actualizar el precio
+          this.actualizarMateriaPrima(); // Actualizar precio y porcentaje de pérdida
         } else {
           Swal.fire({
             title: 'Contraseña Incorrecta',
@@ -72,7 +72,7 @@ export class EditarPreciosMateriasPrimasComponent implements OnInit {
     });
   }
 
-  private actualizarPrecio() {
+  private actualizarMateriaPrima() {
     if (!this.producto || !this.plantaSeleccionada) {
       console.error('Faltan datos de producto o planta');
       return;
@@ -84,19 +84,15 @@ export class EditarPreciosMateriasPrimasComponent implements OnInit {
     const plantaId = this.getPlantaId(normalizedPlantaSeleccionada);
     const productoId = this.producto.materiaPrimaId;
     const nuevoPrecio = this.producto.precio;
+    const nuevaPerdida = this.producto.perdida;
 
     this.apiService
-      .actualizarPrecio(plantaId, productoId, nuevoPrecio)
+      .actualizarMateriaPrima(plantaId, productoId, nuevoPrecio, nuevaPerdida)
       .subscribe({
-        next: (response) => {
-          if (typeof response === 'string') {
-            console.log('Respuesta del servidor:', response);
-          } else {
-            console.log('Precio actualizado correctamente:', this.producto);
-          }
+        next: () => {
           Swal.fire({
             title: 'Éxito',
-            text: 'Precio actualizado correctamente',
+            text: 'Datos actualizados correctamente',
             icon: 'success',
             confirmButtonText: 'Aceptar',
           });
@@ -105,14 +101,15 @@ export class EditarPreciosMateriasPrimasComponent implements OnInit {
         error: (error) => {
           Swal.fire({
             title: 'Error',
-            text: 'No se pudo actualizar el precio',
+            text: 'No se pudieron actualizar los datos',
             icon: 'error',
             confirmButtonText: 'Aceptar',
           });
-          console.error('Error al actualizar el precio:', error);
+          console.error('Error al actualizar los datos:', error);
         },
       });
   }
+
 
   private getPlantaId(plantaNombre: string): number {
     return this.plantasMap[plantaNombre] || 0;

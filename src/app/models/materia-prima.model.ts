@@ -4,5 +4,6 @@ export interface MateriaPrima {
   precio: number;
   unidadMedida: string;
   densidad: number;
+  perdida: number;
   plantaId: number;
 }

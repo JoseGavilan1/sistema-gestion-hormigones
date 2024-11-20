@@ -106,3 +106,37 @@ h3, h4 {
 .table-active {
   background-color: #f8f9fa !important;
 }
+
+.container {
+  background-color: gray;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 20px; /* Posición desde la parte inferior */
+  right: 20px; /* Posición desde la derecha */
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0.8;
+  z-index: 1000;
+}
+
+.scroll-to-top:hover {
+  opacity: 1;
+  transform: scale(1.1); /* Efecto de zoom al pasar el cursor */
+}
+

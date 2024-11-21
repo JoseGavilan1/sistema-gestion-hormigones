@@ -60,3 +60,10 @@
   padding: 20px;
   text-align: center;
 }
+
+.btn.active {
+  background-color: #343a40; /* Fondo más oscuro */
+  color: white; /* Texto blanco */
+  border-color: #343a40; /* Borde coincide con el fondo */
+}
+

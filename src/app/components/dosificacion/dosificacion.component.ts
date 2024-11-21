@@ -29,6 +29,8 @@ export class DosificacionComponent implements OnInit {
   dosificaciones: Dosificacion[] = [];
   isLoading: boolean = false; // Indica si las dosificaciones están cargando
   filtroIdProducto: string = ''; // Almacena el valor del input de búsqueda
+  totalDosificaciones: number = 0;
+
 
   faSave = faSave;
   faTimes = faTimes;
@@ -73,6 +75,25 @@ export class DosificacionComponent implements OnInit {
     window.addEventListener('scroll', this.checkScroll.bind(this));
   }
 
+  resetFormulario(): void {
+    this.dosificacion = {
+      idDosificacion: 0,
+      idProducto: 0,
+      cemento: 0,
+      aguaTotal: 0,
+      arena: 0,
+      gravilla: 0,
+      aditivo1: 0,
+      aditivo2: 0,
+      aditivo3: 0,
+      aditivo4: 0,
+      aditivo5: 0,
+      idPlanta: 1, // Valor predeterminado
+      descripcion: 'N/A',
+    };
+  }
+
+
   checkScroll(): void {
     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
     this.showScrollToTop = scrollPosition > 200; // Mostrar botón si el scroll es mayor a 200px
@@ -90,6 +111,7 @@ export class DosificacionComponent implements OnInit {
     this.apiService.getDosificaciones().subscribe(
       (data) => {
         this.dosificaciones = data;
+        this.totalDosificaciones = this.dosificaciones.length;
         this.isLoading = false;
       },
       (error) => {
@@ -117,6 +139,14 @@ export class DosificacionComponent implements OnInit {
   seleccionarDosificacion(dosificacion: Dosificacion): void {
     this.dosificacion = { ...dosificacion }; // Carga los datos en el formulario
     this.isUpdating = true; // Cambia el estado para habilitar la actualización
+
+    this.ultimoProducto = {
+      idProducto: dosificacion.idProducto, // Usa el idProducto como identificador
+      numeroFormula: dosificacion.idProducto, // Usa el idProducto como número de fórmula
+      descripcionATecnica: dosificacion.descripcion, // Usa la descripción de la dosificación
+      familia: 0, // Valor predeterminado o asignar uno válido si lo tienes
+      insertDate: undefined // Asigna null o un valor por defecto si es necesario
+    };
   }
 
 
@@ -127,10 +157,14 @@ export class DosificacionComponent implements OnInit {
         if (this.ultimoProducto) {
           this.dosificacion.idProducto = this.ultimoProducto.numeroFormula;
         }
+        this.resetFormulario();
+        this.isUpdating = false;
       },
       (error) => {
         console.error('Error al cargar el último producto:', error);
       }
+
+
     );
   }
 

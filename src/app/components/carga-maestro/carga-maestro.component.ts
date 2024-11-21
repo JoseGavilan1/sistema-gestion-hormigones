@@ -31,6 +31,21 @@ export class CargaMaestroComponent {
     this.cargarDosificaciones();
   }
 
+  plantasMap: { [key: number]: string } = {
+    1: 'Taltal',
+    2: 'Mejillones',
+    3: 'Antofagasta',
+    4: 'María Elena',
+    5: 'Calama',
+    6: 'Tocopilla',
+  };
+
+  nombrePlantaSeleccionada(): string {
+    return this.plantasMap[this.planta] || 'N/A';
+  }
+
+
+
   cargarDosificaciones() {
     this.apiService
       .getDosificacionByProducto(this.dosificacion.idProducto)
@@ -52,10 +67,12 @@ export class CargaMaestroComponent {
     );
   }
 
-  seleccionarPlanta(idPlanta: number) {
-    this.planta = idPlanta;
-    this.dosificacion.idPlanta = idPlanta;
+  seleccionarPlanta(idPlanta: number): void {
+    this.planta = idPlanta; // Actualiza la planta seleccionada
+    this.resetearEstado(); // Resetea el estado del componente
+    console.log(`Planta seleccionada: ${this.plantasMap[idPlanta]}`);
   }
+
 
   onFileChange(event: any) {
     const file = event.target.files[0];
@@ -352,4 +369,25 @@ export class CargaMaestroComponent {
       }
     });
   }
+
+  resetearEstado(): void {
+    this.dosificacion = {};
+    this.productos = [];
+    this.busqueda = '';
+    this.productosFiltrados = [];
+    this.dosificaciones = [];
+    this.comprobandoDosificaciones = false;
+    this.actualizandoDosificaciones = false;
+    this.procesoCompleto = false;
+    this.mostrarAlertaDosificacion = false;
+    this.dosificacionesCreadas = 0;
+
+    // Limpia el input del archivo cargado
+    const inputFile = document.getElementById('formFileSm') as HTMLInputElement;
+    if (inputFile) {
+      inputFile.value = ''; // Resetea el valor del input
+    }
+  }
+
+
 }

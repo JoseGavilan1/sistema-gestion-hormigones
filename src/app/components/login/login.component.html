@@ -2,12 +2,12 @@
   class="container d-flex justify-content-center align-items-center"
   style="height: 100vh"
 >
-  <div class="card shadow" style="width: 400px">
+  <!-- Card de login -->
+  <div class="card shadow" style="width: 400px" *ngIf="!isLoading">
     <div class="card-header text-center">
       <h4>SISTEMA DE GESTIÓN Y COSTEO DE HORMIGONES</h4>
     </div>
     <div class="card-body">
-      <!-- Formulario de Login -->
       <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
         <div class="mb-3">
           <label for="username" class="form-label">Usuario</label>
@@ -60,6 +60,16 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Spinner de carga -->
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border text-primary mb-3" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div>
+      <p class="text-primary">Iniciando sesión...</p>
     </div>
   </div>
 </div>

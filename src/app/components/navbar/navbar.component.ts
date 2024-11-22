@@ -1,16 +1,21 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-
+import { AuthService } from '../../services/auth/auth.service';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
+  styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {
-  constructor(private router: Router) {}
-  logout() {
-    // Lógica para cerrar sesión, como limpiar tokens, etc.
-    // Luego redirigir al login
-    this.router.navigate(['/login']);
+  isLoggingOut: boolean = false;
+
+  constructor(private authService: AuthService) {}
+
+  logout(): void {
+    this.isLoggingOut = true;
+
+    setTimeout(() => {
+      this.authService.logout(); // Llama al servicio para cerrar sesión
+      this.isLoggingOut = false;
+    }, 1500); // Simulación de espera
   }
 }

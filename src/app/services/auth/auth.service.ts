@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs'; // Importar Observable y of
-import { catchError, map } from 'rxjs/operators'; // Importar operadores
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -20,22 +20,28 @@ export class AuthService {
         map((response) => {
           if (response) {
             localStorage.setItem('currentUser', JSON.stringify(response));
-            return true; // Retorna true si la autenticación es exitosa
+            return true;
           }
-          return false; // Retorna false si la autenticación falla
+          return false;
         }),
         catchError(() => {
-          return of(false); // Captura cualquier error y retorna false
+          return of(false);
         })
       );
   }
 
   logout(): void {
+    // Eliminar datos de autenticación
     localStorage.removeItem('currentUser');
-    this.router.navigate(['/login']);
+
+    // Redirigir al login y limpiar el historial
+    this.router.navigate(['/login']).then(() => {
+      window.history.replaceState({}, '', '/login');
+    });
   }
 
   isLoggedIn(): boolean {
+    // Verifica si el token de autenticación existe
     return localStorage.getItem('currentUser') !== null;
   }
 
@@ -45,7 +51,7 @@ export class AuthService {
       .pipe(
         catchError((error) => {
           console.error('Error al registrar usuario:', error);
-          return of(null); // Retorna null en caso de error
+          return of(null);
         })
       );
   }

@@ -12,6 +12,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   registerForm: FormGroup;
   loginError: string = '';
+  isLoading: boolean = false; // Estado para el spinner
 
   constructor(
     private fb: FormBuilder,
@@ -31,6 +32,7 @@ export class LoginComponent {
 
   onLoginSubmit(): void {
     this.loginError = '';
+    this.isLoading = true; // Mostrar spinner y mensaje
 
     if (this.loginForm.valid) {
       const email = this.loginForm.get('email')?.value;
@@ -38,6 +40,7 @@ export class LoginComponent {
 
       this.authService.login(email, password).subscribe({
         next: (isLoggedIn) => {
+          this.isLoading = false; // Ocultar spinner
           if (isLoggedIn) {
             this.router.navigate(['/home']);
           } else {
@@ -45,11 +48,15 @@ export class LoginComponent {
           }
         },
         error: () => {
+          this.isLoading = false; // Ocultar spinner
           this.loginError = 'Ocurrió un error en la autenticación';
         },
       });
+    } else {
+      this.isLoading = false; // Ocultar spinner si el formulario no es válido
     }
   }
+
 
   onRegisterSubmit(): void {
     if (this.registerForm.valid) {
@@ -59,12 +66,10 @@ export class LoginComponent {
       this.authService.register(username, password).subscribe({
         next: (response) => {
           if (response) {
-            // Opcional: redirigir al login después de registrar
             this.router.navigate(['/login']);
           }
         },
         error: () => {
-          // Manejar errores de registro aquí
           console.error('Error al registrar usuario');
         },
       });

@@ -20,21 +20,21 @@ const routes: Routes = [
 
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
 
-  { path: 'cotizaciones', component: CotizacionesComponent },
+  { path: 'cotizaciones', component: CotizacionesComponent, canActivate: [AuthGuard] },
 
-  { path: 'costeo-producto', component: CosteoProductoComponent },
+  { path: 'costeo-producto', component: CosteoProductoComponent , canActivate: [AuthGuard]},
 
-  { path: 'materias-primas/:planta', component: MateriaPrimaComponent },
+  { path: 'materias-primas/:planta', component: MateriaPrimaComponent , canActivate: [AuthGuard]},
 
-  { path: 'editar-precio', component: EditarPreciosMateriasPrimasComponent },
+  { path: 'editar-precio', component: EditarPreciosMateriasPrimasComponent , canActivate: [AuthGuard]},
 
-  { path: 'menu-area-tecnica', component: MenuAreaTecnicaComponent },
+  { path: 'menu-area-tecnica', component: MenuAreaTecnicaComponent , canActivate: [AuthGuard]},
 
-  { path: 'nuevo-producto-at', component: NewProductAtComponent },
+  { path: 'nuevo-producto-at', component: NewProductAtComponent, canActivate: [AuthGuard] },
 
-  { path: 'dosificacion', component: DosificacionComponent },
+  { path: 'dosificacion', component: DosificacionComponent , canActivate: [AuthGuard]},
 
-  { path: 'carga-maestro', component: CargaMaestroComponent },
+  { path: 'carga-maestro', component: CargaMaestroComponent , canActivate: [AuthGuard]},
 ];
 
 @NgModule({

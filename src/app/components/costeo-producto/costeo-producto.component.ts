@@ -10,7 +10,7 @@ import {
   transition,
   animate,
 } from '@angular/animations';
-import { PdfService } from '../../services/pdf-generator/pdf-service.service';
+import { WordService } from '../../services/word-service.service';
 
 @Component({
   selector: 'app-costeo-producto',
@@ -86,7 +86,7 @@ export class CosteoProductoComponent {
   constructor(
     private apiService: ApiService,
     private ufService: UfService,
-    private pdfService: PdfService
+    private wordService: WordService
   ) {}
 
   toggleDetalles() {
@@ -142,53 +142,60 @@ export class CosteoProductoComponent {
       return;
     }
 
-    // Mostrar SweetAlert con el GIF
     Swal.fire({
-
       html: `<div>
                <img src="https://res.cloudinary.com/dk5bjcrb8/image/upload/v1732548351/gif-copat_zjppwk.gif" alt="Generando Pre-cotización" width="150">
-               <p class="mt-3">Generando pre cotización</p>
+               <p class="mt-3">Generando cotización...</p>
              </div>`,
       allowOutsideClick: false,
       showConfirmButton: false,
     });
 
-    // Simular un retraso de 3 segundos para generar el PDF
     setTimeout(() => {
-      const quoteData = {
-        date: new Date().toLocaleDateString(),
-        seller: 'Vendedor XYZ',
-        client: 'Cliente ABC',
-        items: [
-          {
-            product: `Producto ${this.idProducto}`,
-            quantity: 1,
-            price: this.precioVenta,
-            total: this.precioVenta,
-          },
-        ],
-        total: this.precioVenta,
-        observations: 'Esta es una cotización preliminar.',
+      const cliente = {
+        nombre: 'Cliente ABC',
+        rut: '12.345.678-9',
+        direccion: 'Av. Siempre Viva 742',
+        comuna: 'Springfield',
+        ciudad: 'Springfield',
+        telefono: '+56 9 1234 5678',
+        email: 'cliente@correo.com',
+        vendedor: 'Juan Pérez',
       };
 
-      // Generar el PDF
-      this.pdfService.generateQuotePDF(
-        quoteData,
-        `Precotizacion_Producto_${this.idProducto}`
-      );
+      const productos = [
+        {
+          cantidad: 1,
+          unMedida: 'M3',
+          descripcion: `Hormigón ID ${this.idProducto}`,
+          valorUF: this.precioVenta,
+          valorReferencia: this.precioVenta * this.ufValue,
+        },
+      ];
 
-      // Cerrar el SweetAlert después de generar el PDF
+      const totales = {
+        uf: productos.reduce((acc, p) => acc + p.valorUF, 0),
+        clp: productos.reduce((acc, p) => acc + p.valorReferencia, 0),
+      };
+
+      this.wordService.generarCotizacionWord(cliente, productos, totales)
+
+
       Swal.close();
-
-      // Mostrar mensaje de éxito
       Swal.fire({
         icon: 'success',
-        title: 'Pre-cotización generada',
-        text: `El archivo PDF ha sido generado correctamente.`,
-        confirmButtonText: 'Aceptar',
+        title: 'Cotización generada',
+        text: 'El archivo WORD ha sido generado correctamente.',
       });
-    }, 3000); // Retraso de 3 segundos
+    }, 3000);
   }
+
+
+  private convertPdfToWord(pdfBuffer: ArrayBuffer): ArrayBuffer {
+    // Aquí puedes usar una biblioteca o API para la conversión de PDF a Word
+    throw new Error('Función de conversión pendiente de implementación');
+  }
+
 
 
 

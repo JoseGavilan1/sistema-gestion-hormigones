@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from './services/auth.guard/auth.guard';
-import { CotizacionesComponent } from './components/cotizaciones/cotizaciones.component';
 import { CosteoProductoComponent } from './components/costeo-producto/costeo-producto.component';
 
 import { MateriaPrimaComponent } from './components/materia-prima/materia-prima.component';
@@ -20,7 +19,6 @@ const routes: Routes = [
 
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
 
-  { path: 'cotizaciones', component: CotizacionesComponent, canActivate: [AuthGuard] },
 
   { path: 'costeo-producto', component: CosteoProductoComponent , canActivate: [AuthGuard]},
 

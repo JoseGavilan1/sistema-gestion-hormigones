@@ -6,15 +6,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+
 import { ApiService } from './services/api/api.service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
-import { CotizacionesComponent } from './components/cotizaciones/cotizaciones.component';
 import { CosteoProductoComponent } from './components/costeo-producto/costeo-producto.component';
-import { DetalleCotizacionComponent } from './components/detalle-cotizacion/detalle-cotizacion.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { RouterModule } from '@angular/router';
 
@@ -32,9 +31,7 @@ import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.
     AppComponent,
     LoginComponent,
     HomeComponent,
-    CotizacionesComponent,
     CosteoProductoComponent,
-    DetalleCotizacionComponent,
     NavbarComponent,
     MateriaPrimaComponent,
     EditarPreciosMateriasPrimasComponent,

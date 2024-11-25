@@ -1,12 +1,18 @@
 <app-navbar></app-navbar>
 <div class="container mt-3 formulario-container" *ngIf="producto">
-  <h3 class="text-center">
-    Editar precio de {{ producto.nombre }} planta
+  <!-- Título -->
+  <h3 class="text-center text-primary mb-4">
+    <i class="fas fa-edit"></i> Editar precio de {{ producto.nombre }} - Planta
     {{ plantaSeleccionada.toUpperCase() }}
   </h3>
+
+  <!-- Formulario -->
   <form (ngSubmit)="guardarCambios()">
-    <div class="form-group">
-      <label for="nombre">Producto</label>
+    <!-- Producto -->
+    <div class="form-group mb-3">
+      <label for="nombre" class="form-label">
+        <i class="fas fa-box"></i> Producto
+      </label>
       <input
         type="text"
         id="nombre"
@@ -15,8 +21,12 @@
         readonly
       />
     </div>
-    <div class="form-group">
-      <label for="precio">Precio</label>
+
+    <!-- Precio -->
+    <div class="form-group mb-3">
+      <label for="precio" class="form-label">
+        <i class="fas fa-dollar-sign"></i> Precio
+      </label>
       <input
         type="number"
         id="precio"
@@ -24,10 +34,15 @@
         [(ngModel)]="producto.precio"
         name="precio"
         required
+        placeholder="Ingrese el precio del producto"
       />
     </div>
-    <div class="form-group">
-      <label for="perdida">Porcentaje de Pérdida</label>
+
+    <!-- Porcentaje de Pérdida -->
+    <div class="form-group mb-3">
+      <label for="perdida" class="form-label">
+        <i class="fas fa-percent"></i> Porcentaje de Pérdida
+      </label>
       <input
         type="number"
         id="perdida"
@@ -35,15 +50,21 @@
         [(ngModel)]="producto.perdida"
         name="perdida"
         required
+        placeholder="Ingrese el porcentaje de pérdida"
       />
     </div>
 
+    <!-- Botones -->
     <div class="d-flex justify-content-between">
       <button type="submit" class="btn btn-success mt-3">
-        Guardar Cambios
+        <i class="fas fa-save"></i> Guardar Cambios
       </button>
-      <button type="button" class="btn btn-danger mt-3" (click)="cancelar()">
-        Cancelar
+      <button
+        type="button"
+        class="btn btn-danger mt-3"
+        (click)="cancelar()"
+      >
+        <i class="fas fa-times"></i> Cancelar
       </button>
     </div>
   </form>

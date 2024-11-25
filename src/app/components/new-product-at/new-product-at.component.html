@@ -1,10 +1,22 @@
 <app-navbar></app-navbar>
-<div class="container mt-3 formulario-container">
-  <button class="btn btn-danger" [routerLink]="['/menu-area-tecnica']">Volver atras</button>
-  <h3 class="mt-3">Ingrese el nuevo producto</h3>
+<div class="container mt-4 formulario-container">
+  <!-- Botón Volver Atrás -->
+  <button class="btn btn-danger mb-3" [routerLink]="['/menu-area-tecnica']">
+    <i class="fas fa-arrow-left"></i> Volver atrás
+  </button>
+
+  <!-- Título -->
+  <h3 class="text-primary mb-4">
+    <i class="fas fa-box"></i> Ingrese el nuevo producto
+  </h3>
+
+  <!-- Formulario -->
   <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()">
-    <div class="form-group">
-      <label for="familia">Familia</label>
+    <!-- Familia -->
+    <div class="form-group mb-3">
+      <label for="familia" class="form-label">
+        <i class="fas fa-tags"></i> Familia
+      </label>
       <select
         id="familia"
         class="form-select"
@@ -12,28 +24,34 @@
         (change)="onFamiliaChange($event)"
         [disabled]="productoForm.get('nuevaFamilia')?.value"
       >
-        >
         <option *ngFor="let familia of familias" [value]="familia">
           Familia {{ familia }}
         </option>
       </select>
     </div>
 
-    <div class="form-group mt-3">
+    <!-- Checkbox para ingresar nueva familia -->
+    <div class="form-check mb-3">
       <input
         type="checkbox"
         id="nuevaFamilia"
+        class="form-check-input"
         formControlName="nuevaFamilia"
         (change)="onNuevaFamiliaChange($event)"
       />
-      <label for="nuevaFamilia">¿Ingresar nueva familia?</label>
+      <label for="nuevaFamilia" class="form-check-label">
+        ¿Ingresar nueva familia?
+      </label>
     </div>
 
+    <!-- Nueva Familia -->
     <div
       *ngIf="productoForm.get('nuevaFamilia')?.value"
-      class="form-group mt-2"
+      class="form-group mb-3"
     >
-      <label for="nuevaFamiliaSelect">Seleccionar Nueva Familia</label>
+      <label for="nuevaFamiliaSelect" class="form-label">
+        <i class="fas fa-plus"></i> Seleccionar Nueva Familia
+      </label>
       <select
         id="nuevaFamiliaSelect"
         class="form-select"
@@ -46,19 +64,26 @@
       </select>
     </div>
 
-    <div class="form-group mt-3">
-      <label for="nomenclatura">Nomenclatura</label>
+    <!-- Nomenclatura -->
+    <div class="form-group mb-3">
+      <label for="nomenclatura" class="form-label">
+        <i class="fas fa-edit"></i> Nomenclatura
+      </label>
       <input
         type="text"
         id="nomenclatura"
         class="form-control"
         formControlName="nomenclatura"
+        placeholder="Ingrese la nomenclatura"
         required
       />
     </div>
 
-    <div class="form-group mt-3">
-      <label for="nFormula">N° Formula asignado</label>
+    <!-- N° Formula Asignado -->
+    <div class="form-group mb-3">
+      <label for="nFormula" class="form-label">
+        <i class="fas fa-hashtag"></i> N° Fórmula Asignado
+      </label>
       <input
         type="text"
         id="nFormula"
@@ -67,16 +92,21 @@
         disabled
       />
     </div>
+
+    <!-- Botones -->
     <div class="d-flex justify-content-between">
-      <button type="submit" class="btn btn-success mt-3">
-        Guardar Cambios
+      <!-- Guardar Cambios -->
+      <button type="submit" class="btn btn-success">
+        <i class="fas fa-save"></i> Guardar Cambios
       </button>
+
+      <!-- Resetear Campos -->
       <button
         type="button"
-        class="btn btn-danger mt-3"
+        class="btn btn-danger"
         (click)="resetearFormulario()"
       >
-        Resetear campos
+        <i class="fas fa-undo"></i> Resetear Campos
       </button>
     </div>
   </form>

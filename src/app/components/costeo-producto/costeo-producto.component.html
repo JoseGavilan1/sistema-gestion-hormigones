@@ -6,8 +6,17 @@
   </button>
 
   <!-- Título principal -->
-  <h3 class="text-center mb-4 text-black">Costeo de hormigones</h3>
-  <h4></h4>
+  <h3 class="text-center mb-4 text-black">
+    <i class="fas fa-calculator"></i> Costeo de Hormigones
+  </h3>
+
+  <div *ngIf="isGeneratingQuote" class="text-center my-4">
+    <img src="https://res.cloudinary.com/dk5bjcrb8/image/upload/v1732548351/gif-copat_zjppwk.gif" alt="Generando Pre-cotización" width="150" />
+
+
+    <p class="text-muted mt-3">Generando Pre-cotización, por favor espere...</p>
+  </div>
+
   <div class="row">
     <!-- Columna izquierda -->
     <div class="col-md-6">
@@ -25,7 +34,7 @@
           </button>
         </div>
 
-        <!-- Input para el producto y botón de costeo -->
+        <!-- Input para el producto y botón de búsqueda -->
         <div *ngIf="plantaSeleccionada">
           <h5>
             Costear producto en planta:
@@ -44,9 +53,9 @@
           </div>
           <button
             class="btn btn-success w-100 bounce-on-hover"
-            (click)="costearProducto()"
+            (click)="buscarProducto()"
           >
-            <i class="fas fa-calculator"></i> Costear Producto
+            <i class="fas fa-search"></i> Buscar Producto
           </button>
         </div>
       </div>
@@ -57,7 +66,7 @@
       <!-- Tarjeta de resultados -->
       <div *ngIf="dosificacion" class="card shadow p-4 fade-in">
         <h5 class="mb-3">
-          Dosificación para el hormigon {{ idProducto }} en
+          Dosificación para el hormigón {{ idProducto }} en
           {{ nombrePlantaSeleccionada }}
         </h5>
         <div class="table-responsive">
@@ -112,9 +121,42 @@
             placeholder="Ingresa el margen en UF"
           />
         </div>
+        <div class="mb-3">
+          <label for="otros">Otros costos:</label>
+          <span
+            class="ms-2"
+            style="cursor: pointer"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="Incluye costos adicionales como transporte, permisos, o imprevistos."
+          >
+            <i class="fas fa-question-circle"></i>
+          </span>
+          <input
+            type="number"
+            id="otros"
+            [(ngModel)]="otros"
+            class="form-control"
+            placeholder="Ingresa otros costos"
+          />
+        </div>
+        <button
+          class="btn btn-primary w-100 mt-3 bounce-on-hover"
+          (click)="costearProductoConMargenYOtros()"
+        >
+          <i class="fas fa-calculator"></i> Costear Producto
+        </button>
+
+        <!-- Botón de Generar Pre-cotización -->
+        <button
+          class="btn btn-info w-100 mt-3 bounce-on-hover"
+          (click)="generarPrecotizacion()"
+        >
+          <i class="fas fa-file-pdf"></i> Generar Pre-cotización
+        </button>
 
         <!-- Detalles del cálculo de costeo -->
-        <h5 class="mt-4">Detalles del costeo</h5>
+        <h5 class="mt-4">Detalles del Costeo</h5>
         <ul class="list-group">
           <li class="list-group-item">
             <strong>Costo de Producción:</strong>
@@ -129,8 +171,8 @@
             >
           </li>
           <li class="list-group-item">
-            <strong>Utilidad:</strong>
-            <span class="float-end">{{ utilidad | number : "1.2-2" }} UF</span>
+            <strong>Otros:</strong>
+            <span class="float-end">{{ otros | number : "1.2-2" }} UF</span>
           </li>
           <li class="list-group-item">
             <strong>Precio de Venta:</strong>
@@ -139,15 +181,6 @@
             >
           </li>
         </ul>
-      </div>
-
-      <!-- Mensaje si no se encuentra dosificación -->
-      <div
-        *ngIf="!dosificacion && idProducto"
-        class="alert alert-warning mt-4 shake"
-      >
-        No se encontró la dosificación para este producto en la planta
-        seleccionada.
       </div>
     </div>
   </div>

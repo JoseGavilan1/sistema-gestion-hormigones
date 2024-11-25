@@ -2,20 +2,34 @@
   class="container d-flex justify-content-center align-items-center"
   style="height: 100vh"
 >
-  <!-- Card de login -->
+  <!-- Card de Login -->
   <div class="card shadow" style="width: 400px" *ngIf="!isLoading">
-    <div class="card-header text-center">
-      <h4>SISTEMA DE GESTIÓN Y COSTEO DE HORMIGONES</h4>
+    <!-- Logo e Introducción -->
+    <div class="card-header text-center bg-white">
+      <img
+        src="https://copat.cl/wp-content/uploads/2024/04/copat-logo-transparente-1024x249.webp"
+        alt="Logo COPAT"
+        style="width: 150px"
+        class="mb-3"
+      />
+      <h5 class="text-primary">
+        SISTEMA DE GESTIÓN Y COSTEO DE HORMIGONES
+      </h5>
     </div>
+
     <div class="card-body">
       <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+        <!-- Campo Usuario -->
         <div class="mb-3">
-          <label for="username" class="form-label">Usuario</label>
+          <label for="username" class="form-label">
+            <i class="fas fa-user"></i> Usuario
+          </label>
           <input
             type="text"
             id="username"
             class="form-control"
             formControlName="email"
+            placeholder="Ingrese su usuario"
           />
           <div
             *ngIf="
@@ -26,13 +40,18 @@
             El usuario es requerido.
           </div>
         </div>
+
+        <!-- Campo Contraseña -->
         <div class="mb-3">
-          <label for="password" class="form-label">Contraseña</label>
+          <label for="password" class="form-label">
+            <i class="fas fa-lock"></i> Contraseña
+          </label>
           <input
             type="password"
             id="password"
             class="form-control"
             formControlName="password"
+            placeholder="Ingrese su contraseña"
           />
           <div
             *ngIf="
@@ -44,19 +63,25 @@
             La contraseña es requerida.
           </div>
         </div>
+
+        <!-- Error de Inicio de Sesión -->
         <div *ngIf="loginError" class="alert alert-danger text-center">
           {{ loginError }}
         </div>
+
+        <!-- Enlace "Olvidó contraseña" -->
         <div class="mb-3 text-center">
-          <a href="#" class="link-primary">Olvidó contraseña?</a>
+          <a href="#" class="link-primary">¿Olvidó su contraseña?</a>
         </div>
+
+        <!-- Botón de Iniciar Sesión -->
         <div class="text-center">
           <button
             type="submit"
-            class="btn btn-dark"
+            class="btn btn-dark w-100"
             [disabled]="loginForm.invalid"
           >
-            Iniciar Sesión
+            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
           </button>
         </div>
       </form>
@@ -66,7 +91,7 @@
   <!-- Spinner de carga -->
   <div *ngIf="isLoading" class="text-center">
     <div class="spinner-border text-primary mb-3" role="status">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">Cargando...</span>
     </div>
     <div>
       <p class="text-primary">Iniciando sesión...</p>

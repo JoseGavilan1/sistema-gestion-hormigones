@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { ApiService } from '../../services/api/api.service';
 import { Dosificacion } from '../../models/dosificacion.model';
 import { UfService } from '../../services/uf/uf-service.service';
@@ -10,6 +10,7 @@ import {
   transition,
   animate,
 } from '@angular/animations';
+import { PdfService } from '../../services/pdf-generator/pdf-service.service';
 
 @Component({
   selector: 'app-costeo-producto',
@@ -35,6 +36,8 @@ export class CosteoProductoComponent {
     { id: 6, nombre: 'TOCOPILLA' },
   ];
 
+  otros: number = 0;
+  isGeneratingQuote: boolean = false;
   datosExcel: any[] = [];
   plantaSeleccionada: number | null = null;
   nombrePlantaSeleccionada: string | null = null;
@@ -80,7 +83,11 @@ export class CosteoProductoComponent {
 
   mostrarDetalles: boolean = false;
 
-  constructor(private apiService: ApiService, private ufService: UfService) {}
+  constructor(
+    private apiService: ApiService,
+    private ufService: UfService,
+    private pdfService: PdfService
+  ) {}
 
   toggleDetalles() {
     this.mostrarDetalles = !this.mostrarDetalles;
@@ -101,6 +108,89 @@ export class CosteoProductoComponent {
       });
     }
   }
+
+  costearProductoConMargenYOtros() {
+    if (this.dosificacion) {
+      this.costoFinal = this.redondear(this.costoTotal + this.costoAgua);
+      this.precioVenta = this.redondear(
+        this.costoFinal + this.margenEnUf + this.otros
+      );
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Costeo completado',
+        text: 'El costeo del producto se ha calculado correctamente.',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Primero busca la dosificación del producto antes de calcular el costeo.',
+      });
+    }
+  }
+
+  generarPrecotizacion() {
+    if (!this.dosificacion) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Debe calcular el costeo antes de generar la pre-cotización.',
+      });
+      return;
+    }
+
+    // Mostrar SweetAlert con el GIF
+    Swal.fire({
+
+      html: `<div>
+               <img src="https://res.cloudinary.com/dk5bjcrb8/image/upload/v1732548351/gif-copat_zjppwk.gif" alt="Generando Pre-cotización" width="150">
+               <p class="mt-3">Generando pre cotización</p>
+             </div>`,
+      allowOutsideClick: false,
+      showConfirmButton: false,
+    });
+
+    // Simular un retraso de 3 segundos para generar el PDF
+    setTimeout(() => {
+      const quoteData = {
+        date: new Date().toLocaleDateString(),
+        seller: 'Vendedor XYZ',
+        client: 'Cliente ABC',
+        items: [
+          {
+            product: `Producto ${this.idProducto}`,
+            quantity: 1,
+            price: this.precioVenta,
+            total: this.precioVenta,
+          },
+        ],
+        total: this.precioVenta,
+        observations: 'Esta es una cotización preliminar.',
+      };
+
+      // Generar el PDF
+      this.pdfService.generateQuotePDF(
+        quoteData,
+        `Precotizacion_Producto_${this.idProducto}`
+      );
+
+      // Cerrar el SweetAlert después de generar el PDF
+      Swal.close();
+
+      // Mostrar mensaje de éxito
+      Swal.fire({
+        icon: 'success',
+        title: 'Pre-cotización generada',
+        text: `El archivo PDF ha sido generado correctamente.`,
+        confirmButtonText: 'Aceptar',
+      });
+    }, 3000); // Retraso de 3 segundos
+  }
+
+
 
   costearProducto() {
     if (this.idProducto && this.plantaSeleccionada !== null) {
@@ -272,7 +362,8 @@ export class CosteoProductoComponent {
                 arenaSinAjustar * (1 + porcentajePerdida / 100)
               );
               this.costoArena = this.redondear(
-                (this.arenaAjustadaConPerdida * materiaPrima.precio) / this.ufValue
+                (this.arenaAjustadaConPerdida * materiaPrima.precio) /
+                  this.ufValue
               );
             }
 
@@ -289,7 +380,9 @@ export class CosteoProductoComponent {
         .getMateriaPrimaPorNombre(plantaId, 'AGUA')
         .subscribe((materiaPrima) => {
           this.precioAgua = materiaPrima.precio;
-          this.costoAgua = this.redondear((0.36 * this.precioAgua) / this.ufValue);
+          this.costoAgua = this.redondear(
+            (0.36 * this.precioAgua) / this.ufValue
+          );
           this.costoFinal = this.redondear(this.costoTotal + this.costoAgua);
 
           // Calcular el precio de venta y la utilidad
@@ -300,10 +393,69 @@ export class CosteoProductoComponent {
       console.error('Dosificación o planta seleccionada no es válida.');
     }
   }
-  
 
   // Método para redondear al próximo número si el dígito decimal es >= 5
   redondear(valor: number): number {
     return Math.round(valor * 100) / 100;
+  }
+
+  buscarProducto() {
+    if (this.idProducto && this.plantaSeleccionada !== null) {
+      Swal.fire({
+        title: 'Cargando dosificación...',
+        text: 'Por favor espera',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      this.apiService
+        .getDosificacionByProductoYPlanta(
+          this.idProducto,
+          this.plantaSeleccionada
+        )
+        .subscribe({
+          next: (dosificacion) => {
+            this.dosificacion = dosificacion;
+            Swal.close();
+            Swal.fire({
+              icon: 'success',
+              title: 'Dosificación cargada',
+              text: `Se ha cargado la dosificación para el producto ${this.idProducto}`,
+              timer: 1500,
+              showConfirmButton: false,
+            });
+
+            this.ufService.getUfValue().subscribe({
+              next: (ufData) => {
+                this.ufValue = ufData;
+                this.obtenerPreciosMateriasPrimas();
+              },
+              error: (err) => {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'No se pudo obtener el valor de la UF.',
+                });
+              },
+            });
+          },
+          error: (err) => {
+            Swal.close();
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se encontró la dosificación para este producto en la planta seleccionada.',
+            });
+          },
+        });
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Información incompleta',
+        text: 'Por favor, selecciona una planta e ingresa el ID del producto.',
+      });
+    }
   }
 }

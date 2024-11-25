@@ -1,35 +1,47 @@
 <app-navbar></app-navbar>
 <div class="container mt-4">
   <div class="row">
+    <!-- Costeo Productos -->
     <div class="col text-center mb-3">
       <button
-        class="btn btn-primary"
+        class="btn btn-primary d-flex align-items-center justify-content-center"
         style="width: auto"
         [routerLink]="['/costeo-producto']"
       >
-        COSTEO PRODUCTOS
+        <i class="fas fa-calculator me-2"></i> Costeo Productos
       </button>
     </div>
+
+    <!-- Costeo Materias Primas -->
     <div class="col text-center mb-3">
       <button
-        class="btn btn-secondary"
+        class="btn btn-secondary d-flex align-items-center justify-content-center"
         style="width: auto"
         [routerLink]="['/materias-primas', 'taltal']"
       >
-        COSTEO MATERIAS PRIMAS
+        <i class="fas fa-boxes me-2"></i> Costeo Materias Primas
       </button>
     </div>
+
+    <!-- Área Técnica -->
     <div class="col text-center mb-3">
       <button
-        class="btn btn-secondary"
+        class="btn btn-secondary d-flex align-items-center justify-content-center"
         style="width: auto"
         [routerLink]="['/menu-area-tecnica']"
       >
-        AREA TECNICA
+        <i class="fas fa-tools me-2"></i> Área Técnica
       </button>
     </div>
+
+    <!-- Configuración -->
     <div class="col text-center mb-3">
-      <button class="btn btn-success" style="width: auto">CONFIGURACIÓN</button>
+      <button
+        class="btn btn-success d-flex align-items-center justify-content-center"
+        style="width: auto"
+      >
+        <i class="fas fa-cogs me-2"></i> Configuración
+      </button>
     </div>
   </div>
 </div>

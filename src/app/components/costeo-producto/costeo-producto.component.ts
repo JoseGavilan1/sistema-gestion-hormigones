@@ -10,7 +10,7 @@ import {
   transition,
   animate,
 } from '@angular/animations';
-import { WordService } from '../../services/word-service.service';
+import { PdfService } from '../../services/word-service.service';
 
 @Component({
   selector: 'app-costeo-producto',
@@ -86,7 +86,7 @@ export class CosteoProductoComponent {
   constructor(
     private apiService: ApiService,
     private ufService: UfService,
-    private wordService: WordService
+    private pdfService: PdfService
   ) {}
 
   toggleDetalles() {
@@ -131,7 +131,6 @@ export class CosteoProductoComponent {
       });
     }
   }
-
   generarPrecotizacion() {
     if (!this.dosificacion) {
       Swal.fire({
@@ -174,18 +173,23 @@ export class CosteoProductoComponent {
       ];
 
       const totales = {
+        numeroCotizacion: this.idProducto, // Usa el ID como número de cotización
+        fecha: new Date().toLocaleDateString(),
         uf: productos.reduce((acc, p) => acc + p.valorUF, 0),
         clp: productos.reduce((acc, p) => acc + p.valorReferencia, 0),
-      };
+        iva: 0.19 * productos.reduce((acc, p) => acc + p.valorReferencia, 0),
+        total:
+          productos.reduce((acc, p) => acc + p.valorReferencia, 0) * 1.19,
+      };// URL de ImgBB o similar
+      this.pdfService.generarCotizacionPdf(cliente, productos, totales);
 
-      this.wordService.generarCotizacionWord(cliente, productos, totales)
 
 
       Swal.close();
       Swal.fire({
         icon: 'success',
         title: 'Cotización generada',
-        text: 'El archivo WORD ha sido generado correctamente.',
+        text: 'El archivo PDF ha sido generado correctamente.',
       });
     }, 3000);
   }

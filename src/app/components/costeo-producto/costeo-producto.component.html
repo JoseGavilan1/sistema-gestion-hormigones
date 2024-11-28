@@ -12,8 +12,6 @@
 
   <div *ngIf="isGeneratingQuote" class="text-center my-4">
     <img src="https://res.cloudinary.com/dk5bjcrb8/image/upload/v1732548351/gif-copat_zjppwk.gif" alt="Generando Pre-cotización" width="150" />
-
-
     <p class="text-muted mt-3">Generando Pre-cotización, por favor espere...</p>
   </div>
 
@@ -52,65 +50,68 @@
             />
           </div>
           <button
-            class="btn btn-success w-100 bounce-on-hover"
+            class="btn btn-success w-100 bounce-on-hover mb-4"
             (click)="buscarProducto()"
           >
             <i class="fas fa-search"></i> Buscar Producto
           </button>
+
+          <!-- Tabla de dosificación -->
+          <div *ngIf="dosificacion" class="fade-in">
+            <h5 class="mb-3">
+              Dosificación para el hormigón {{ idProducto }} en
+              {{ nombrePlantaSeleccionada }}
+            </h5>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th>Cemento</th>
+                    <th>Agua Total</th>
+                    <th>Arena</th>
+                    <th>Gravilla</th>
+                    <th *ngIf="dosificacion.aditivo1 !== 0">Aditivo 1 (Base)</th>
+                    <th *ngIf="dosificacion.aditivo2 !== 0">Aditivo 2</th>
+                    <th *ngIf="dosificacion.aditivo3 !== 0">Aditivo 3</th>
+                    <th *ngIf="dosificacion.aditivo4 !== 0">Aditivo 4</th>
+                    <th *ngIf="dosificacion.aditivo5 !== 0">Aditivo 5</th>
+                    <th>Descripción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ dosificacion.cemento }}</td>
+                    <td>{{ dosificacion.aguaTotal }}</td>
+                    <td>{{ dosificacion.arena }}</td>
+                    <td>{{ dosificacion.gravilla }}</td>
+                    <td *ngIf="dosificacion.aditivo1 !== 0">
+                      {{ dosificacion.aditivo1 }}
+                    </td>
+                    <td *ngIf="dosificacion.aditivo2 !== 0">
+                      {{ dosificacion.aditivo2 }}
+                    </td>
+                    <td *ngIf="dosificacion.aditivo3 !== 0">
+                      {{ dosificacion.aditivo3 }}
+                    </td>
+                    <td *ngIf="dosificacion.aditivo4 !== 0">
+                      {{ dosificacion.aditivo4 }}
+                    </td>
+                    <td *ngIf="dosificacion.aditivo5 !== 0">
+                      {{ dosificacion.aditivo5 }}
+                    </td>
+                    <td>{{ dosificacion.descripcion }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Columna derecha -->
     <div class="col-md-6">
-      <!-- Tarjeta de resultados -->
-      <div *ngIf="dosificacion" class="card shadow p-4 fade-in">
-        <h5 class="mb-3">
-          Dosificación para el hormigón {{ idProducto }} en
-          {{ nombrePlantaSeleccionada }}
-        </h5>
-        <div class="table-responsive">
-          <table class="table table-bordered">
-            <thead class="table-light">
-              <tr>
-                <th>Cemento</th>
-                <th>Agua Total</th>
-                <th>Arena</th>
-                <th>Gravilla</th>
-                <th *ngIf="dosificacion.aditivo1 !== 0">Aditivo 1 (Base)</th>
-                <th *ngIf="dosificacion.aditivo2 !== 0">Aditivo 2</th>
-                <th *ngIf="dosificacion.aditivo3 !== 0">Aditivo 3</th>
-                <th *ngIf="dosificacion.aditivo4 !== 0">Aditivo 4</th>
-                <th *ngIf="dosificacion.aditivo5 !== 0">Aditivo 5</th>
-                <th>Descripción</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ dosificacion.cemento }}</td>
-                <td>{{ dosificacion.aguaTotal }}</td>
-                <td>{{ dosificacion.arena }}</td>
-                <td>{{ dosificacion.gravilla }}</td>
-                <td *ngIf="dosificacion.aditivo1 !== 0">
-                  {{ dosificacion.aditivo1 }}
-                </td>
-                <td *ngIf="dosificacion.aditivo2 !== 0">
-                  {{ dosificacion.aditivo2 }}
-                </td>
-                <td *ngIf="dosificacion.aditivo3 !== 0">
-                  {{ dosificacion.aditivo3 }}
-                </td>
-                <td *ngIf="dosificacion.aditivo4 !== 0">
-                  {{ dosificacion.aditivo4 }}
-                </td>
-                <td *ngIf="dosificacion.aditivo5 !== 0">
-                  {{ dosificacion.aditivo5 }}
-                </td>
-                <td>{{ dosificacion.descripcion }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="card shadow p-4 fade-in">
         <div class="mb-3">
           <label for="margenEnUf">Margen (en UF):</label>
           <input

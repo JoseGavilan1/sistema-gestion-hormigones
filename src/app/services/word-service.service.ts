@@ -1,138 +1,117 @@
 import { Injectable } from '@angular/core';
-import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, HeadingLevel, BorderStyle } from 'docx';
-import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
-export class WordService {
-  constructor() {}
+export class PdfService {
+  constructor(private http: HttpClient) {}
 
-  generarCotizacionWord(cliente: any, productos: any[], totales: any): void {
-    const doc = new Document({
-      sections: [
-        {
-          properties: {},
-          children: [
-            // Encabezado de la cotización
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: 'Constructora y Hormigones Copat Ltda.',
-                  bold: true,
-                  size: 28,
-                }),
-              ],
-              alignment: AlignmentType.CENTER,
-              spacing: { after: 200 },
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({ text: `Cotización Nº: ${totales.numeroCotizacion}`, bold: true }),
-              ],
-              alignment: AlignmentType.RIGHT,
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({ text: `Fecha: ${totales.fecha}`, bold: true }),
-              ],
-              alignment: AlignmentType.RIGHT,
-              spacing: { after: 200 },
-            }),
+  generarCotizacionPdf(cliente: any, productos: any[], totales: any): void {
+    const doc = new jsPDF();
+
+    // Cargar la imagen desde los assets
+    this.http.get('assets/images/logo-copat.png', { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const imageBase64 = reader.result as string;
+
+          // Crear una etiqueta de imagen para obtener el tamaño real
+          const img = new Image();
+          img.src = imageBase64;
+          img.onload = () => {
+            const aspectRatio = img.width / img.height; // Relación de aspecto
+            const maxWidth = 40; // Máximo ancho permitido
+            const maxHeight = 40; // Máximo alto permitido
+            let width = maxWidth;
+            let height = maxHeight;
+
+            if (aspectRatio > 1) {
+              // Imagen horizontal
+              height = maxWidth / aspectRatio;
+            } else {
+              // Imagen vertical o cuadrada
+              width = maxHeight * aspectRatio;
+            }
+
+            // Agregar la imagen al PDF
+            doc.addImage(imageBase64, 'PNG', 10, 10, width, height); // Ajusta posición y tamaño
+
+            // Encabezado
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Constructora y Hormigones Copat Ltda.', 55, 30); // Desplaza hacia abajo el texto
+
+            doc.setFontSize(12);
+            doc.text(`Cotización Nº: ${totales.numeroCotizacion}`, 10, 60); // Desplaza hacia abajo
+            doc.text(`Fecha: ${totales.fecha}`, 10, 68); // Desplaza hacia abajo
 
             // Información del cliente
-            new Paragraph({ text: 'Datos del Cliente:', heading: HeadingLevel.HEADING_2 }),
-            new Table({
-              rows: [
-                this.createRow('Nombre:', cliente.nombre),
-                this.createRow('RUT:', cliente.rut),
-                this.createRow('Dirección:', cliente.direccion),
-                this.createRow('Ciudad:', `${cliente.ciudad}, ${cliente.comuna}`),
-                this.createRow('Teléfono:', cliente.telefono),
-                this.createRow('Email:', cliente.email),
-                this.createRow('Vendedor:', cliente.vendedor),
-              ],
-              width: { size: 100, type: WidthType.PERCENTAGE },
-            }),
+            doc.setFont('helvetica', 'bold');
+            doc.text('Datos del Cliente:', 10, 80);
 
-            new Paragraph({ text: '', spacing: { after: 300 } }),
+            doc.setFont('helvetica', 'normal');
+            const clienteData = [
+              ['Nombre:', cliente.nombre],
+              ['RUT:', cliente.rut],
+              ['Dirección:', cliente.direccion],
+              ['Ciudad:', `${cliente.ciudad}, ${cliente.comuna}`],
+              ['Teléfono:', cliente.telefono],
+              ['Email:', cliente.email],
+              ['Vendedor:', cliente.vendedor],
+            ];
+            autoTable(doc, {
+              body: clienteData,
+              startY: 85, // Ajusta la posición inicial de la tabla
+              theme: 'plain',
+              margin: { left: 10 },
+            });
 
             // Tabla de productos
-            new Paragraph({ text: 'Detalles de Productos:', heading: HeadingLevel.HEADING_2 }),
-            new Table({
-              rows: [
-                // Encabezados de la tabla
-                new TableRow({
-                  children: [
-                    this.createCell('Cant.', true),
-                    this.createCell('Un. Med.', true),
-                    this.createCell('Descripción', true),
-                    this.createCell('Valor UF', true),
-                    this.createCell('Valor en CLP', true),
-                  ],
-                }),
-                // Filas de productos
-                ...productos.map((producto) =>
-                  new TableRow({
-                    children: [
-                      this.createCell(producto.cantidad),
-                      this.createCell(producto.unMedida),
-                      this.createCell(producto.descripcion),
-                      this.createCell(producto.valorUF),
-                      this.createCell(producto.valorReferencia),
-                    ],
-                  })
-                ),
-              ],
-              width: { size: 100, type: WidthType.PERCENTAGE },
-            }),
+            doc.setFont('helvetica', 'bold');
+            doc.text('Detalles de Productos:', 10, doc.previousAutoTable?.finalY + 10 || 60);
 
-            new Paragraph({ text: '', spacing: { after: 300 } }),
+            autoTable(doc, {
+              head: [['Cant.', 'Un. Med.', 'Descripción', 'Valor UF', 'Valor en CLP']],
+              body: productos.map((p) => [
+                p.cantidad,
+                p.unMedida,
+                p.descripcion,
+                p.valorUF.toFixed(2),
+                p.valorReferencia.toLocaleString(),
+              ]),
+              startY: doc.previousAutoTable?.finalY + 15 || 70,
+            });
 
             // Totales
-            new Table({
-              rows: [
-                this.createRow('Sub Total en UF:', totales.uf),
-                this.createRow('Sub Total en CLP:', totales.clp),
-                this.createRow('IVA (19%):', totales.iva),
-                this.createRow('Total Final en CLP:', totales.total),
-              ],
-              width: { size: 50, type: WidthType.PERCENTAGE },
-              alignment: AlignmentType.RIGHT,
-            }),
-          ],
-        },
-      ],
-    });
+            doc.setFont('helvetica', 'bold');
+            doc.text('Totales:', 10, doc.previousAutoTable?.finalY + 10);
 
-    Packer.toBlob(doc).then((blob) => {
-      saveAs(blob, 'Cotizacion.docx');
-    });
-  }
+            const totalesData = [
+              ['Sub Total en UF:', totales.uf.toFixed(2)],
+              ['Sub Total en CLP:', totales.clp.toLocaleString()],
+              ['IVA (19%):', totales.iva.toLocaleString()],
+              ['Total Final en CLP:', totales.total.toLocaleString()],
+            ];
+            autoTable(doc, {
+              body: totalesData,
+              startY: doc.previousAutoTable?.finalY + 15,
+              theme: 'plain',
+              margin: { left: 10 },
+            });
 
-  private createRow(label: string, value: string | number | undefined): TableRow {
-    return new TableRow({
-      children: [
-        this.createCell(label, false, true),
-        this.createCell(value !== undefined && value !== null ? value.toString() : '', false), // Validación añadida
-      ],
-    });
-  }
-  
-
-  private createCell(text: string, isHeader: boolean = false, bold: boolean = false): TableCell {
-    return new TableCell({
-      children: [
-        new Paragraph({
-          children: [new TextRun({ text, bold })],
-          alignment: isHeader ? AlignmentType.CENTER : AlignmentType.LEFT,
-        }),
-      ],
-      borders: {
-        top: { style: BorderStyle.SINGLE, size: 1 },
-        bottom: { style: BorderStyle.SINGLE, size: 1 },
-        left: { style: BorderStyle.SINGLE, size: 1 },
-        right: { style: BorderStyle.SINGLE, size: 1 },
+            // Guardar el archivo
+            const fileName = `Pre-cotizacion-${totales.numeroCotizacion}.pdf`;
+            doc.save(fileName);
+          };
+        };
+        reader.readAsDataURL(blob);
+      },
+      error: (err) => {
+        console.error('Error al cargar la imagen local:', err);
       },
     });
   }

@@ -14,6 +14,12 @@ export interface Dosificacion {
   aditivo4?: number;
   nombreAditivo5?: string;
   aditivo5?: number;
+  nombreAditivo6?: string;
+  aditivo6?: number;
+  nombreAditivo7?: string;
+  aditivo7?: number;
+  nombreAditivo8?: string;
+  aditivo8?: number;
   idPlanta: number;
   descripcion: string;
 }

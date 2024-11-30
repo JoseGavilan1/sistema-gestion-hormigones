@@ -49,6 +49,9 @@ export class DosificacionComponent implements OnInit {
     aditivo3: 0,
     aditivo4: 0,
     aditivo5: 0,
+    aditivo6: 0,
+    aditivo7: 0,
+    aditivo8: 0,
     idPlanta: 1, // Valor predeterminado
     descripcion: 'N/A',
   };
@@ -88,6 +91,9 @@ export class DosificacionComponent implements OnInit {
       aditivo3: 0,
       aditivo4: 0,
       aditivo5: 0,
+      aditivo6: 0,
+      aditivo7: 0,
+      aditivo8: 0,
       idPlanta: 1, // Valor predeterminado
       descripcion: 'N/A',
     };

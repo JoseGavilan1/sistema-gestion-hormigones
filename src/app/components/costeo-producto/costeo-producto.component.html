@@ -75,6 +75,9 @@
                     <th *ngIf="dosificacion.aditivo3 !== 0">Aditivo 3</th>
                     <th *ngIf="dosificacion.aditivo4 !== 0">Aditivo 4</th>
                     <th *ngIf="dosificacion.aditivo5 !== 0">Aditivo 5</th>
+                    <th *ngIf="dosificacion.aditivo6 !== 0">Aditivo 5</th>
+                    <th *ngIf="dosificacion.aditivo7 !== 0">Aditivo 5</th>
+                    <th *ngIf="dosificacion.aditivo8 !== 0">Aditivo 5</th>
                     <th>Descripción</th>
                   </tr>
                 </thead>
@@ -98,6 +101,15 @@
                     </td>
                     <td *ngIf="dosificacion.aditivo5 !== 0">
                       {{ dosificacion.aditivo5 }}
+                    </td>
+                    <td *ngIf="dosificacion.aditivo6 !== 0">
+                      {{ dosificacion.aditivo6 }}
+                    </td>
+                    <td *ngIf="dosificacion.aditivo7 !== 0">
+                      {{ dosificacion.aditivo7 }}
+                    </td>
+                    <td *ngIf="dosificacion.aditivo8 !== 0">
+                      {{ dosificacion.aditivo8 }}
                     </td>
                     <td>{{ dosificacion.descripcion }}</td>
                   </tr>

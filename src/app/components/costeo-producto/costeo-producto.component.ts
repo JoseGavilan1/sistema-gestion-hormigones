@@ -64,6 +64,9 @@ export class CosteoProductoComponent {
   nombreAditivo3: string | null = null;
   nombreAditivo4: string | null = null;
   nombreAditivo5: string | null = null;
+  nombreAditivo6: string | null = null;
+  nombreAditivo7: string | null = null;
+  nombreAditivo8: string | null = null;
 
   costoCemento: number = 0;
   costoAgua: number = 0;
@@ -311,6 +314,9 @@ export class CosteoProductoComponent {
               this.nombreAditivo3 = this.dosificacion.nombreAditivo3 || null;
               this.nombreAditivo4 = this.dosificacion.nombreAditivo4 || null;
               this.nombreAditivo5 = this.dosificacion.nombreAditivo5 || null;
+              this.nombreAditivo6 = this.dosificacion.nombreAditivo5 || null;
+              this.nombreAditivo7 = this.dosificacion.nombreAditivo5 || null;
+              this.nombreAditivo8 = this.dosificacion.nombreAditivo5 || null;
             }
 
             this.calcularCostos();

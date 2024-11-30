@@ -11,9 +11,9 @@ import { AditivoEspecial } from '../../models/aditivoEspecial.model';
   providedIn: 'root',
 })
 export class ApiService {
-  //private apiUrlBase = 'https://localhost:44364/api/';
+  private apiUrlBase = 'https://localhost:44364/api/';
 
-  private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
+   // private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
 
   constructor(private http: HttpClient) {}
 

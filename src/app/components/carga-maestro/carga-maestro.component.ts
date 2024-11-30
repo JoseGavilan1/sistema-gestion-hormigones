@@ -100,7 +100,10 @@ export class CargaMaestroComponent {
             aditivo3: row[8],
             aditivo4: row[9],
             aditivo5: row[10],
-            descripcion: row[11],
+            aditivo6: row[11],
+            aditivo7: row[12],
+            aditivo8: row[13],
+            descripcion: row[14],
             idProducto: row[0],
             idDosificacion: 0,
             idPlanta: this.planta,
@@ -257,6 +260,9 @@ export class CargaMaestroComponent {
         dosificacion.aditivo3 = dosificacion.aditivo3 ?? 0;
         dosificacion.aditivo4 = dosificacion.aditivo4 ?? 0;
         dosificacion.aditivo5 = dosificacion.aditivo5 ?? 0;
+        dosificacion.aditivo6 = dosificacion.aditivo6 ?? 0;
+        dosificacion.aditivo7 = dosificacion.aditivo7 ?? 0;
+        dosificacion.aditivo8 = dosificacion.aditivo8 ?? 0;
         dosificacion.descripcion = dosificacion.descripcion ?? '';
         dosificacion.idPlanta = dosificacion.idPlanta ?? 1;
         dosificacion.idProducto = dosificacion.idProducto ?? 0;
@@ -280,10 +286,16 @@ export class CargaMaestroComponent {
           aditivo3: dosificacion.aditivo3,
           aditivo4: dosificacion.aditivo4,
           aditivo5: dosificacion.aditivo5,
+          aditivo6: dosificacion.aditivo6,
+          aditivo7: dosificacion.aditivo7,
+          aditivo8: dosificacion.aditivo8,
           nombreAditivo2: dosificacion.nombreAditivo2 ?? 'string',
           nombreAditivo3: dosificacion.nombreAditivo3 ?? 'string',
           nombreAditivo4: dosificacion.nombreAditivo4 ?? 'string',
           nombreAditivo5: dosificacion.nombreAditivo5 ?? 'string',
+          nombreAditivo6: dosificacion.nombreAditivo6 ?? 'string',
+          nombreAditivo7: dosificacion.nombreAditivo7 ?? 'string',
+          nombreAditivo8: dosificacion.nombreAditivo8 ?? 'string',
           descripcion: dosificacion.descripcion ?? 'string',
           idPlanta: dosificacion.idPlanta,
           producto: producto,

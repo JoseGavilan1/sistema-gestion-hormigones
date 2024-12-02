@@ -6,4 +6,5 @@ export interface MateriaPrima {
   densidad: number;
   perdida: number;
   plantaId: number;
+  tipo: string;
 }

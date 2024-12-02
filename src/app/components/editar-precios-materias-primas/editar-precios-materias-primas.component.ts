@@ -85,9 +85,10 @@ export class EditarPreciosMateriasPrimasComponent implements OnInit {
     const productoId = this.producto.materiaPrimaId;
     const nuevoPrecio = this.producto.precio;
     const nuevaPerdida = this.producto.perdida;
+    const nuevoTipo = this.producto.tipo;
 
     this.apiService
-      .actualizarMateriaPrima(plantaId, productoId, nuevoPrecio, nuevaPerdida)
+      .actualizarMateriaPrima(plantaId, productoId, nuevoPrecio, nuevaPerdida, nuevoTipo)
       .subscribe({
         next: () => {
           Swal.fire({

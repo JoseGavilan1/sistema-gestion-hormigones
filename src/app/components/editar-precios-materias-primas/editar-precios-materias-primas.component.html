@@ -54,6 +54,21 @@
       />
     </div>
 
+    <div class="form-group mb-3">
+      <label for="tipo" class="form-label">
+        <i class="fas fa-tags"></i> Tipo
+      </label>
+      <input
+        type="text"
+        id="tipo"
+        class="form-control"
+        [(ngModel)]="producto.tipo"
+        name="tipo"
+        required
+        placeholder="Ingrese el tipo de materia prima"
+      />
+    </div>
+
     <!-- Botones -->
     <div class="d-flex justify-content-between">
       <button type="submit" class="btn btn-success mt-3">

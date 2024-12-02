@@ -145,10 +145,11 @@ export class ApiService {
     plantaId: number,
     productoId: number,
     precio: number,
-    perdida: number
+    perdida: number,
+    tipo: string
   ): Observable<any> {
     const url = `${this.apiUrlBase}MateriaPrima/actualizar/${plantaId}/${productoId}`;
-    const body = { precio, perdida };
+    const body = { precio, perdida, tipo };
     return this.http.put(url, body, {
       headers: { 'Content-Type': 'application/json' },
     });

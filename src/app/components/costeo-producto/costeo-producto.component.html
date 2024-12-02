@@ -56,6 +56,25 @@
             <i class="fas fa-search"></i> Buscar Producto
           </button>
 
+          <div class="input-group mt-3 mb-3">
+            <span class="input-group-text">
+              <i class="fas fa-text"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="descripcionATecnica"
+              placeholder="Ingresa la nomenclatura del producto"
+            />
+          </div>
+          <button
+            class="btn btn-info w-100 bounce-on-hover mb-4"
+            (click)="buscarPorNomenclatura(descripcionATecnica, plantaSeleccionada)"
+          >
+            <i class="fas fa-search"></i> Buscar por Nomenclatura
+          </button>
+
+
           <!-- Tabla de dosificación -->
           <div *ngIf="dosificacion" class="fade-in">
             <h5 class="mb-3">
@@ -70,14 +89,14 @@
                     <th>Agua Total</th>
                     <th>Arena</th>
                     <th>Gravilla</th>
-                    <th *ngIf="dosificacion.aditivo1 !== 0">Aditivo 1 (Base)</th>
-                    <th *ngIf="dosificacion.aditivo2 !== 0">Aditivo 2</th>
-                    <th *ngIf="dosificacion.aditivo3 !== 0">Aditivo 3</th>
-                    <th *ngIf="dosificacion.aditivo4 !== 0">Aditivo 4</th>
-                    <th *ngIf="dosificacion.aditivo5 !== 0">Aditivo 5</th>
-                    <th *ngIf="dosificacion.aditivo6 !== 0">Aditivo 5</th>
-                    <th *ngIf="dosificacion.aditivo7 !== 0">Aditivo 5</th>
-                    <th *ngIf="dosificacion.aditivo8 !== 0">Aditivo 5</th>
+                    <th *ngIf="dosificacion.aditivo1 !== 0 && dosificacion.aditivo1 !== null">Aditivo 1 (Base)</th>
+                    <th *ngIf="dosificacion.aditivo2 !== 0 && dosificacion.aditivo2 !== null">Aditivo 2</th>
+                    <th *ngIf="dosificacion.aditivo3 !== 0 && dosificacion.aditivo3 !== null">Aditivo 3</th>
+                    <th *ngIf="dosificacion.aditivo4 !== 0 && dosificacion.aditivo4 !== null">Aditivo 4</th>
+                    <th *ngIf="dosificacion.aditivo5 !== 0 && dosificacion.aditivo5 !== null">Aditivo 5</th>
+                    <th *ngIf="dosificacion.aditivo6 !== 0 && dosificacion.aditivo6 !== null">Aditivo 6</th>
+                    <th *ngIf="dosificacion.aditivo7 !== 0 && dosificacion.aditivo7 !== null">Aditivo 7</th>
+                    <th *ngIf="dosificacion.aditivo8 !== 0 && dosificacion.aditivo8 !== null">Aditivo 8</th>
                     <th>Descripción</th>
                   </tr>
                 </thead>
@@ -87,28 +106,28 @@
                     <td>{{ dosificacion.aguaTotal }}</td>
                     <td>{{ dosificacion.arena }}</td>
                     <td>{{ dosificacion.gravilla }}</td>
-                    <td *ngIf="dosificacion.aditivo1 !== 0">
+                    <td *ngIf="dosificacion.aditivo1 !== 0 && dosificacion.aditivo1 !== null">
                       {{ dosificacion.aditivo1 }}
                     </td>
-                    <td *ngIf="dosificacion.aditivo2 !== 0">
+                    <td *ngIf="dosificacion.aditivo2 !== 0 && dosificacion.aditivo2 !== null">
                       {{ dosificacion.aditivo2 }}
                     </td>
-                    <td *ngIf="dosificacion.aditivo3 !== 0">
+                    <td *ngIf="dosificacion.aditivo3 !== 0 && dosificacion.aditivo3 !== null">
                       {{ dosificacion.aditivo3 }}
                     </td>
-                    <td *ngIf="dosificacion.aditivo4 !== 0">
+                    <td *ngIf="dosificacion.aditivo4 !== 0 && dosificacion.aditivo4 !== null">
                       {{ dosificacion.aditivo4 }}
                     </td>
-                    <td *ngIf="dosificacion.aditivo5 !== 0">
+                    <td *ngIf="dosificacion.aditivo5 !== 0 && dosificacion.aditivo5 !== null">
                       {{ dosificacion.aditivo5 }}
                     </td>
-                    <td *ngIf="dosificacion.aditivo6 !== 0">
+                    <td *ngIf="dosificacion.aditivo6 !== 0 && dosificacion.aditivo6 !== null">
                       {{ dosificacion.aditivo6 }}
                     </td>
-                    <td *ngIf="dosificacion.aditivo7 !== 0">
+                    <td *ngIf="dosificacion.aditivo7 !== 0 && dosificacion.aditivo7 !== null">
                       {{ dosificacion.aditivo7 }}
                     </td>
-                    <td *ngIf="dosificacion.aditivo8 !== 0">
+                    <td *ngIf="dosificacion.aditivo8 !== 0 && dosificacion.aditivo8 !== null">
                       {{ dosificacion.aditivo8 }}
                     </td>
                     <td>{{ dosificacion.descripcion }}</td>

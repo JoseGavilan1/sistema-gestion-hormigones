@@ -36,6 +36,9 @@ export class CosteoProductoComponent {
     { id: 6, nombre: 'TOCOPILLA' },
   ];
 
+  nomenclatura: string | null = null;
+  descripcionATecnica: string = ''; // Para almacenar la nomenclatura
+
   otros: number = 0;
   isGeneratingQuote: boolean = false;
   datosExcel: any[] = [];
@@ -111,6 +114,51 @@ export class CosteoProductoComponent {
       });
     }
   }
+
+  buscarPorNomenclatura(descripcionATecnica: string, idPlanta: number): void {
+    if (!descripcionATecnica || !idPlanta) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos incompletos',
+        text: 'Por favor, ingresa una nomenclatura válida y selecciona una planta.',
+      });
+      return;
+    }
+
+    // Mostrar un mensaje de carga
+    Swal.fire({
+      title: 'Cargando dosificación...',
+      text: 'Por favor espera',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    // Llamar al método del servicio
+    this.apiService.getDosificacionByNomenclatura(descripcionATecnica, idPlanta).subscribe({
+      next: (dosificacion) => {
+        this.dosificacion = dosificacion;
+        Swal.close(); // Cerrar el mensaje de carga
+        Swal.fire({
+          icon: 'success',
+          title: 'Dosificación encontrada',
+          text: `Se encontró la dosificación para la nomenclatura: ${descripcionATecnica}`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      },
+      error: (err) => {
+        Swal.close(); // Cerrar el mensaje de carga
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se encontró una dosificación para la nomenclatura ingresada y planta seleccionada.',
+        });
+      },
+    });
+  }
+
 
   costearProductoConMargenYOtros() {
     if (this.dosificacion) {

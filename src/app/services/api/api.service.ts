@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MateriaPrima } from '../../models/materia-prima.model';
@@ -11,9 +11,9 @@ import { AditivoEspecial } from '../../models/aditivoEspecial.model';
   providedIn: 'root',
 })
 export class ApiService {
-  //private apiUrlBase = 'https://localhost:44364/api/';
+  private apiUrlBase = 'https://localhost:44364/api/';
 
-  private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
+  //private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
 
   constructor(private http: HttpClient) {}
 
@@ -154,6 +154,17 @@ export class ApiService {
       headers: { 'Content-Type': 'application/json' },
     });
   }
+
+  getDosificacionByNomenclatura(descripcionATecnica: string, idPlanta: number) {
+    const params = new HttpParams()
+      .set('descripcionATecnica', descripcionATecnica)
+      .set('idPlanta', idPlanta.toString());
+
+    return this.http.get<Dosificacion>(`${this.apiUrlBase}dosificacion/nomenclatura`, { params });
+  }
+
+
+
 
 
 

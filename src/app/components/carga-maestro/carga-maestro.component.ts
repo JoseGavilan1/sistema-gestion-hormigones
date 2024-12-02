@@ -44,8 +44,6 @@ export class CargaMaestroComponent {
     return this.plantasMap[this.planta] || 'N/A';
   }
 
-
-
   cargarDosificaciones() {
     this.apiService
       .getDosificacionByProducto(this.dosificacion.idProducto)
@@ -72,7 +70,6 @@ export class CargaMaestroComponent {
     this.resetearEstado(); // Resetea el estado del componente
     console.log(`Planta seleccionada: ${this.plantasMap[idPlanta]}`);
   }
-
 
   onFileChange(event: any) {
     const file = event.target.files[0];
@@ -236,7 +233,7 @@ export class CargaMaestroComponent {
     }
 
     Swal.fire({
-      title: 'Insertando o actualizando dosificaciones...',
+      title: 'Insertando dosificaciones...',
       html: `<div class="custom-spinner"></div><br><span class="loading-text">Por favor, espere...</span>`,
       allowOutsideClick: false,
       didOpen: () => Swal.showLoading(),
@@ -244,68 +241,48 @@ export class CargaMaestroComponent {
     });
 
     let creadasCorrectamente = 0;
-    let actualizadasCorrectamente = 0;
     let omitidas = 0;
 
     for (const dosificacion of this.dosificaciones) {
-      console.log('Enviando dosificación:', dosificacion);
+      // Validar idProducto e idPlanta antes de proceder
+      if (!dosificacion.idProducto || !dosificacion.idPlanta) {
+        console.error(
+          `Datos inválidos: idProducto=${dosificacion.idProducto}, idPlanta=${dosificacion.idPlanta}`
+        );
+        omitidas++;
+        continue;
+      }
 
       try {
-        dosificacion.cemento = dosificacion.cemento ?? 0;
-        dosificacion.aguaTotal = dosificacion.aguaTotal ?? 0;
-        dosificacion.arena = dosificacion.arena ?? 0;
-        dosificacion.gravilla = dosificacion.gravilla ?? 0;
-        dosificacion.aditivo1 = dosificacion.aditivo1 ?? 0;
-        dosificacion.aditivo2 = dosificacion.aditivo2 ?? 0;
-        dosificacion.aditivo3 = dosificacion.aditivo3 ?? 0;
-        dosificacion.aditivo4 = dosificacion.aditivo4 ?? 0;
-        dosificacion.aditivo5 = dosificacion.aditivo5 ?? 0;
-        dosificacion.aditivo6 = dosificacion.aditivo6 ?? 0;
-        dosificacion.aditivo7 = dosificacion.aditivo7 ?? 0;
-        dosificacion.aditivo8 = dosificacion.aditivo8 ?? 0;
-        dosificacion.descripcion = dosificacion.descripcion ?? '';
-        dosificacion.idPlanta = dosificacion.idPlanta ?? 1;
-        dosificacion.idProducto = dosificacion.idProducto ?? 0;
-
-        const producto = {
-          numeroFormula: dosificacion.idProducto,
-          familia: 0,
-          descripcionATecnica: dosificacion.descripcion,
-          insertDate: new Date().toISOString(),
-        };
-
-        const dosificacionPayload = {
-          idDosificacion: dosificacion.idDosificacion ?? 0,
-          idProducto: dosificacion.idProducto,
-          cemento: dosificacion.cemento,
-          aguaTotal: dosificacion.aguaTotal,
-          arena: dosificacion.arena,
-          gravilla: dosificacion.gravilla,
-          aditivo1: dosificacion.aditivo1,
-          aditivo2: dosificacion.aditivo2,
-          aditivo3: dosificacion.aditivo3,
-          aditivo4: dosificacion.aditivo4,
-          aditivo5: dosificacion.aditivo5,
-          aditivo6: dosificacion.aditivo6,
-          aditivo7: dosificacion.aditivo7,
-          aditivo8: dosificacion.aditivo8,
-          nombreAditivo2: dosificacion.nombreAditivo2 ?? 'string',
-          nombreAditivo3: dosificacion.nombreAditivo3 ?? 'string',
-          nombreAditivo4: dosificacion.nombreAditivo4 ?? 'string',
-          nombreAditivo5: dosificacion.nombreAditivo5 ?? 'string',
-          nombreAditivo6: dosificacion.nombreAditivo6 ?? 'string',
-          nombreAditivo7: dosificacion.nombreAditivo7 ?? 'string',
-          nombreAditivo8: dosificacion.nombreAditivo8 ?? 'string',
-          descripcion: dosificacion.descripcion ?? 'string',
-          idPlanta: dosificacion.idPlanta,
-          producto: producto,
-        };
-
-        await this.apiService
-          .createDosificacion(dosificacionPayload)
+        // Verificar si la dosificación existe
+        const existeDosificacion = await this.apiService
+          .getDosificacionByProductoYPlanta(
+            dosificacion.idProducto,
+            dosificacion.idPlanta
+          )
           .toPromise();
+
+        if (existeDosificacion) {
+          console.log(
+            `Dosificación omitida: Producto ${dosificacion.idProducto}, Planta ${dosificacion.idPlanta}`
+          );
+          omitidas++;
+          continue; // Omitir si ya existe
+        }
+      } catch (error: any) {
+        // Manejar específicamente el error 404 (dosificación no encontrada)
+        if (error.status !== 404) {
+          console.error('Error al verificar dosificación:', error);
+          omitidas++;
+          continue; // Omitir si ocurre otro tipo de error
+        }
+      }
+
+      try {
+        // Crear dosificación si no existe
+        await this.apiService.createDosificacion(dosificacion).toPromise();
         creadasCorrectamente++;
-      } catch (error: unknown) {
+      } catch (error) {
         console.error('Error al insertar dosificación:', error);
         omitidas++;
       }
@@ -400,6 +377,4 @@ export class CargaMaestroComponent {
       inputFile.value = ''; // Resetea el valor del input
     }
   }
-
-
 }

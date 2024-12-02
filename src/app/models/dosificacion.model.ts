@@ -22,4 +22,6 @@ export interface Dosificacion {
   aditivo8?: number;
   idPlanta: number;
   descripcion: string;
+
+  [key: string]: any;
 }

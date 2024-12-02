@@ -159,24 +159,45 @@ export class DosificacionComponent implements OnInit {
   cargarUltimoProducto(): void {
     this.apiService.getUltimoProducto().subscribe(
       (producto) => {
-        this.ultimoProducto = producto;
-        if (this.ultimoProducto) {
-          this.dosificacion.idProducto = this.ultimoProducto.numeroFormula;
+        if (producto) {
+          this.ultimoProducto = producto;
+          this.dosificacion.idProducto = producto.numeroFormula; // Asigna el número de fórmula
+          console.log('Último producto cargado:', producto); // Depuración
+        } else {
+          console.error('No se encontró un último producto válido.');
         }
-        this.resetFormulario();
-        this.isUpdating = false;
       },
       (error) => {
         console.error('Error al cargar el último producto:', error);
       }
-
-
     );
   }
 
+
   onSubmit(): void {
+    // Inicializar valores predeterminados para los campos opcionales
+    this.dosificacion = {
+      ...this.dosificacion,
+      nombreAditivo2: this.dosificacion.nombreAditivo2 || '',
+      aditivo2: this.dosificacion.aditivo2 || 0,
+      nombreAditivo3: this.dosificacion.nombreAditivo3 || '',
+      aditivo3: this.dosificacion.aditivo3 || 0,
+      nombreAditivo4: this.dosificacion.nombreAditivo4 || '',
+      aditivo4: this.dosificacion.aditivo4 || 0,
+      nombreAditivo5: this.dosificacion.nombreAditivo5 || '',
+      aditivo5: this.dosificacion.aditivo5 || 0,
+      nombreAditivo6: this.dosificacion.nombreAditivo6 || '',
+      aditivo6: this.dosificacion.aditivo6 || 0,
+      nombreAditivo7: this.dosificacion.nombreAditivo7 || '',
+      aditivo7: this.dosificacion.aditivo7 || 0,
+      nombreAditivo8: this.dosificacion.nombreAditivo8 || '',
+      aditivo8: this.dosificacion.aditivo8 || 0,
+    };
+
+    console.log('Datos enviados al backend:', this.dosificacion);
+
     if (this.isUpdating) {
-      // Si está en modo de actualización, actualiza directamente
+      // Lógica de actualización existente
       this.apiService
         .actualizarDosificacion(this.dosificacion.idProducto, this.dosificacion)
         .subscribe(
@@ -200,7 +221,7 @@ export class DosificacionComponent implements OnInit {
           }
         );
     } else if (!this.isCheckingExisting) {
-      // Si no está en modo de actualización y no se ha verificado la existencia
+      // Lógica para registrar una nueva dosificación
       this.isCheckingExisting = true;
 
       this.apiService
@@ -210,7 +231,6 @@ export class DosificacionComponent implements OnInit {
         )
         .subscribe(
           (existingDosificacion) => {
-            // Si existe para el mismo idProducto e idPlanta
             Swal.fire({
               title: 'Dosificación existente',
               text: '¿Deseas actualizar la dosificación existente o ingresar un nuevo producto?',
@@ -220,18 +240,16 @@ export class DosificacionComponent implements OnInit {
               cancelButtonText: 'Ingresar Nuevo Producto',
             }).then((result) => {
               if (result.isConfirmed) {
-                // Carga la dosificación existente y habilita el modo de actualización
                 this.dosificacion = existingDosificacion;
                 this.isUpdating = true;
               } else {
                 this.router.navigate(['/nuevo-producto-at']);
               }
-              this.isCheckingExisting = false; // Reinicia el estado
+              this.isCheckingExisting = false;
             });
           },
           (error) => {
             if (error.status === 404) {
-              // Si no existe la dosificación para este idProducto e idPlanta, crea una nueva
               this.apiService.createDosificacion(this.dosificacion).subscribe(
                 () => {
                   Swal.fire({
@@ -251,9 +269,10 @@ export class DosificacionComponent implements OnInit {
                 }
               );
             }
-            this.isCheckingExisting = false; // Reinicia el estado
+            this.isCheckingExisting = false;
           }
         );
     }
   }
+
 }

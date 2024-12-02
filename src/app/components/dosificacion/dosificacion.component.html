@@ -37,7 +37,7 @@
     <!-- Formulario de dosificación -->
     <form (ngSubmit)="onSubmit()" #dosificacionForm="ngForm" class="mb-5">
       <div class="row">
-        <!-- Cemento -->
+        <!-- Cemento y Agua Total -->
         <div class="col-md-6">
           <div class="form-group mb-3">
             <label for="cemento">
@@ -53,7 +53,6 @@
             />
           </div>
         </div>
-        <!-- Agua Total -->
         <div class="col-md-6">
           <div class="form-group mb-3">
             <label for="aguaTotal">
@@ -72,7 +71,7 @@
       </div>
 
       <div class="row">
-        <!-- Arena -->
+        <!-- Arena y Gravilla -->
         <div class="col-md-6">
           <div class="form-group mb-3">
             <label for="arena">
@@ -88,7 +87,6 @@
             />
           </div>
         </div>
-        <!-- Gravilla -->
         <div class="col-md-6">
           <div class="form-group mb-3">
             <label for="gravilla">
@@ -106,42 +104,54 @@
         </div>
       </div>
 
-      <!-- Aditivos -->
-      <div class="row">
+      <!-- Aditivos en pares -->
+      <div class="row" *ngFor="let i of [1, 2, 3, 4]">
         <div class="col-md-6">
           <div class="form-group mb-3">
-            <label for="aditivo1">
-              <i class="fas fa-flask"></i> Aditivo Base 1 (kg)
-            </label>
-            <input
-              type="number"
-              id="aditivo1"
-              [(ngModel)]="dosificacion.aditivo1"
-              name="aditivo1"
-              class="form-control"
-            />
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group mb-3">
-            <label for="aditivo2">
-              <i class="fas fa-flask"></i> Aditivo 2
+            <label for="nombreAditivo{{ i }}">
+              <i class="fas fa-flask"></i> Aditivo {{ i * 2 - 1 }}
             </label>
             <select
-              id="aditivo2"
-              [(ngModel)]="dosificacion.nombreAditivo2"
-              name="nombreAditivo2"
+              id="nombreAditivo{{ i }}"
+              [(ngModel)]="dosificacion['nombreAditivo' + (i * 2 - 1)]"
+              [name]="'nombreAditivo' + (i * 2 - 1)"
               class="form-control"
             >
-              <option *ngFor="let aditivo of listaAditivos" [value]="aditivo">
-                {{ aditivo }}
+              <option *ngFor="let item of listaAditivos" [value]="item">
+                {{ item }}
               </option>
             </select>
             <input
               type="number"
-              id="aditivo2Cantidad"
-              [(ngModel)]="dosificacion.aditivo2"
-              name="aditivo2Cantidad"
+              id="aditivo{{ i * 2 - 1 }}"
+              [(ngModel)]="dosificacion['aditivo' + (i * 2 - 1)]"
+              [name]="'aditivo' + (i * 2 - 1)"
+              placeholder="Cantidad (kg)"
+              class="form-control mt-2"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group mb-3">
+            <label for="nombreAditivo{{ i + 1 }}">
+              <i class="fas fa-flask"></i> Aditivo {{ i * 2 }}
+            </label>
+            <select
+              id="nombreAditivo{{ i * 2 }}"
+              [(ngModel)]="dosificacion['nombreAditivo' + i * 2]"
+              [name]="'nombreAditivo' + i * 2"
+              class="form-control"
+            >
+              <option *ngFor="let item of listaAditivos" [value]="item">
+                {{ item }}
+              </option>
+            </select>
+            <input
+              type="number"
+              id="aditivo{{ i * 2 }}"
+              [(ngModel)]="dosificacion['aditivo' + i * 2]"
+              [name]="'aditivo' + i * 2"
               placeholder="Cantidad (kg)"
               class="form-control mt-2"
             />
@@ -149,25 +159,6 @@
         </div>
       </div>
 
-      <!-- Selección de Planta -->
-      <div class="form-group mb-4">
-        <label for="planta">
-          <i class="fas fa-industry"></i> Seleccione Planta de Dosificación
-        </label>
-        <select
-          [(ngModel)]="dosificacion.idPlanta"
-          name="idPlanta"
-          id="planta"
-          class="form-control"
-        >
-          <option value="1">Planta Taltal</option>
-          <option value="2">Planta Mejillones</option>
-          <option value="3">Planta Antofagasta</option>
-          <option value="4">Planta María Elena</option>
-          <option value="5">Planta Calama</option>
-          <option value="6">Planta Tocopilla</option>
-        </select>
-      </div>
 
       <!-- Botones -->
       <div class="text-center mb-4">
@@ -236,6 +227,9 @@
             <th>Aditivo 3 (kg)</th>
             <th>Aditivo 4 (kg)</th>
             <th>Aditivo 5 (kg)</th>
+            <th>Aditivo 6 (kg)</th>
+            <th>Aditivo 7 (kg)</th>
+            <th>Aditivo 8 (kg)</th>
           </tr>
         </thead>
         <tbody>
@@ -260,6 +254,9 @@
             <td>{{ dosificacion.aditivo3 }}</td>
             <td>{{ dosificacion.aditivo4 }}</td>
             <td>{{ dosificacion.aditivo5 }}</td>
+            <td>{{ dosificacion.aditivo6 }}</td>
+            <td>{{ dosificacion.aditivo7 }}</td>
+            <td>{{ dosificacion.aditivo8 }}</td>
           </tr>
         </tbody>
       </table>

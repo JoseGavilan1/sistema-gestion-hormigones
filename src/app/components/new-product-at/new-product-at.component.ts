@@ -44,10 +44,15 @@ export class NewProductAtComponent implements OnInit {
   }
 
   cargarFamiliasNuevas(): void {
-    // Extender el rango de nuevas familias hasta 80000
-    this.familiasNuevas = Array.from(
-      { length: (80000 - 2000) / 1000 + 1 }, // Ajusta el rango aquí
+    // Crear un rango amplio de familias (puedes ajustar según tus necesidades)
+    const rangoCompleto = Array.from(
+      { length: (80000 - 2000) / 1000 + 1 },
       (_, i) => 2000 + i * 1000
+    );
+
+    // Filtrar las familias nuevas que no están en las familias existentes
+    this.familiasNuevas = rangoCompleto.filter(
+      (familia) => !this.familias.includes(familia)
     );
   }
 

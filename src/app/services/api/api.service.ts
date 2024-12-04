@@ -13,7 +13,8 @@ import { AditivoEspecial } from '../../models/aditivoEspecial.model';
 export class ApiService {
   //private apiUrlBase = 'https://localhost:44364/api/';
 
-  private apiUrlBase = 'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
+  private apiUrlBase =
+    'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
 
   constructor(private http: HttpClient) {}
 
@@ -131,12 +132,18 @@ export class ApiService {
     return this.http.get<Dosificacion[]>(`${this.apiUrlBase}dosificacion`);
   }
 
-  getPorcentajePerdida(plantaId: number, materialId: number): Observable<number> {
+  getPorcentajePerdida(
+    plantaId: number,
+    materialId: number
+  ): Observable<number> {
     const url = `${this.apiUrlBase}MateriaPrima/perdida/${plantaId}/${materialId}`;
     return this.http.get<number>(url);
   }
 
-  getMateriaPrimaPorNombre(plantaId: number, nombre: string): Observable<MateriaPrima> {
+  getMateriaPrimaPorNombre(
+    plantaId: number,
+    nombre: string
+  ): Observable<MateriaPrima> {
     const url = `${this.apiUrlBase}MateriaPrima/buscar/${plantaId}/${nombre}`;
     return this.http.get<MateriaPrima>(url);
   }
@@ -159,14 +166,7 @@ export class ApiService {
     const params = new HttpParams()
       .set('descripcionATecnica', descripcionATecnica)
       .set('idPlanta', idPlanta.toString());
-
-    return this.http.get<Dosificacion>(`${this.apiUrlBase}dosificacion/nomenclatura`, { params });
+    return this.http.get<Dosificacion>(`${this.apiUrlBase}/Dosificacion/nomenclatura`, { params });
   }
-
-
-
-
-
-
 
 }

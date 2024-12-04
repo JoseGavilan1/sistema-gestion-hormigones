@@ -37,7 +37,8 @@ export class CosteoProductoComponent {
   ];
 
   nomenclatura: string | null = null;
-  descripcionATecnica: string = ''; // Para almacenar la nomenclatura
+  descripcionATecnica: string = ''; // Para almacenar la nomenclatur
+  tipoBusqueda: 'producto' | 'nomenclatura' = 'producto'; // Por defecto, es producto
 
   otros: number = 0;
   isGeneratingQuote: boolean = false;
@@ -116,16 +117,16 @@ export class CosteoProductoComponent {
   }
 
   buscarPorNomenclatura(descripcionATecnica: string, idPlanta: number): void {
+    this.tipoBusqueda = 'nomenclatura'; // Cambia el tipo de búsqueda
     if (!descripcionATecnica || !idPlanta) {
       Swal.fire({
         icon: 'warning',
         title: 'Campos incompletos',
-        text: 'Por favor, ingresa una nomenclatura válida y selecciona una planta.',
+        text: 'Por favor, ingresa una descripción técnica válida y selecciona una planta.',
       });
       return;
     }
 
-    // Mostrar un mensaje de carga
     Swal.fire({
       title: 'Cargando dosificación...',
       text: 'Por favor espera',
@@ -135,30 +136,50 @@ export class CosteoProductoComponent {
       },
     });
 
-    // Llamar al método del servicio
-    this.apiService.getDosificacionByNomenclatura(descripcionATecnica, idPlanta).subscribe({
-      next: (dosificacion) => {
-        this.dosificacion = dosificacion;
-        Swal.close(); // Cerrar el mensaje de carga
-        Swal.fire({
-          icon: 'success',
-          title: 'Dosificación encontrada',
-          text: `Se encontró la dosificación para la nomenclatura: ${descripcionATecnica}`,
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      },
-      error: (err) => {
-        Swal.close(); // Cerrar el mensaje de carga
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se encontró una dosificación para la nomenclatura ingresada y planta seleccionada.',
-        });
-      },
-    });
+    this.apiService
+      .getDosificacionByNomenclatura(descripcionATecnica, idPlanta)
+      .subscribe({
+        next: (dosificacion) => {
+          this.dosificacion = dosificacion;
+          Swal.close();
+          Swal.fire({
+            icon: 'success',
+            title: 'Dosificación encontrada',
+            text: `Se encontró la dosificación para la nomenclatura: ${descripcionATecnica}`,
+            timer: 1500,
+            showConfirmButton: false,
+          });
+          this.ufService.getUfValue().subscribe({
+            next: (ufData) => {
+              this.ufValue = ufData;
+              this.descripcionATecnica = descripcionATecnica;
+              this.obtenerPreciosMateriasPrimas();
+            },
+            error: () => {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo obtener el valor de la UF.',
+              });
+            },
+          });
+        },
+        error: () => {
+          Swal.close();
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se encontró una dosificación para la descripción técnica ingresada y planta seleccionada.',
+          });
+        },
+      });
   }
 
+
+  activarBusqueda(tipo: 'producto' | 'nomenclatura'): void {
+    this.tipoBusqueda = tipo;
+    console.log(`Tipo de búsqueda activado: ${this.tipoBusqueda}`);
+  }
 
   costearProductoConMargenYOtros() {
     if (this.dosificacion) {
@@ -229,12 +250,9 @@ export class CosteoProductoComponent {
         uf: productos.reduce((acc, p) => acc + p.valorUF, 0),
         clp: productos.reduce((acc, p) => acc + p.valorReferencia, 0),
         iva: 0.19 * productos.reduce((acc, p) => acc + p.valorReferencia, 0),
-        total:
-          productos.reduce((acc, p) => acc + p.valorReferencia, 0) * 1.19,
-      };// URL de ImgBB o similar
+        total: productos.reduce((acc, p) => acc + p.valorReferencia, 0) * 1.19,
+      }; // URL de ImgBB o similar
       this.pdfService.generarCotizacionPdf(cliente, productos, totales);
-
-
 
       Swal.close();
       Swal.fire({
@@ -245,14 +263,10 @@ export class CosteoProductoComponent {
     }, 3000);
   }
 
-
   private convertPdfToWord(pdfBuffer: ArrayBuffer): ArrayBuffer {
     // Aquí puedes usar una biblioteca o API para la conversión de PDF a Word
     throw new Error('Función de conversión pendiente de implementación');
   }
-
-
-
 
   costearProducto() {
     if (this.idProducto && this.plantaSeleccionada !== null) {
@@ -464,7 +478,8 @@ export class CosteoProductoComponent {
     return Math.round(valor * 100) / 100;
   }
 
-  buscarProducto() {
+  buscarProducto(): void {
+    this.tipoBusqueda = 'producto'; // Cambia el tipo de búsqueda
     if (this.idProducto && this.plantaSeleccionada !== null) {
       Swal.fire({
         title: 'Cargando dosificación...',
@@ -491,13 +506,12 @@ export class CosteoProductoComponent {
               timer: 1500,
               showConfirmButton: false,
             });
-
             this.ufService.getUfValue().subscribe({
               next: (ufData) => {
                 this.ufValue = ufData;
                 this.obtenerPreciosMateriasPrimas();
               },
-              error: (err) => {
+              error: () => {
                 Swal.fire({
                   icon: 'error',
                   title: 'Error',
@@ -506,7 +520,7 @@ export class CosteoProductoComponent {
               },
             });
           },
-          error: (err) => {
+          error: () => {
             Swal.close();
             Swal.fire({
               icon: 'error',

@@ -70,7 +70,7 @@
               type="text"
               class="form-control"
               [(ngModel)]="descripcionATecnica"
-              placeholder="Ingresa la Descripción Técnica"
+              placeholder="Ingresa la Descripción Comercial"
             />
           </div>
           <button
@@ -79,7 +79,7 @@
               buscarPorNomenclatura(descripcionATecnica, plantaSeleccionada)
             "
           >
-            <i class="fas fa-search"></i> Buscar por Nomenclatura
+            <i class="fas fa-search"></i> Buscar descr. comercial
           </button>
 
           <div *ngIf="dosificacion" class="fade-in">

@@ -13,8 +13,7 @@ import { AditivoEspecial } from '../../models/aditivoEspecial.model';
 export class ApiService {
   //private apiUrlBase = 'https://localhost:44364/api/';
 
-  private apiUrlBase =
-    'https://backendcopatapirest20241105111006.azurewebsites.net/api/';
+  private apiUrlBase ='https://backendcopatapirest20241105111006.azurewebsites.net/api/';
 
   constructor(private http: HttpClient) {}
 
@@ -166,7 +165,7 @@ export class ApiService {
     const params = new HttpParams()
       .set('descripcionATecnica', descripcionATecnica)
       .set('idPlanta', idPlanta.toString());
-    return this.http.get<Dosificacion>(`${this.apiUrlBase}/Dosificacion/nomenclatura`, { params });
+    return this.http.get<Dosificacion>(`${this.apiUrlBase}Dosificacion/nomenclatura`, { params });
   }
 
 }

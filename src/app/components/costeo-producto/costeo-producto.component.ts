@@ -116,8 +116,30 @@ export class CosteoProductoComponent {
     }
   }
 
+  transformarNomenclaturaParaBD(nomenclatura: string): string {
+    if (!nomenclatura) return nomenclatura;
+
+    // Extraer partes del texto con una expresión regular
+    const match = nomenclatura.match(/([A-Z]+)(\d+)\((\d+)\)-(\d+)-(\d+)/);
+
+    if (match) {
+      const [, tipo, resistencia, parametro, dias, fecha] = match;
+
+      // Asegurarse de que la resistencia siempre tenga un decimal (.0)
+      const resistenciaFormateada = parseFloat(resistencia).toFixed(1);
+
+      // Formatear el texto al estilo de la base de datos (asegurar solo un espacio)
+      const transformada = `${tipo.trim()} ${resistenciaFormateada}(${parametro})${dias}/${fecha}`;
+      console.log('Resultado de transformación:', transformada); // Verificar el resultado aquí
+      return transformada;
+    }
+
+    return nomenclatura; // Si no coincide, se retorna como está
+  }
+
   buscarPorNomenclatura(descripcionATecnica: string, idPlanta: number): void {
-    this.tipoBusqueda = 'nomenclatura'; // Cambia el tipo de búsqueda
+    this.tipoBusqueda = 'nomenclatura';
+
     if (!descripcionATecnica || !idPlanta) {
       Swal.fire({
         icon: 'warning',
@@ -126,6 +148,14 @@ export class CosteoProductoComponent {
       });
       return;
     }
+
+    // Transformar nomenclatura al formato esperado por la base de datos
+    const nomenclaturaTransformada =
+      this.transformarNomenclaturaParaBD(descripcionATecnica);
+    console.log(
+      'Buscando con nomenclatura transformada para BD:',
+      nomenclaturaTransformada
+    );
 
     Swal.fire({
       title: 'Cargando dosificación...',
@@ -137,7 +167,7 @@ export class CosteoProductoComponent {
     });
 
     this.apiService
-      .getDosificacionByNomenclatura(descripcionATecnica, idPlanta)
+      .getDosificacionByNomenclatura(nomenclaturaTransformada, idPlanta)
       .subscribe({
         next: (dosificacion) => {
           this.dosificacion = dosificacion;
@@ -152,7 +182,7 @@ export class CosteoProductoComponent {
           this.ufService.getUfValue().subscribe({
             next: (ufData) => {
               this.ufValue = ufData;
-              this.descripcionATecnica = descripcionATecnica;
+              this.descripcionATecnica = nomenclaturaTransformada;
               this.obtenerPreciosMateriasPrimas();
             },
             error: () => {
@@ -174,7 +204,6 @@ export class CosteoProductoComponent {
         },
       });
   }
-
 
   activarBusqueda(tipo: 'producto' | 'nomenclatura'): void {
     this.tipoBusqueda = tipo;

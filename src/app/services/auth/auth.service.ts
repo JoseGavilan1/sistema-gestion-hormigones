@@ -9,7 +9,7 @@ import { catchError, map } from 'rxjs/operators';
 })
 export class AuthService {
   private apiUrl =
-    'https://apicopat2025-dtf6beakara2bbb6.brazilsouth-01.azurewebsites.net/api/auth'; // URL de tu API
+    'https://backendcopat-dsf0eshgeeghbwfs.chilecentral-01.azurewebsites.net/api/auth'; // URL de tu API
 
   constructor(private http: HttpClient, private router: Router) {}
 

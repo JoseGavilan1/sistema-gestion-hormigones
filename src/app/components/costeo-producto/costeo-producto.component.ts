@@ -52,6 +52,10 @@ export class CosteoProductoComponent {
   utilidad: number = 0; // Diferencia entre costo de producción y costo de venta
   precioVenta: number = 0; // Precio final de venta
 
+  peaje: number = 0;
+viajes: number = 2; // Valor por defecto para ida y vuelta
+sobreDistancia: number = 0;
+movilizacion: number = 0;
   precioCemento: number = 0;
   precioAgua: number = 0;
   precioArena: number = 0;
@@ -211,86 +215,111 @@ export class CosteoProductoComponent {
   }
 
   costearProductoConMargenYOtros() {
-    if (this.dosificacion) {
-      this.costoFinal = this.redondear(this.costoTotal + this.costoAgua);
-      this.precioVenta = this.redondear(
-        this.costoFinal + this.margenEnUf + this.otros
-      );
+  // Calcula el costo total sumando todos los componentes
+  const costoTransporte = (this.peaje * this.viajes) + this.sobreDistancia + this.movilizacion;
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Costeo completado',
-        text: 'El costeo del producto se ha calculado correctamente.',
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Primero busca la dosificación del producto antes de calcular el costeo.',
-      });
-    }
-  }
+  this.precioVenta = this.costoFinal + this.margenEnUf + this.otros + costoTransporte;
+
+  // Puedes mostrar el desglose en consola para debug
+  console.log('Desglose de costos:', {
+    costoProduccion: this.costoFinal,
+    peaje: this.peaje * this.viajes,
+    sobreDistancia: this.sobreDistancia,
+    movilizacion: this.movilizacion,
+    margen: this.margenEnUf,
+    otros: this.otros,
+    total: this.precioVenta
+  });
+}
   generarPrecotizacion() {
-    if (!this.dosificacion) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Debe calcular el costeo antes de generar la pre-cotización.',
-      });
-      return;
-    }
-
+  if (!this.dosificacion) {
     Swal.fire({
-      html: `<div>
-               <img src="https://res.cloudinary.com/dk5bjcrb8/image/upload/v1732548351/gif-copat_zjppwk.gif" alt="Generando Pre-cotización" width="150">
-               <p class="mt-3">Generando cotización...</p>
-             </div>`,
-      allowOutsideClick: false,
-      showConfirmButton: false,
+      icon: 'error',
+      title: 'Error',
+      text: 'Debe calcular el costeo antes de generar la pre-cotización.',
     });
-
-    setTimeout(() => {
-      const cliente = {
-        nombre: 'Cliente ABC',
-        rut: '12.345.678-9',
-        direccion: 'Av. Siempre Viva 742',
-        comuna: 'Springfield',
-        ciudad: 'Springfield',
-        telefono: '+56 9 1234 5678',
-        email: 'cliente@correo.com',
-        vendedor: 'Juan Pérez',
-      };
-
-      const productos = [
-        {
-          cantidad: 1,
-          unMedida: 'M3',
-          descripcion: `Hormigón ID ${this.idProducto}`,
-          valorUF: this.precioVenta,
-          valorReferencia: this.precioVenta * this.ufValue,
-        },
-      ];
-
-      const totales = {
-        numeroCotizacion: this.idProducto, // Usa el ID como número de cotización
-        fecha: new Date().toLocaleDateString(),
-        uf: productos.reduce((acc, p) => acc + p.valorUF, 0),
-        clp: productos.reduce((acc, p) => acc + p.valorReferencia, 0),
-        iva: 0.19 * productos.reduce((acc, p) => acc + p.valorReferencia, 0),
-        total: productos.reduce((acc, p) => acc + p.valorReferencia, 0) * 1.19,
-      }; // URL de ImgBB o similar
-      this.pdfService.generarCotizacionPdf(cliente, productos, totales);
-
-      Swal.close();
-      Swal.fire({
-        icon: 'success',
-        title: 'Cotización generada',
-        text: 'El archivo PDF ha sido generado correctamente.',
-      });
-    }, 3000);
+    return;
   }
+
+  this.isGeneratingQuote = true;
+
+  // Preparar los datos para el PDF
+  const costosAdicionales = {
+    costoProduccion: this.costoFinal,
+    peaje: this.peaje * this.viajes,
+    sobreDistancia: this.sobreDistancia,
+    movilizacion: this.movilizacion,
+    margen: this.margenEnUf,
+    otros: this.otros,
+    viajes: this.viajes
+  };
+
+  // Datos del cliente (puedes modificar esto según necesites)
+  const cliente = {
+    nombre: 'Cliente ABC',
+    rut: '12.345.678-9',
+    direccion: 'Av. Siempre Viva 742',
+    comuna: 'Springfield',
+    ciudad: 'Springfield',
+    telefono: '+56 9 1234 5678',
+    email: 'cliente@correo.com',
+    vendedor: 'Juan Pérez',
+  };
+
+  // Determinar la descripción del producto según el tipo de búsqueda
+  let descripcionProducto = '';
+  if (this.tipoBusqueda === 'producto' && this.idProducto) {
+    descripcionProducto = `Hormigón ID ${this.idProducto}`;
+  } else if (this.tipoBusqueda === 'nomenclatura' && this.descripcionATecnica) {
+    descripcionProducto = `Hormigón ${this.descripcionATecnica}`;
+  } else {
+    descripcionProducto = 'Hormigón Especial';
+  }
+
+  const productos = [{
+    cantidad: 1,
+    unMedida: 'M3',
+    descripcion: descripcionProducto,
+    valorUF: this.precioVenta,
+    valorReferencia: this.precioVenta * this.ufValue,
+  }];
+
+  const totales = {
+    numeroCotizacion: this.tipoBusqueda === 'producto'
+      ? `PC-${this.idProducto}`
+      : `PC-${new Date().getTime()}`,
+    fecha: new Date().toLocaleDateString('es-CL'),
+    uf: this.precioVenta,
+    clp: this.precioVenta * this.ufValue,
+    iva: this.precioVenta * this.ufValue * 0.19,
+    total: this.precioVenta * this.ufValue * 1.19,
+  };
+
+  // Mostrar loading mientras se genera el PDF
+  Swal.fire({
+    html: `<div>
+             <img src="https://res.cloudinary.com/dk5bjcrb8/image/upload/v1732548351/gif-copat_zjppwk.gif" alt="Generando Pre-cotización" width="150">
+             <p class="mt-3">Generando cotización...</p>
+           </div>`,
+    allowOutsideClick: false,
+    showConfirmButton: false,
+  });
+
+  // Generar el PDF con todos los datos
+  this.pdfService.generarCotizacionPdf(cliente, productos, totales, costosAdicionales);
+
+  // Cerrar el loading y mostrar mensaje de éxito
+  setTimeout(() => {
+    this.isGeneratingQuote = false;
+    Swal.close();
+    Swal.fire({
+      icon: 'success',
+      title: 'Pre-cotización generada',
+      text: 'El archivo PDF ha sido generado correctamente.',
+      timer: 2000,
+    });
+  }, 2000);
+}
 
   private convertPdfToWord(pdfBuffer: ArrayBuffer): ArrayBuffer {
     // Aquí puedes usar una biblioteca o API para la conversión de PDF a Word

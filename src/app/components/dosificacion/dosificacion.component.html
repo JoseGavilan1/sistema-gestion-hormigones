@@ -1,12 +1,10 @@
 <app-navbar></app-navbar>
 <div class="d-flex justify-content-between">
   <div class="container mt-4">
-    <!-- Botón "Volver atrás" -->
     <button class="btn btn-danger mb-3" [routerLink]="['/menu-area-tecnica']">
       <i class="fas fa-arrow-left"></i> Volver atrás
     </button>
 
-    <!-- Título -->
     <h3 class="text-center text-primary">
       <i class="fas fa-flask"></i> Formulario de Dosificación
     </h3>
@@ -14,7 +12,6 @@
       para el último producto ingresado
     </h4>
 
-    <!-- Información del último producto -->
     <div class="card mb-4 shadow">
       <div class="card-body">
         <p>
@@ -34,10 +31,8 @@
       </div>
     </div>
 
-    <!-- Formulario de dosificación -->
     <form (ngSubmit)="onSubmit()" #dosificacionForm="ngForm" class="mb-5">
       <div class="row">
-        <!-- Cemento y Agua Total -->
         <div class="col-md-6">
           <div class="form-group mb-3">
             <label for="cemento">
@@ -71,7 +66,6 @@
       </div>
 
       <div class="row">
-        <!-- Arena y Gravilla -->
         <div class="col-md-6">
           <div class="form-group mb-3">
             <label for="arena">
@@ -104,7 +98,6 @@
         </div>
       </div>
 
-      <!-- Aditivos en pares -->
       <div class="row" *ngFor="let i of [1, 2, 3, 4]">
         <div class="col-md-6">
           <div class="form-group mb-3">
@@ -159,8 +152,6 @@
         </div>
       </div>
 
-
-      <!-- Botones -->
       <div class="text-center mb-4">
         <button type="submit" class="btn btn-success me-2">
           <i class="fas fa-save"></i>
@@ -177,7 +168,6 @@
     </form>
   </div>
 
-  <!-- Listado de dosificaciones -->
   <div class="container mt-4">
     <h3 class="text-center text-primary mb-4">
       <i class="fas fa-list"></i> Listado de Dosificaciones
@@ -203,14 +193,12 @@
       </div>
     </div>
 
-    <!-- Spinner de carga -->
     <div *ngIf="isLoading" class="text-center mt-4">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Cargando...</span>
       </div>
     </div>
 
-    <!-- Tabla de dosificaciones -->
     <div *ngIf="!isLoading" class="table-responsive mt-4">
       <table class="table table-striped table-hover">
         <thead class="table-dark">
@@ -270,7 +258,6 @@
     </div>
   </div>
 
-  <!-- Botón "Ir arriba" -->
   <button
     class="scroll-to-top btn btn-primary"
     (click)="scrollToTop()"

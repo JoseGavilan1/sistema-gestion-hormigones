@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 export class PdfService {
   constructor(private http: HttpClient) {}
 
-  generarCotizacionPdf(cliente: any, productos: any[], totales: any): void {
+  generarCotizacionPdf(cliente: any, productos: any[], totales: any, costosAdicionales: any): void {
     const doc = new jsPDF();
 
     // Cargar la imagen desde los assets
@@ -23,31 +23,29 @@ export class PdfService {
           const img = new Image();
           img.src = imageBase64;
           img.onload = () => {
-            const aspectRatio = img.width / img.height; // Relación de aspecto
-            const maxWidth = 40; // Máximo ancho permitido
-            const maxHeight = 40; // Máximo alto permitido
+            const aspectRatio = img.width / img.height;
+            const maxWidth = 40;
+            const maxHeight = 40;
             let width = maxWidth;
             let height = maxHeight;
 
             if (aspectRatio > 1) {
-              // Imagen horizontal
               height = maxWidth / aspectRatio;
             } else {
-              // Imagen vertical o cuadrada
               width = maxHeight * aspectRatio;
             }
 
             // Agregar la imagen al PDF
-            doc.addImage(imageBase64, 'PNG', 10, 10, width, height); // Ajusta posición y tamaño
+            doc.addImage(imageBase64, 'PNG', 10, 10, width, height);
 
             // Encabezado
             doc.setFontSize(16);
             doc.setFont('helvetica', 'bold');
-            doc.text('Constructora y Hormigones Copat Ltda.', 55, 30); // Desplaza hacia abajo el texto
+            doc.text('Constructora y Hormigones Copat Ltda.', 55, 30);
 
             doc.setFontSize(12);
-            doc.text(`Cotización Nº: ${totales.numeroCotizacion}`, 10, 60); // Desplaza hacia abajo
-            doc.text(`Fecha: ${totales.fecha}`, 10, 68); // Desplaza hacia abajo
+            doc.text(`Pre-Cotización Nº: ${totales.numeroCotizacion}`, 10, 60);
+            doc.text(`Fecha: ${totales.fecha}`, 10, 68);
 
             // Información del cliente
             doc.setFont('helvetica', 'bold');
@@ -65,14 +63,34 @@ export class PdfService {
             ];
             autoTable(doc, {
               body: clienteData,
-              startY: 85, // Ajusta la posición inicial de la tabla
+              startY: 85,
+              theme: 'plain',
+              margin: { left: 10 },
+            });
+
+            // Detalles de costos adicionales
+            doc.setFont('helvetica', 'bold');
+            doc.text('Detalles de Costos:', 10, doc.previousAutoTable?.finalY + 10);
+
+            const costosData = [
+              ['Costo de Producción:', `${costosAdicionales.costoProduccion.toFixed(2)} UF`],
+              ['Peaje (viajes x'+costosAdicionales.viajes+'):', `${costosAdicionales.peaje.toFixed(2)} UF`],
+              ['Sobre Distancia:', `${costosAdicionales.sobreDistancia.toFixed(2)} UF`],
+              ['Movilización:', `${costosAdicionales.movilizacion.toFixed(2)} UF`],
+              ['Margen:', `${costosAdicionales.margen.toFixed(2)} UF`],
+              ['Otros Costos:', `${costosAdicionales.otros.toFixed(2)} UF`],
+            ];
+
+            autoTable(doc, {
+              body: costosData,
+              startY: doc.previousAutoTable?.finalY + 15,
               theme: 'plain',
               margin: { left: 10 },
             });
 
             // Tabla de productos
             doc.setFont('helvetica', 'bold');
-            doc.text('Detalles de Productos:', 10, doc.previousAutoTable?.finalY + 10 || 60);
+            doc.text('Detalles de Productos:', 10, doc.previousAutoTable?.finalY + 10);
 
             autoTable(doc, {
               head: [['Cant.', 'Un. Med.', 'Descripción', 'Valor UF', 'Valor en CLP']],
@@ -83,7 +101,7 @@ export class PdfService {
                 p.valorUF.toFixed(2),
                 p.valorReferencia.toLocaleString(),
               ]),
-              startY: doc.previousAutoTable?.finalY + 15 || 70,
+              startY: doc.previousAutoTable?.finalY + 15,
             });
 
             // Totales
@@ -102,6 +120,14 @@ export class PdfService {
               theme: 'plain',
               margin: { left: 10 },
             });
+
+            // Notas
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'italic');
+            doc.text('Nota: Esta es una pre-cotización y no constituye un documento válido para efectos tributarios.',
+                    10, doc.previousAutoTable?.finalY + 15);
+            doc.text('Los valores están expresados en UF y su equivalente en pesos chilenos según valor UF del día.',
+                    10, doc.previousAutoTable?.finalY + 20);
 
             // Guardar el archivo
             const fileName = `Pre-cotizacion-${totales.numeroCotizacion}.pdf`;

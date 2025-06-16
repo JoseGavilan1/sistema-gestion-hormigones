@@ -25,6 +25,7 @@ import { MenuAreaTecnicaComponent } from './components/menu-area-tecnica/menu-ar
 import { NewProductAtComponent } from './components/new-product-at/new-product-at.component';
 import { DosificacionComponent } from './components/dosificacion/dosificacion.component';
 import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.component';
+import { ConfiguracionComponent } from './components/configuracion/configuracion.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.
     NewProductAtComponent,
     DosificacionComponent,
     CargaMaestroComponent,
+    ConfiguracionComponent,
   ],
   imports: [
     BrowserModule,

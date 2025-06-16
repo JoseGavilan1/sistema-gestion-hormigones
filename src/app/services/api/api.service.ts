@@ -11,13 +11,12 @@ import { AditivoEspecial } from '../../models/aditivoEspecial.model';
   providedIn: 'root',
 })
 export class ApiService {
-  //private apiUrlBase = 'https://localhost:44364/api/';
+  private apiUrlBase = 'https://localhost:44364/api/';
 
-  private apiUrlBase ='https://backendcopat-dsf0eshgeeghbwfs.chilecentral-01.azurewebsites.net/api/';
+  //private apiUrlBase ='https://backendcopat-dsf0eshgeeghbwfs.chilecentral-01.azurewebsites.net/api/';
 
   constructor(private http: HttpClient) {}
 
-  // Métodos relacionados con Producto
   getFamilias(): Observable<number[]> {
     return this.http.get<number[]>(`${this.apiUrlBase}producto/familias`);
   }
@@ -55,7 +54,8 @@ export class ApiService {
     );
   }
 
-  // Métodos relacionados con Dosificacion
+
+
   createDosificacion(dosificacion: Dosificacion): Observable<Dosificacion> {
     const { idDosificacion, producto, ...data } = dosificacion as any;
     return this.http.post<Dosificacion>(`${this.apiUrlBase}Dosificacion`, data);
@@ -96,21 +96,20 @@ export class ApiService {
     );
   }
 
-  // Método adicional para obtener los precios de los aditivos especiales
+
+
   getAditivosEspeciales(): Observable<AditivoEspecial[]> {
     return this.http.get<AditivoEspecial[]>(
       `${this.apiUrlBase}aditivoespecial`
     );
   }
 
-  // Método en ApiService para obtener un aditivo especial por su ID
   getAditivoEspecialById(id: number): Observable<AditivoEspecial> {
     return this.http.get<AditivoEspecial>(
       `${this.apiUrlBase}aditivoespecial/${id}`
     );
   }
 
-  // Métodos relacionados con Materia Prima
   getMateriasPrimas(planta: string): Observable<MateriaPrima[]> {
     const url = `${this.apiUrlBase}MateriaPrima/${planta}`;
     return this.http.get<MateriaPrima[]>(url);
@@ -167,5 +166,21 @@ export class ApiService {
       .set('idPlanta', idPlanta.toString());
     return this.http.get<Dosificacion>(`${this.apiUrlBase}Dosificacion/nomenclatura`, { params });
   }
+
+  updateProductDescription(numeroFormula: number, nombreComercial: string): Observable<Producto> {
+  const url = `${this.apiUrlBase}producto/update-description/${numeroFormula}`;
+
+  return this.http.put<Producto>(url, JSON.stringify(nombreComercial), {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  });
+}
+
+getDosificacionByNombreComercial(nombreComercial: string, idPlanta: number): Observable<Dosificacion> {
+  return this.http.get<Dosificacion>(
+    `${this.apiUrlBase}Dosificacion/dosificacion/${nombreComercial}/${idPlanta}`
+  );
+}
 
 }

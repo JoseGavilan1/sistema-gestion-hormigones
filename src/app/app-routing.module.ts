@@ -11,6 +11,7 @@ import { MenuAreaTecnicaComponent } from './components/menu-area-tecnica/menu-ar
 import { NewProductAtComponent } from './components/new-product-at/new-product-at.component';
 import { DosificacionComponent } from './components/dosificacion/dosificacion.component';
 import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.component';
+import { ConfiguracionComponent } from './components/configuracion/configuracion.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -33,6 +34,8 @@ const routes: Routes = [
   { path: 'dosificacion', component: DosificacionComponent , canActivate: [AuthGuard]},
 
   { path: 'carga-maestro', component: CargaMaestroComponent , canActivate: [AuthGuard]},
+
+  {path: 'configuracion', component: ConfiguracionComponent, canActivate: [AuthGuard]},
 ];
 
 @NgModule({

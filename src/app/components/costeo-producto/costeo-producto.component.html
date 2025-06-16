@@ -61,6 +61,8 @@
             <i class="fas fa-search"></i> Buscar Producto
           </button>
 
+
+
           <!-- Búsqueda por Descripción Técnica -->
           <div class="input-group mt-3 mb-3">
             <span class="input-group-text">
@@ -70,7 +72,7 @@
               type="text"
               class="form-control"
               [(ngModel)]="descripcionATecnica"
-              placeholder="Ingresa la Descripción Comercial"
+              placeholder="Ingresa la Descripción Tecnica"
             />
           </div>
           <button
@@ -79,9 +81,26 @@
               buscarPorNomenclatura(descripcionATecnica, plantaSeleccionada)
             "
           >
-            <i class="fas fa-search"></i> Buscar descr. comercial
+            <i class="fas fa-search"></i> Buscar descr. tecnica
           </button>
 
+          <div class="input-group mt-3 mb-3">
+            <span class="input-group-text">
+              <i class="fas fa-store"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="nombreComercial"
+              placeholder="Ingresa el Nombre Comercial"
+            />
+          </div>
+          <button
+            class="btn btn-warning w-100 bounce-on-hover mb-4"
+            (click)="buscarPorNombreComercial(nombreComercial, plantaSeleccionada)"
+          >
+            <i class="fas fa-search"></i> Buscar Nombre Comercial
+          </button>
           <div *ngIf="dosificacion" class="fade-in">
             <h5 class="mb-3">
               Dosificación para el hormigón
@@ -89,6 +108,7 @@
                 *ngIf="tipoBusqueda === 'producto'; else buscarPorNomenclatura"
               >
                 {{ idProducto }}
+
               </ng-container>
               <ng-template #buscarPorNomenclatura>
                 {{ descripcionATecnica }}

@@ -1,0 +1,8 @@
+<app-navbar></app-navbar>
+<div class="container">
+  <h4>Cargar descripciones comerciales</h4>
+  <!-- Input de archivo -->
+  <input type="file" class="form-control" (change)="onFileChange($event)" />
+  <!-- Botón para ejecutar la inserción de los datos -->
+  <button class="btn btn-primary" (click)="onUpload()">Subir datos</button>
+</div>

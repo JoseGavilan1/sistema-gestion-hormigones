@@ -93,6 +93,7 @@ movilizacion: number = 0;
   porcentajeDePerdida: number = 0.02;
 
   mostrarDetalles: boolean = false;
+nombreComercial: any;
 
   constructor(
     private apiService: ApiService,
@@ -595,4 +596,63 @@ movilizacion: number = 0;
       });
     }
   }
+
+  buscarPorNombreComercial(nombreComercial: string, idPlanta: number): void {
+  if (!nombreComercial || !idPlanta) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campos incompletos',
+      text: 'Por favor, ingresa un nombre comercial válido y selecciona una planta.',
+    });
+    return;
+  }
+
+  Swal.fire({
+    title: 'Cargando dosificación...',
+    text: 'Por favor espera',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    },
+  });
+
+  // Llamamos a la API para obtener la dosificación por Nombre Comercial
+  this.apiService.getDosificacionByNombreComercial(nombreComercial, idPlanta).subscribe({
+    next: (dosificacion) => {
+      this.dosificacion = dosificacion;
+      Swal.close();
+      Swal.fire({
+        icon: 'success',
+        title: 'Dosificación encontrada',
+        text: `Se encontró la dosificación para el nombre comercial: ${nombreComercial}`,
+        timer: 1500,
+        showConfirmButton: false,
+      });
+      this.ufService.getUfValue().subscribe({
+        next: (ufData) => {
+          this.ufValue = ufData;
+          this.descripcionATecnica = nombreComercial;  // Podemos utilizar el nombre comercial para la descripción
+          this.obtenerPreciosMateriasPrimas();
+        },
+        error: () => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo obtener el valor de la UF.',
+          });
+        },
+      });
+    },
+    error: () => {
+      Swal.close();
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se encontró una dosificación para este nombre comercial en la planta seleccionada.',
+      });
+    },
+  });
+}
+
+
 }

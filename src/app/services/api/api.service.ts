@@ -13,7 +13,7 @@ import { AditivoEspecial } from '../../models/aditivoEspecial.model';
 export class ApiService {
   //private apiUrlBase = 'https://localhost:44364/api/';
 
-  private apiUrlBase ='https://backendcopat-dsf0eshgeeghbwfs.chilecentral-01.azurewebsites.net/api/';
+  private apiUrlBase ='https://backendcopat2025-gtc2ccgcd3h0ceg0.canadaeast-01.azurewebsites.net/api/';
 
   constructor(private http: HttpClient) {}
 

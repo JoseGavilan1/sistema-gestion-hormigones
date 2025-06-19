@@ -8,8 +8,8 @@ import { catchError, map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl =
-    'https://backendcopat-dsf0eshgeeghbwfs.chilecentral-01.azurewebsites.net/api/auth'; // URL de tu API
+  //private apiUrl = 'https://localhost:44364/api/auth';
+  private apiUrl = 'https://backendcopat2025-gtc2ccgcd3h0ceg0.canadaeast-01.azurewebsites.net/api/auth'; // URL de tu API
 
   constructor(private http: HttpClient, private router: Router) {}
 

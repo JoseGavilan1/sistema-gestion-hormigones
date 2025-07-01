@@ -65,7 +65,7 @@ export class NewProductAtComponent implements OnInit {
       this.productoForm.patchValue({ familia: familiaId });
 
       // Comprobar si la familia está dentro del rango de consulta
-      if (familiaId >= 1000 && familiaId <= 15000) {
+      if (familiaId >= 1000 && familiaId <= 25000) {
         // Consulta al último número de fórmula para esta familia
         this.apiService.getUltimoNumeroFormula(familiaId).subscribe(
           (numero) => {

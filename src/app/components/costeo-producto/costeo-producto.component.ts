@@ -74,6 +74,7 @@ export class CosteoProductoComponent {
   precioAditivo7: number = 0;
   precioAditivo8: number = 0;
   precioAditivo9: number = 0;
+  precioAditivo10: number = 0;
   ufValue: number = 0;
   ufLaboratorio: number = 0.1;
   nombreAditivo2: string | null = null;
@@ -83,6 +84,8 @@ export class CosteoProductoComponent {
   nombreAditivo6: string | null = null;
   nombreAditivo7: string | null = null;
   nombreAditivo8: string | null = null;
+  nombreAditivo9: string | null = null;
+  nombreAditivo10: string | null = null;
 
   costoCemento: number = 0;
   costoAgua: number = 0;
@@ -101,6 +104,7 @@ export class CosteoProductoComponent {
   costoAditivo7: number = 0;
   costoAditivo8: number = 0;
   costoAditivo9: number = 0;
+  costoAditivo10: number = 0;
 
   cementoAjustado: number = 0;
   gravillaAjustadaConPerdida: number = 0;
@@ -455,6 +459,10 @@ export class CosteoProductoComponent {
               (m) => m.nombre === 'ADITIVO 9'
             );
 
+            const aditivo10 = materias.find(
+              (m) => m.nombre === 'ADITIVO 10'
+            );
+
             if (cemento) this.precioCemento = cemento.precio;
             if (agua) this.precioAgua = agua.precio;
             if (arena) {
@@ -474,19 +482,19 @@ export class CosteoProductoComponent {
             if (aditivo7) this.precioAditivo7 = aditivo7.precio;
             if (aditivo8) this.precioAditivo8 = aditivo8.precio;
             if (aditivo9) this.precioAditivo9 = aditivo9.precio;
-            //if (grava) {
-            //this.precioGrava = grava.precio;
-            //this.densidadGrava = grava.densidad;
-            //}
+            if (aditivo10) this.precioAditivo10 = aditivo10.precio;
+
 
             if (this.dosificacion) {
               this.nombreAditivo2 = this.dosificacion.nombreAditivo2 || null;
               this.nombreAditivo3 = this.dosificacion.nombreAditivo3 || null;
               this.nombreAditivo4 = this.dosificacion.nombreAditivo4 || null;
               this.nombreAditivo5 = this.dosificacion.nombreAditivo5 || null;
-              this.nombreAditivo6 = this.dosificacion.nombreAditivo5 || null;
-              this.nombreAditivo7 = this.dosificacion.nombreAditivo5 || null;
-              this.nombreAditivo8 = this.dosificacion.nombreAditivo5 || null;
+              this.nombreAditivo6 = this.dosificacion.nombreAditivo6 || null;
+              this.nombreAditivo7 = this.dosificacion.nombreAditivo7 || null;
+              this.nombreAditivo8 = this.dosificacion.nombreAditivo8 || null;
+              this.nombreAditivo9 = this.dosificacion.nombreAditivo9 || null;
+              this.nombreAditivo10 = this.dosificacion.nombreAditivo10 || null;
             }
 
             this.calcularCostos();
@@ -567,6 +575,7 @@ export class CosteoProductoComponent {
               this.costoAditivo7 +
               this.costoAditivo8 +
               this.costoAditivo9 +
+              this.costoAditivo10 +
               this.ufLaboratorio;
           });
       });

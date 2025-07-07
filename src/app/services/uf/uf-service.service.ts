@@ -9,9 +9,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 export class UfService {
   private apiUrls = [
     'https://mindicador.cl/api/uf',
-    'https://api.bcentral.cl/datos/uf',
-    'https://api.data.gob.cl/v1/datasets/uf',
-    'https://api.bancoestado.cl/indicadores/uf'
+    //
   ];
 
   constructor(private http: HttpClient) {}

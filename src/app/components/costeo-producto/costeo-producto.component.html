@@ -10,6 +10,10 @@
     <i class="fas fa-calculator"></i> Costeo de Hormigones
   </h3>
 
+  <div class="alert alert-info" *ngIf="ufValue">
+    <strong>El valor de la UF hoy es: </strong>{{ ufValue }} CLP
+  </div>
+
   <div *ngIf="isGeneratingQuote" class="text-center my-4">
     <img
       src="https://res.cloudinary.com/dk5bjcrb8/image/upload/v1732548351/gif-copat_zjppwk.gif"

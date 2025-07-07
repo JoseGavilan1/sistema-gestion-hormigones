@@ -121,6 +121,22 @@ export class CosteoProductoComponent {
     private pdfService: PdfService
   ) {}
 
+  ngOnInit() {
+    // Al cargar el componente, obtenemos el valor de la UF
+    this.ufService.getUfValue().subscribe({
+      next: (ufData) => {
+        this.ufValue = ufData;  // Almacenamos el valor de la UF
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo obtener el valor de la UF.',
+        });
+      },
+    });
+  }
+  
   toggleDetalles() {
     this.mostrarDetalles = !this.mostrarDetalles;
   }

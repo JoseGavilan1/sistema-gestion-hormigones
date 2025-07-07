@@ -53,9 +53,9 @@ export class CosteoProductoComponent {
   precioVenta: number = 0; // Precio final de venta
 
   peaje: number = 0;
-viajes: number = 2; // Valor por defecto para ida y vuelta
-sobreDistancia: number = 0;
-movilizacion: number = 0;
+  viajes: number = 2; // Valor por defecto para ida y vuelta
+  sobreDistancia: number = 0;
+  movilizacion: number = 0;
   precioCemento: number = 0;
   precioAgua: number = 0;
   precioArena: number = 0;
@@ -66,6 +66,14 @@ movilizacion: number = 0;
   densidadGrava: number = 0;
   densidadAgua: number = 0.36;
   precioAditivoBase: number = 0;
+  precioAditivo2: number = 0;
+  precioAditivo3: number = 0;
+  precioAditivo4: number = 0;
+  precioAditivo5: number = 0;
+  precioAditivo6: number = 0;
+  precioAditivo7: number = 0;
+  precioAditivo8: number = 0;
+  precioAditivo9: number = 0;
   ufValue: number = 0;
   ufLaboratorio: number = 0.1;
   nombreAditivo2: string | null = null;
@@ -85,6 +93,14 @@ movilizacion: number = 0;
   costoFinal: number = 0;
   costoAridos: number = 0;
   costoAditivoBase: number = 0;
+  costoAditivo2: number = 0;
+  costoAditivo3: number = 0;
+  costoAditivo4: number = 0;
+  costoAditivo5: number = 0;
+  costoAditivo6: number = 0;
+  costoAditivo7: number = 0;
+  costoAditivo8: number = 0;
+  costoAditivo9: number = 0;
 
   cementoAjustado: number = 0;
   gravillaAjustadaConPerdida: number = 0;
@@ -93,7 +109,7 @@ movilizacion: number = 0;
   porcentajeDePerdida: number = 0.02;
 
   mostrarDetalles: boolean = false;
-nombreComercial: any;
+  nombreComercial: any;
 
   constructor(
     private apiService: ApiService,
@@ -414,6 +430,31 @@ nombreComercial: any;
               (m) => m.nombre === 'ADITIVO BASE'
             );
 
+            const aditivo2 = materias.find(
+              (m) => m.nombre === 'ADITIVO 2'
+            );
+            const aditivo3 = materias.find(
+              (m) => m.nombre === 'ADITIVO 3'
+            );
+            const aditivo4 = materias.find(
+              (m) => m.nombre === 'ADITIVO 4'
+            );
+            const aditivo5 = materias.find(
+              (m) => m.nombre === 'ADITIVO 5'
+            );
+            const aditivo6 = materias.find(
+              (m) => m.nombre === 'ADITIVO 6'
+            );
+            const aditivo7 = materias.find(
+              (m) => m.nombre === 'ADITIVO 7'
+            );
+            const aditivo8 = materias.find(
+              (m) => m.nombre === 'ADITIVO 8'
+            );
+            const aditivo9 = materias.find(
+              (m) => m.nombre === 'ADITIVO 9'
+            );
+
             if (cemento) this.precioCemento = cemento.precio;
             if (agua) this.precioAgua = agua.precio;
             if (arena) {
@@ -425,6 +466,14 @@ nombreComercial: any;
               this.densidadGravilla = gravilla.densidad;
             }
             if (aditivoBase) this.precioAditivoBase = aditivoBase.precio;
+            if (aditivo2) this.precioAditivo2 = aditivo2.precio;
+            if (aditivo3) this.precioAditivo3 = aditivo3.precio;
+            if (aditivo4) this.precioAditivo4 = aditivo4.precio;
+            if (aditivo5) this.precioAditivo5 = aditivo5.precio;
+            if (aditivo6) this.precioAditivo6 = aditivo6.precio;
+            if (aditivo7) this.precioAditivo7 = aditivo7.precio;
+            if (aditivo8) this.precioAditivo8 = aditivo8.precio;
+            if (aditivo9) this.precioAditivo9 = aditivo9.precio;
             //if (grava) {
             //this.precioGrava = grava.precio;
             //this.densidadGrava = grava.densidad;
@@ -510,6 +559,14 @@ nombreComercial: any;
               this.costoArena +
               this.costoGravilla +
               this.costoAditivoBase +
+              this.costoAditivo2 +
+              this.costoAditivo3 +
+              this.costoAditivo4 +
+              this.costoAditivo5 +
+              this.costoAditivo6 +
+              this.costoAditivo7 +
+              this.costoAditivo8 +
+              this.costoAditivo9 +
               this.ufLaboratorio;
           });
       });

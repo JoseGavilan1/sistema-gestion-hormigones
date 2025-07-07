@@ -54,8 +54,6 @@ export class ApiService {
     );
   }
 
-
-
   createDosificacion(dosificacion: Dosificacion): Observable<Dosificacion> {
     const { idDosificacion, producto, ...data } = dosificacion as any;
     return this.http.post<Dosificacion>(`${this.apiUrlBase}Dosificacion`, data);
@@ -95,8 +93,6 @@ export class ApiService {
       dosificacion
     );
   }
-
-
 
   getAditivosEspeciales(): Observable<AditivoEspecial[]> {
     return this.http.get<AditivoEspecial[]>(

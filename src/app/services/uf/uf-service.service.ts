@@ -1,25 +1,37 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, throwError, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UfService {
-  private apiUrl = 'https://mindicador.cl/api/uf';
+  private apiUrls = [
+    'https://mindicador.cl/api/uf',
+    'https://api.bcentral.cl/datos/uf',
+    'https://api.data.gob.cl/v1/datasets/uf',
+    'https://api.bancoestado.cl/indicadores/uf'
+  ];
 
   constructor(private http: HttpClient) {}
 
   getUfValue(): Observable<number> {
-    return this.http.get<any>(this.apiUrl).pipe(
-      map((response) => response.serie[0].valor),
+    return this.tryUrls(this.apiUrls);
+  }
 
+  private tryUrls(urls: string[]): Observable<number> {
+    // Usa switchMap para intentar las URLs en orden
+    return this.http.get<any>(urls[0]).pipe(
+      map((response) => response.serie[0].valor),
       catchError((error) => {
-        console.error('Error al obtener el valor de la UF', error);
-        return throwError(
-          'No se pudo obtener el valor de la UF, inténtelo más tarde.'
-        );
+        console.error('Error al obtener el valor de la UF de', urls[0], error);
+        // Si falla la URL, intenta con la siguiente
+        if (urls.length > 1) {
+          return this.tryUrls(urls.slice(1));
+        }
+        // Si todas las URLs fallan, lanza un error
+        return throwError('No se pudo obtener el valor de la UF, inténtelo más tarde.');
       })
     );
   }

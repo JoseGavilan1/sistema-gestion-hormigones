@@ -26,6 +26,7 @@ import { NewProductAtComponent } from './components/new-product-at/new-product-a
 import { DosificacionComponent } from './components/dosificacion/dosificacion.component';
 import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.component';
 import { ConfiguracionComponent } from './components/configuracion/configuracion.component';
+import { CostosGeneralesComponent } from './components/costos-generales/costos-generales.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { ConfiguracionComponent } from './components/configuracion/configuracion
     DosificacionComponent,
     CargaMaestroComponent,
     ConfiguracionComponent,
+    CostosGeneralesComponent,
   ],
   imports: [
     BrowserModule,

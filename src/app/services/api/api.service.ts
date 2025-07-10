@@ -179,4 +179,15 @@ getDosificacionByNombreComercial(nombreComercial: string, idPlanta: number): Obs
   );
 }
 
+buscarNombresComerciales(termino: string, idPlanta: number): Observable<any[]> {
+  const params = new HttpParams()
+    .set('termino', termino)
+    .set('idPlanta', idPlanta.toString());
+
+  return this.http.get<any[]>(`${this.apiUrlBase}Dosificacion/buscar-nombres-comerciales`, { params })
+    .pipe(
+      catchError(() => of([])) // Retornar array vacío en caso de error
+    );
+}
+
 }

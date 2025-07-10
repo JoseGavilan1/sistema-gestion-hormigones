@@ -11,6 +11,7 @@ import {
   animate,
 } from '@angular/animations';
 import { PdfService } from '../../services/word-service.service';
+import { debounceTime, distinctUntilChanged, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-costeo-producto',
@@ -27,6 +28,9 @@ import { PdfService } from '../../services/word-service.service';
   ],
 })
 export class CosteoProductoComponent {
+setTimeout(arg0: undefined) {
+throw new Error('Method not implemented.');
+}
   plantas = [
     { id: 1, nombre: 'TALTAL' },
     { id: 2, nombre: 'MEJILLONES' },
@@ -115,6 +119,77 @@ export class CosteoProductoComponent {
   mostrarDetalles: boolean = false;
   nombreComercial: any;
 
+  sugerenciasNombreComercial: any[] = [];
+  mostrarSugerencias: boolean = false;
+  busquedaEnProgreso: boolean = false;
+  minCaracteresBusqueda: number = 3;
+
+  ocultarSugerenciasConDelay() {
+  setTimeout(() => { this.mostrarSugerencias = false; }, 200);
+}
+
+handleInputEvent(event: Event) {
+  const inputElement = event.target as HTMLInputElement;
+  this.buscarSugerenciasNombreComercial(inputElement.value);
+}
+
+  buscarSugerenciasNombreComercial(termino: string): void {
+  // Resetear si el término es muy corto
+  if (!termino || termino.length < this.minCaracteresBusqueda) {
+    this.sugerenciasNombreComercial = [];
+    this.mostrarSugerencias = false;
+    return;
+  }
+
+  // Validar que se haya seleccionado planta
+  if (!this.plantaSeleccionada) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Planta no seleccionada',
+      text: 'Por favor, selecciona una planta primero.',
+    });
+    return;
+  }
+
+  this.busquedaEnProgreso = true;
+  this.mostrarSugerencias = true;
+
+  this.apiService.buscarNombresComerciales(termino, this.plantaSeleccionada)
+    .pipe(
+      debounceTime(300), // Esperar 300ms después de la última tecla
+      distinctUntilChanged(), // Evitar llamadas duplicadas
+      finalize(() => this.busquedaEnProgreso = false)
+    )
+    .subscribe({
+      next: (sugerencias) => {
+        this.sugerenciasNombreComercial = sugerencias;
+      },
+      error: (err) => {
+        this.handleError('Error al buscar sugerencias');
+        this.sugerenciasNombreComercial = [];
+      }
+    });
+}
+
+/**
+ * Maneja errores mostrando un mensaje con SweetAlert.
+ * @param mensaje Mensaje de error a mostrar.
+ */
+private handleError(mensaje: string): void {
+  Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: mensaje,
+  });
+}
+
+seleccionarSugerencia(sugerencia: any): void {
+  this.nombreComercial = sugerencia.nombreComercial;
+  this.mostrarSugerencias = false;
+  // Opcional: cargar automáticamente la dosificación al seleccionar
+  this.buscarPorNombreComercial(sugerencia.nombreComercial, this.plantaSeleccionada!);
+}
+
   constructor(
     private apiService: ApiService,
     private ufService: UfService,
@@ -122,10 +197,9 @@ export class CosteoProductoComponent {
   ) {}
 
   ngOnInit() {
-    // Al cargar el componente, obtenemos el valor de la UF
     this.ufService.getUfValue().subscribe({
       next: (ufData) => {
-        this.ufValue = ufData;  // Almacenamos el valor de la UF
+        this.ufValue = ufData;
       },
       error: () => {
         Swal.fire({
@@ -136,7 +210,7 @@ export class CosteoProductoComponent {
       },
     });
   }
-  
+
   toggleDetalles() {
     this.mostrarDetalles = !this.mostrarDetalles;
   }

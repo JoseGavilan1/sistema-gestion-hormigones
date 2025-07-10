@@ -19,16 +19,13 @@ export class UfService {
   }
 
   private tryUrls(urls: string[]): Observable<number> {
-    // Usa switchMap para intentar las URLs en orden
     return this.http.get<any>(urls[0]).pipe(
       map((response) => response.serie[0].valor),
       catchError((error) => {
         console.error('Error al obtener el valor de la UF de', urls[0], error);
-        // Si falla la URL, intenta con la siguiente
         if (urls.length > 1) {
           return this.tryUrls(urls.slice(1));
         }
-        // Si todas las URLs fallan, lanza un error
         return throwError('No se pudo obtener el valor de la UF, inténtelo más tarde.');
       })
     );

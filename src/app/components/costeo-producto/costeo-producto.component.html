@@ -10,10 +10,6 @@
     <i class="fas fa-calculator"></i> Costeo de Hormigones
   </h3>
 
-  <div class="alert alert-info" *ngIf="ufValue">
-    <strong>El valor de la UF hoy es: </strong>{{ ufValue }} CLP
-  </div>
-
   <div *ngIf="isGeneratingQuote" class="text-center my-4">
     <img
       src="https://res.cloudinary.com/dk5bjcrb8/image/upload/v1732548351/gif-copat_zjppwk.gif"
@@ -24,11 +20,10 @@
   </div>
 
   <div class="row">
-    <!-- Columna izquierda -->
     <div class="col-md-6">
       <div class="card shadow p-4 fade-in">
         <h5 class="mb-3">Seleccione planta:</h5>
-        <!-- Botones de planta -->
+
         <div class="plantas-grid mb-4">
           <button
             class="planta-btn"
@@ -40,13 +35,11 @@
           </button>
         </div>
 
-        <!-- Input para el producto y botón de búsqueda -->
         <div *ngIf="plantaSeleccionada">
           <h5>
             Costear producto en planta:
             <span class="text-highlight">{{ nombrePlantaSeleccionada }}</span>
           </h5>
-          <!-- Búsqueda por producto -->
           <div class="input-group mt-3 mb-3">
             <span class="input-group-text">
               <i class="fas fa-barcode"></i>
@@ -65,9 +58,6 @@
             <i class="fas fa-search"></i> Buscar Producto
           </button>
 
-
-
-          <!-- Búsqueda por Descripción Técnica -->
           <div class="input-group mt-3 mb-3">
             <span class="input-group-text">
               <i class="fas fa-text-width"></i>
@@ -88,7 +78,8 @@
             <i class="fas fa-search"></i> Buscar descr. tecnica
           </button>
 
-          <div class="input-group mt-3 mb-3">
+          <!-- Sección actualizada para búsqueda por nombre comercial con autocompletado -->
+          <div class="input-group mt-3 mb-3 position-relative">
             <span class="input-group-text">
               <i class="fas fa-store"></i>
             </span>
@@ -96,15 +87,60 @@
               type="text"
               class="form-control"
               [(ngModel)]="nombreComercial"
-              placeholder="Ingresa el Nombre Comercial"
+              (input)="handleInputEvent($event)"
+              (focus)="nombreComercial && nombreComercial.length >= minCaracteresBusqueda && (mostrarSugerencias = true)"
+              (blur)="ocultarSugerenciasConDelay()"
+              placeholder="Buscar por nombre comercial (mín. {{minCaracteresBusqueda}} caracteres)"
+              #nombreComercialInput
+              autocomplete="off"
             />
+
+            <!-- Dropdown de sugerencias -->
+            <div
+              *ngIf="mostrarSugerencias && (sugerenciasNombreComercial.length > 0 || busquedaEnProgreso)"
+              class="sugerencias-dropdown"
+            >
+              <!-- Spinner durante la carga -->
+              <div *ngIf="busquedaEnProgreso" class="dropdown-item text-muted py-2 px-3">
+                <i class="fas fa-spinner fa-spin me-2"></i> Buscando...
+              </div>
+
+              <!-- Resultados de la búsqueda -->
+              <div
+                *ngFor="let sugerencia of sugerenciasNombreComercial"
+                class="dropdown-item sugerencia-item py-2 px-3"
+                (mousedown)="seleccionarSugerencia(sugerencia)"
+              >
+                <div class="d-flex justify-content-between align-items-center">
+                  <strong>{{ sugerencia.nombreComercial }}</strong>
+                  <span class="badge bg-secondary ms-2">ID: {{ sugerencia.idProducto }}</span>
+                </div>
+                <small *ngIf="sugerencia.descripcion" class="text-muted d-block mt-1">
+                  {{ sugerencia.descripcion }}
+                </small>
+                <small *ngIf="sugerencia.nomenclatura" class="text-muted d-block">
+                  <i class="fas fa-barcode me-1"></i> {{ sugerencia.nomenclatura }}
+                </small>
+              </div>
+
+              <!-- Mensaje cuando no hay resultados -->
+              <div
+                *ngIf="!busquedaEnProgreso && sugerenciasNombreComercial.length === 0"
+                class="dropdown-item text-muted py-2 px-3"
+              >
+                No se encontraron coincidencias
+              </div>
+            </div>
           </div>
+
           <button
             class="btn btn-warning w-100 bounce-on-hover mb-4"
             (click)="buscarPorNombreComercial(nombreComercial, plantaSeleccionada)"
+            [disabled]="!nombreComercial || !plantaSeleccionada"
           >
             <i class="fas fa-search"></i> Buscar Nombre Comercial
           </button>
+
           <div *ngIf="dosificacion" class="fade-in">
             <h5 class="mb-3">
               Dosificación para el hormigón
@@ -112,10 +148,9 @@
                 *ngIf="tipoBusqueda === 'producto'; else buscarPorNomenclatura"
               >
                 {{ idProducto }}
-
               </ng-container>
               <ng-template #buscarPorNomenclatura>
-                {{ descripcionATecnica }}
+                {{ descripcionATecnica || nombreComercial }}
               </ng-template>
               en {{ nombrePlantaSeleccionada }}
             </h5>
@@ -274,7 +309,6 @@
       </div>
     </div>
 
-    <!-- Columna derecha -->
     <div class="col-md-6">
       <div class="card shadow p-4 fade-in">
         <div class="mb-3">
@@ -287,70 +321,51 @@
             placeholder="Ingresa el margen en UF"
           />
         </div>
+
         <div class="mb-3">
-          <label for="otros">Otros costos:</label>
-          <span
-            class="ms-2"
-            style="cursor: pointer"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="Incluye costos adicionales como transporte, permisos, o imprevistos."
-          >
-            <i class="fas fa-question-circle"></i>
-          </span>
+          <label for="peaje">Costo de Peaje (por viaje):</label>
           <input
             type="number"
-            id="otros"
-            [(ngModel)]="otros"
+            id="peaje"
+            [(ngModel)]="peaje"
             class="form-control"
-            placeholder="Ingresa otros costos"
+            placeholder="Ingresa costo de peaje por viaje"
           />
         </div>
-        <!-- Columna derecha - Después de los inputs existentes -->
-<div class="mb-3">
-  <label for="peaje">Costo de Peaje (por viaje):</label>
-  <input
-    type="number"
-    id="peaje"
-    [(ngModel)]="peaje"
-    class="form-control"
-    placeholder="Ingresa costo de peaje por viaje"
-  />
-</div>
 
-<div class="mb-3">
-  <label for="viajes">Número de Viajes (ida y vuelta = 2):</label>
-  <input
-    type="number"
-    id="viajes"
-    [(ngModel)]="viajes"
-    class="form-control"
-    placeholder="Ingresa número de viajes"
-    value="2"
-  />
-</div>
+        <div class="mb-3">
+          <label for="viajes">Número de Viajes (ida y vuelta = 2):</label>
+          <input
+            type="number"
+            id="viajes"
+            [(ngModel)]="viajes"
+            class="form-control"
+            placeholder="Ingresa número de viajes"
+            value="2"
+          />
+        </div>
 
-<div class="mb-3">
-  <label for="sobreDistancia">Sobre Distancia (por m³):</label>
-  <input
-    type="number"
-    id="sobreDistancia"
-    [(ngModel)]="sobreDistancia"
-    class="form-control"
-    placeholder="Ingresa costo de sobre distancia"
-  />
-</div>
+        <div class="mb-3">
+          <label for="sobreDistancia">Sobre Distancia (por m³):</label>
+          <input
+            type="number"
+            id="sobreDistancia"
+            [(ngModel)]="sobreDistancia"
+            class="form-control"
+            placeholder="Ingresa costo de sobre distancia"
+          />
+        </div>
 
-<div class="mb-3">
-  <label for="movilizacion">Movilización (costo fijo):</label>
-  <input
-    type="number"
-    id="movilizacion"
-    [(ngModel)]="movilizacion"
-    class="form-control"
-    placeholder="Ingresa costo de movilización"
-  />
-</div>
+        <div class="mb-3">
+          <label for="movilizacion">Transporte:</label>
+          <input
+            type="number"
+            id="movilizacion"
+            [(ngModel)]="movilizacion"
+            class="form-control"
+            placeholder="Ingresa costo de movilización"
+          />
+        </div>
         <button
           class="btn btn-primary w-100 mt-3 bounce-on-hover"
           (click)="costearProductoConMargenYOtros()"
@@ -358,7 +373,6 @@
           <i class="fas fa-calculator"></i> Costear Producto
         </button>
 
-        <!-- Botón de Generar Pre-cotización -->
         <button
           class="btn btn-info w-100 mt-3 bounce-on-hover"
           (click)="generarPrecotizacion()"
@@ -366,41 +380,50 @@
           <i class="fas fa-file-pdf"></i> Generar Pre-cotización
         </button>
 
-        <!-- Detalles del cálculo de costeo -->
-        <!-- Detalles del cálculo de costeo -->
-<h5 class="mt-4">Detalles del Costeo</h5>
-<ul class="list-group">
-  <li class="list-group-item">
-    <strong>Costo de Producción:</strong>
-    <span class="float-end">{{ costoFinal | number : "1.2-2" }} UF</span>
-  </li>
-  <li class="list-group-item">
-    <strong>Peaje ({{viajes}} viajes):</strong>
-    <span class="float-end">{{ (peaje * viajes) | number : "1.2-2" }} UF</span>
-  </li>
-  <li class="list-group-item">
-    <strong>Sobre Distancia:</strong>
-    <span class="float-end">{{ sobreDistancia | number : "1.2-2" }} UF</span>
-  </li>
-  <li class="list-group-item">
-    <strong>Movilización:</strong>
-    <span class="float-end">{{ movilizacion | number : "1.2-2" }} UF</span>
-  </li>
-  <li class="list-group-item">
-    <strong>Margen:</strong>
-    <span class="float-end">{{ margenEnUf | number : "1.2-2" }} UF</span>
-  </li>
-  <li class="list-group-item">
-    <strong>Otros:</strong>
-    <span class="float-end">{{ otros | number : "1.2-2" }} UF</span>
-  </li>
-  <li class="list-group-item list-group-item-primary">
-    <strong>Precio de Venta Total:</strong>
-    <span class="float-end">{{ precioVenta | number : "1.2-2" }} UF</span>
-  </li>
-</ul>
+        <h5 class="mt-4">Detalles del Costeo</h5>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <strong>Costo de Producción:</strong>
+            <span class="float-end"
+              >{{ costoFinal | number : "1.2-2" }} UF</span
+            >
+          </li>
+          <li class="list-group-item">
+            <strong>Peaje ({{ viajes }} viajes):</strong>
+            <span class="float-end"
+              >{{ peaje * viajes | number : "1.2-2" }} UF</span
+            >
+          </li>
+          <li class="list-group-item">
+            <strong>Sobre Distancia:</strong>
+            <span class="float-end"
+              >{{ sobreDistancia | number : "1.2-2" }} UF</span
+            >
+          </li>
+          <li class="list-group-item">
+            <strong>Movilización:</strong>
+            <span class="float-end"
+              >{{ movilizacion | number : "1.2-2" }} UF</span
+            >
+          </li>
+          <li class="list-group-item">
+            <strong>Margen:</strong>
+            <span class="float-end"
+              >{{ margenEnUf | number : "1.2-2" }} UF</span
+            >
+          </li>
+          <li class="list-group-item">
+            <strong>Otros:</strong>
+            <span class="float-end">{{ otros | number : "1.2-2" }} UF</span>
+          </li>
+          <li class="list-group-item list-group-item-primary">
+            <strong>Precio de Venta Total:</strong>
+            <span class="float-end"
+              >{{ precioVenta | number : "1.2-2" }} UF</span
+            >
+          </li>
+        </ul>
       </div>
-
     </div>
   </div>
 </div>

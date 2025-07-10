@@ -6,6 +6,7 @@ import { MateriaPrima } from '../../models/materia-prima.model';
 import { Producto } from '../../models/producto.model';
 import { Dosificacion } from '../../models/dosificacion.model';
 import { AditivoEspecial } from '../../models/aditivoEspecial.model';
+import { CostoGeneral } from '../../models/costo-general.model';
 
 @Injectable({
   providedIn: 'root',
@@ -190,4 +191,19 @@ buscarNombresComerciales(termino: string, idPlanta: number): Observable<any[]> {
     );
 }
 
+getCostosGenerales(): Observable<CostoGeneral[]> {
+  return this.http.get<CostoGeneral[]>(`${this.apiUrlBase}CostoGeneral`); // Singular
+}
+
+createCostosGenerales(costo: CostoGeneral): Observable<CostoGeneral> {
+  return this.http.post<CostoGeneral>(`${this.apiUrlBase}CostoGeneral`, costo);
+}
+
+updateCostoGeneral(id: number, costo: CostoGeneral): Observable<void> {
+  return this.http.put<void>(`${this.apiUrlBase}CostoGeneral/${id}`, costo);
+}
+
+deleteCostoGeneral(id: number): Observable<void> {
+  return this.http.delete<void>(`${this.apiUrlBase}CostoGeneral/${id}`);
+}
 }

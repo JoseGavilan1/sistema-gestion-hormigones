@@ -140,3 +140,11 @@ h5 {
   visibility: visible;
   opacity: 1;
 }
+
+.sugerencia-item {
+  cursor: pointer; /* Cambia el cursor a 'pointer' */
+}
+
+.sugerencia-item:hover {
+  background-color: #f1f1f1; /* Cambia el color de fondo cuando el usuario pasa el cursor por encima */
+}

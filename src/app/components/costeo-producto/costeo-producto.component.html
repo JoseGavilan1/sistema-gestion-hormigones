@@ -80,58 +80,55 @@
 
           <!-- Sección actualizada para búsqueda por nombre comercial con autocompletado -->
           <div class="input-group mt-3 mb-3 position-relative">
-            <span class="input-group-text">
-              <i class="fas fa-store"></i>
-            </span>
-            <input
-              type="text"
-              class="form-control"
-              [(ngModel)]="nombreComercial"
-              (input)="handleInputEvent($event)"
-              (focus)="nombreComercial && nombreComercial.length >= minCaracteresBusqueda && (mostrarSugerencias = true)"
-              (blur)="ocultarSugerenciasConDelay()"
-              placeholder="Buscar por nombre comercial (mín. {{minCaracteresBusqueda}} caracteres)"
-              #nombreComercialInput
-              autocomplete="off"
-            />
+  <span class="input-group-text">
+    <i class="fas fa-store"></i>
+  </span>
+  <input
+    type="text"
+    class="form-control"
+    [(ngModel)]="nombreComercial"
+    (input)="handleInputEvent($event)"
+    (focus)="nombreComercial && nombreComercial.length >= minCaracteresBusqueda && (mostrarSugerencias = true)"
+    (blur)="ocultarSugerenciasConDelay()"
+    placeholder="Buscar por nombre comercial (mín. {{minCaracteresBusqueda}} caracteres)"
+    #nombreComercialInput
+    autocomplete="off"
+  />
 
-            <!-- Dropdown de sugerencias -->
-            <div
-              *ngIf="mostrarSugerencias && (sugerenciasNombreComercial.length > 0 || busquedaEnProgreso)"
-              class="sugerencias-dropdown"
-            >
-              <!-- Spinner durante la carga -->
-              <div *ngIf="busquedaEnProgreso" class="dropdown-item text-muted py-2 px-3">
-                <i class="fas fa-spinner fa-spin me-2"></i> Buscando...
-              </div>
+  <div
+    *ngIf="mostrarSugerencias && (sugerenciasNombreComercial.length > 0 || busquedaEnProgreso)"
+    class="sugerencias-dropdown"
+  >
+    <div *ngIf="busquedaEnProgreso" class="dropdown-item text-muted py-2 px-3">
+      <i class="fas fa-spinner fa-spin me-2"></i> Buscando...
+    </div>
 
-              <!-- Resultados de la búsqueda -->
-              <div
-                *ngFor="let sugerencia of sugerenciasNombreComercial"
-                class="dropdown-item sugerencia-item py-2 px-3"
-                (mousedown)="seleccionarSugerencia(sugerencia)"
-              >
-                <div class="d-flex justify-content-between align-items-center">
-                  <strong>{{ sugerencia.nombreComercial }}</strong>
-                  <span class="badge bg-secondary ms-2">ID: {{ sugerencia.idProducto }}</span>
-                </div>
-                <small *ngIf="sugerencia.descripcion" class="text-muted d-block mt-1">
-                  {{ sugerencia.descripcion }}
-                </small>
-                <small *ngIf="sugerencia.nomenclatura" class="text-muted d-block">
-                  <i class="fas fa-barcode me-1"></i> {{ sugerencia.nomenclatura }}
-                </small>
-              </div>
+    <div
+      *ngFor="let sugerencia of sugerenciasNombreComercial"
+      class="dropdown-item sugerencia-item py-2 px-3"
+      (mousedown)="seleccionarSugerencia(sugerencia)"
+    >
+      <div class="d-flex justify-content-between align-items-center">
+        <strong>{{ sugerencia.nombreComercial }}</strong>
+        <span class="badge bg-secondary ms-2">ID: {{ sugerencia.idProducto }}</span>
+      </div>
+      <small *ngIf="sugerencia.descripcion" class="text-muted d-block mt-1">
+        {{ sugerencia.descripcion }}
+      </small>
+      <small *ngIf="sugerencia.nomenclatura" class="text-muted d-block">
+        <i class="fas fa-barcode me-1"></i> {{ sugerencia.nomenclatura }}
+      </small>
+    </div>
 
-              <!-- Mensaje cuando no hay resultados -->
-              <div
-                *ngIf="!busquedaEnProgreso && sugerenciasNombreComercial.length === 0"
-                class="dropdown-item text-muted py-2 px-3"
-              >
-                No se encontraron coincidencias
-              </div>
-            </div>
-          </div>
+    <div
+      *ngIf="!busquedaEnProgreso && sugerenciasNombreComercial.length === 0"
+      class="dropdown-item text-muted py-2 px-3"
+    >
+      No se encontraron coincidencias
+    </div>
+  </div>
+</div>
+
 
           <button
             class="btn btn-warning w-100 bounce-on-hover mb-4"
@@ -143,17 +140,18 @@
 
           <div *ngIf="dosificacion" class="fade-in">
             <h5 class="mb-3">
-              Dosificación para el hormigón
-              <ng-container
-                *ngIf="tipoBusqueda === 'producto'; else buscarPorNomenclatura"
-              >
-                {{ idProducto }}
-              </ng-container>
-              <ng-template #buscarPorNomenclatura>
-                {{ descripcionATecnica || nombreComercial }}
-              </ng-template>
-              en {{ nombrePlantaSeleccionada }}
-            </h5>
+            Dosificación para el hormigón
+            <ng-container *ngIf="tipoBusqueda === 'producto'">
+              {{ idProducto }}
+            </ng-container>
+            <ng-container *ngIf="tipoBusqueda === 'nomenclatura'">
+              {{ descripcionATecnica }}
+            </ng-container>
+            <ng-container *ngIf="tipoBusqueda === 'nombreComercialText'">
+              {{ nombreComercial }}
+            </ng-container>
+            en {{ nombrePlantaSeleccionada }}
+          </h5>
             <div class="table-responsive">
               <table class="table table-bordered">
                 <thead class="table-light">
@@ -323,13 +321,34 @@
         </div>
 
         <div class="mb-3">
-          <label for="peaje">Costo de Peaje (por viaje):</label>
+          <label for="otros">Otros Costos:</label>
+          <span
+            class="ms-2"
+            style="cursor: pointer"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="Incluye costos adicionales como transporte, permisos, o imprevistos."
+          >
+            <i class="fas fa-question-circle"></i>
+          </span>
+          <input
+            type="number"
+            id="otros"
+            [(ngModel)]="otros"
+            class="form-control"
+            placeholder="Ingresa otros costos adicionales"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="peaje">Costo de Peaje (CLP):</label>
           <input
             type="number"
             id="peaje"
-            [(ngModel)]="peaje"
+            [(ngModel)]="peajeClp"
+            (change)="actualizarPeajeEnUf()"
             class="form-control"
-            placeholder="Ingresa costo de peaje por viaje"
+            placeholder="Ingresa costo de peaje por viaje en CLP"
           />
         </div>
 
@@ -346,13 +365,14 @@
         </div>
 
         <div class="mb-3">
-          <label for="sobreDistancia">Sobre Distancia (por m³):</label>
+          <label for="sobreDistancia">Distancia por recorrer (KMS):</label>
           <input
             type="number"
-            id="sobreDistancia"
-            [(ngModel)]="sobreDistancia"
+            id="sobreDistanciaKms"
+            [(ngModel)]="sobreDistanciaKms"
+            (change)="calcularSobreDistancia()"
             class="form-control"
-            placeholder="Ingresa costo de sobre distancia"
+            placeholder="Ingresa distancia en kilómetros"
           />
         </div>
 
@@ -363,8 +383,13 @@
             id="movilizacion"
             [(ngModel)]="movilizacion"
             class="form-control"
-            placeholder="Ingresa costo de movilización"
+            readonly
+            title="Valor cargado desde la base de datos"
           />
+          <small *ngIf="movilizacion === 0" class="text-warning">
+            Valor no configurado en BD
+          </small>
+
         </div>
         <button
           class="btn btn-primary w-100 mt-3 bounce-on-hover"

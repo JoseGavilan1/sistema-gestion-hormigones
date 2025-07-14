@@ -12,9 +12,9 @@ import { CostoGeneral } from '../../models/costo-general.model';
   providedIn: 'root',
 })
 export class ApiService {
-  //private apiUrlBase = 'https://localhost:44364/api/';
+  private apiUrlBase = 'https://localhost:44364/api/';
 
-  private apiUrlBase ='https://backendcopat2025-gtc2ccgcd3h0ceg0.canadaeast-01.azurewebsites.net/api/';
+  ///private apiUrlBase = 'https://backendcopat2025-gtc2ccgcd3h0ceg0.canadaeast-01.azurewebsites.net/api/';
 
   constructor(private http: HttpClient) {}
 
@@ -161,49 +161,67 @@ export class ApiService {
     const params = new HttpParams()
       .set('descripcionATecnica', descripcionATecnica)
       .set('idPlanta', idPlanta.toString());
-    return this.http.get<Dosificacion>(`${this.apiUrlBase}Dosificacion/nomenclatura`, { params });
+    return this.http.get<Dosificacion>(
+      `${this.apiUrlBase}Dosificacion/nomenclatura`,
+      { params }
+    );
   }
 
-  updateProductDescription(numeroFormula: number, nombreComercial: string): Observable<Producto> {
-  const url = `${this.apiUrlBase}producto/update-description/${numeroFormula}`;
+  updateProductDescription(
+    numeroFormula: number,
+    nombreComercial: string
+  ): Observable<Producto> {
+    const url = `${this.apiUrlBase}producto/update-description/${numeroFormula}`;
 
-  return this.http.put<Producto>(url, JSON.stringify(nombreComercial), {
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  });
-}
+    return this.http.put<Producto>(url, JSON.stringify(nombreComercial), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
 
-getDosificacionByNombreComercial(nombreComercial: string, idPlanta: number): Observable<Dosificacion> {
-  return this.http.get<Dosificacion>(
-    `${this.apiUrlBase}Dosificacion/dosificacion/${nombreComercial}/${idPlanta}`
-  );
-}
-
-buscarNombresComerciales(termino: string, idPlanta: number): Observable<any[]> {
-  const params = new HttpParams()
-    .set('termino', termino)
-    .set('idPlanta', idPlanta.toString());
-
-  return this.http.get<any[]>(`${this.apiUrlBase}Dosificacion/buscar-nombres-comerciales`, { params })
-    .pipe(
-      catchError(() => of([])) // Retornar array vacío en caso de error
+  getDosificacionByNombreComercial(
+    nombreComercial: string,
+    idPlanta: number
+  ): Observable<Dosificacion> {
+    return this.http.get<Dosificacion>(
+      `${this.apiUrlBase}Dosificacion/dosificacion/${nombreComercial}/${idPlanta}`
     );
-}
+  }
 
-getCostosGenerales(): Observable<CostoGeneral[]> {
-  return this.http.get<CostoGeneral[]>(`${this.apiUrlBase}CostoGeneral`); // Singular
-}
+  buscarNombresComerciales(
+    termino: string,
+    idPlanta: number
+  ): Observable<any[]> {
+    const params = new HttpParams()
+      .set('termino', termino)
+      .set('idPlanta', idPlanta.toString());
 
-createCostosGenerales(costo: CostoGeneral): Observable<CostoGeneral> {
-  return this.http.post<CostoGeneral>(`${this.apiUrlBase}CostoGeneral`, costo);
-}
+    return this.http
+      .get<any[]>(`${this.apiUrlBase}Dosificacion/buscar-nombres-comerciales`, {
+        params,
+      })
+      .pipe(
+        catchError(() => of([]))
+      );
+  }
 
-updateCostoGeneral(id: number, costo: CostoGeneral): Observable<void> {
-  return this.http.put<void>(`${this.apiUrlBase}CostoGeneral/${id}`, costo);
-}
+  getCostosGenerales(): Observable<CostoGeneral[]> {
+    return this.http.get<CostoGeneral[]>(`${this.apiUrlBase}CostoGeneral`);
+  }
 
-deleteCostoGeneral(id: number): Observable<void> {
-  return this.http.delete<void>(`${this.apiUrlBase}CostoGeneral/${id}`);
-}
+  createCostosGenerales(costo: CostoGeneral): Observable<CostoGeneral> {
+    return this.http.post<CostoGeneral>(
+      `${this.apiUrlBase}CostoGeneral`,
+      costo
+    );
+  }
+
+  updateCostoGeneral(id: number, costo: CostoGeneral): Observable<void> {
+    return this.http.put<void>(`${this.apiUrlBase}CostoGeneral/${id}`, costo);
+  }
+
+  deleteCostoGeneral(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrlBase}CostoGeneral/${id}`);
+  }
 }

@@ -60,7 +60,7 @@
             <tr *ngFor="let costo of costos">
               <td>{{ costo.idCosto }}</td>
               <td>{{ costo.nombreCosto }}</td>
-              <td>{{ costo.valorCosto | currency }}</td>
+              <td>{{ costo.valorCosto }}</td>
               <td>
                 <button class="btn btn-sm btn-warning me-2" (click)="editarCosto(costo)">
                   <i class="fas fa-edit"></i> Editar

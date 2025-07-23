@@ -121,6 +121,8 @@ export class CosteoProductoComponent {
   costoAditivo9: number = 0;
   costoAditivo10: number = 0;
 
+  aguaUtilizada: number = 0;
+
   cementoAjustado: number = 0;
   gravillaAjustadaConPerdida: number = 0;
   arenaAjustadaConPerdida: number = 0;
@@ -600,7 +602,14 @@ calcularSobreDistancia(): void {
             const aditivo10 = materias.find((m) => m.nombre === 'ADITIVO 10');
 
             if (cemento) this.precioCemento = cemento.precio;
-            if (agua) this.precioAgua = agua.precio;
+            if (agua) {
+            this.precioAgua = agua.precio;
+            // Ahora usamos el valor de la columna % Pérdida como la cantidad de agua utilizada
+            this.aguaUtilizada = agua.perdida; // Se toma el valor de % Pérdida como cantidad de agua (m3)
+            this.costoAgua = this.redondear(
+              (this.aguaUtilizada * this.precioAgua) / this.ufValue
+            );
+          }
             if (arena) {
               this.precioArena = arena.precio;
               this.densidadArena = arena.densidad;
@@ -718,7 +727,7 @@ calcularSobreDistancia(): void {
         .subscribe((materiaPrima) => {
           this.precioAgua = materiaPrima.precio;
           this.costoAgua = this.redondear(
-            (0.36 * this.precioAgua) / this.ufValue
+            (this.aguaUtilizada * this.precioAgua) / this.ufValue
           );
           this.costoFinal = this.redondear(this.costoTotal + this.costoAgua);
 

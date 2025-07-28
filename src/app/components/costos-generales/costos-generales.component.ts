@@ -32,6 +32,7 @@ costos: CostoGeneral[] = [];
   }
 
   crearCosto(): void {
+    this.nuevoCosto.valorCosto = parseFloat(this.nuevoCosto.valorCosto.toFixed(3));
     this.apiService.createCostosGenerales(this.nuevoCosto).subscribe({
       next: () => {
         this.cargarCostos();
@@ -50,7 +51,9 @@ costos: CostoGeneral[] = [];
   }
 
   actualizarCosto(): void {
+    console.log('Valor a enviar:', this.costoEditando?.valorCosto || this.nuevoCosto.valorCosto);
     if (this.costoEditando) {
+      this.nuevoCosto.valorCosto = parseFloat(this.nuevoCosto.valorCosto.toFixed(3));
       this.apiService.updateCostoGeneral(this.costoEditando.idCosto, this.costoEditando).subscribe({
         next: () => {
           this.cargarCostos();

@@ -358,7 +358,7 @@ export class CargaMaestroComponent {
       }
     });
   }
-
+ 
   resetearEstado(): void {
     this.dosificacion = {};
     this.productos = [];

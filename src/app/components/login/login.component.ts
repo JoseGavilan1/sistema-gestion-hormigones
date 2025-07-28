@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   registerForm: FormGroup;
   loginError: string = '';
-  isLoading: boolean = false; // Estado para el spinner
+  isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -32,7 +33,7 @@ export class LoginComponent {
 
   onLoginSubmit(): void {
     this.loginError = '';
-    this.isLoading = true; // Mostrar spinner y mensaje
+    this.isLoading = true;
 
     if (this.loginForm.valid) {
       const email = this.loginForm.get('email')?.value;
@@ -40,23 +41,44 @@ export class LoginComponent {
 
       this.authService.login(email, password).subscribe({
         next: (isLoggedIn) => {
-          this.isLoading = false; // Ocultar spinner
+          this.isLoading = false;
           if (isLoggedIn) {
+            this.setUserRole();
             this.router.navigate(['/home']);
           } else {
             this.loginError = 'Usuario o contraseña incorrectos';
           }
         },
         error: () => {
-          this.isLoading = false; // Ocultar spinner
+          this.isLoading = false;
           this.loginError = 'Ocurrió un error en la autenticación';
         },
       });
     } else {
-      this.isLoading = false; // Ocultar spinner si el formulario no es válido
+      this.isLoading = false;
     }
   }
 
+  setUserRole() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        console.log('Token decodificado:', decodedToken);
+
+        const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+
+        if (role) {
+          localStorage.setItem('role', role);
+          console.log('Rol del usuario:', role);
+        } else {
+          console.error('No se encontró el rol en el token');
+        }
+      } catch (error) {
+        console.error('Error decodificando el token:', error);
+      }
+    }
+  }
 
   onRegisterSubmit(): void {
     if (this.registerForm.valid) {

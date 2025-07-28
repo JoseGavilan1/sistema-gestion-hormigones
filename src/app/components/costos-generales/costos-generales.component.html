@@ -10,11 +10,6 @@
     </div>
 
     <div class="card-body">
-      <!--<button disabled class="btn btn-success mb-3" (click)="mostrarFormulario = true; costoEditando = null">
-        <i class="fas fa-plus me-2"></i>Agregar Nuevo Costo
-      </button>-->
-
-      <!-- Formulario de creación/edición -->
       <div class="card mb-4" *ngIf="mostrarFormulario">
         <div class="card-header">
           <h5>{{ costoEditando ? 'Editar Costo' : 'Nuevo Costo' }}</h5>
@@ -29,7 +24,7 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Valor</label>
-              <input type="number" class="form-control"
+              <input type="number" class="form-control" step="0.001"
                      [(ngModel)]="(costoEditando || nuevoCosto).valorCosto"
                      name="valorCosto" required>
             </div>
@@ -45,7 +40,6 @@
         </div>
       </div>
 
-      <!-- Tabla de costos -->
       <div class="table-responsive">
         <table class="table table-striped table-hover">
           <thead class="table-dark">

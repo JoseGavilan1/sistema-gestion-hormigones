@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 <div class="container mt-4">
   <div class="row">
-    <div class="col text-center mb-3">
+    <div class="col text-center mb-3" *ngIf="authService.isAdmin() || authService.isComercial() || authService.isVendedor()">
       <button
         class="btn btn-primary d-flex align-items-center justify-content-center"
         style="width: auto"
@@ -11,17 +11,13 @@
       </button>
     </div>
 
-    <div class="col text-center mb-3">
-      <button
-        class="btn btn-primary d-flex align-items-center justify-content-center"
-        style="width: auto"
-        [routerLink]="['/costos-generales']"
-      >
-        <i class="fas fa-calculator me-2"></i> Costos Generales
+    <div class="col text-center mb-3" *ngIf="authService.isAdmin() || authService.isComercial()">
+      <button class="btn btn-primary d-flex align-items-center justify-content-center" style="width: auto" [routerLink]="['/costos-generales']">
+        <i class="fas fa-calculator me-2"></i> Costeos Generales
       </button>
     </div>
 
-    <div class="col text-center mb-3">
+    <div class="col text-center mb-3" *ngIf="authService.isAdmin() || authService.isComercial()">
       <button
         class="btn btn-secondary d-flex align-items-center justify-content-center"
         style="width: auto"
@@ -31,7 +27,7 @@
       </button>
     </div>
 
-    <div class="col text-center mb-3">
+    <div class="col text-center mb-3" *ngIf="authService.isAdmin() || authService.isCalidad()">
       <button
         class="btn btn-secondary d-flex align-items-center justify-content-center"
         style="width: auto"
@@ -41,7 +37,7 @@
       </button>
     </div>
 
-    <div class="col text-center mb-3">
+    <div class="col text-center mb-3" *ngIf="authService.isAdmin()">
       <button
         class="btn btn-success d-flex align-items-center justify-content-center"
         style="width: auto"

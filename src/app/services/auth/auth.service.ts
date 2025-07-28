@@ -9,17 +9,17 @@ import { catchError, map } from 'rxjs/operators';
 })
 export class AuthService {
   //private apiUrl = 'https://localhost:44364/api/auth';
-  private apiUrl = 'https://backendcopat2025-gtc2ccgcd3h0ceg0.canadaeast-01.azurewebsites.net/api/auth'; // URL de tu API
+  private apiUrl = 'https://backendcopat2025-gtc2ccgcd3h0ceg0.canadaeast-01.azurewebsites.net/api/auth'; 
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
   login(username: string, password: string): Observable<boolean> {
     return this.http
       .post<any>(`${this.apiUrl}/login`, { username, password })
       .pipe(
         map((response) => {
-          if (response) {
-            localStorage.setItem('currentUser', JSON.stringify(response));
+          if (response.token) {
+            localStorage.setItem('token', response.token);
             return true;
           }
           return false;
@@ -30,19 +30,23 @@ export class AuthService {
       );
   }
 
-  logout(): void {
-    // Eliminar datos de autenticación
-    localStorage.removeItem('currentUser');
 
-    // Redirigir al login y limpiar el historial
+  getUserRole(): string {
+    return localStorage.getItem('role') || '';
+  }
+
+
+  logout(): void {
+    localStorage.removeItem('token');
+
     this.router.navigate(['/login']).then(() => {
       window.history.replaceState({}, '', '/login');
     });
   }
 
+
   isLoggedIn(): boolean {
-    // Verifica si el token de autenticación existe
-    return localStorage.getItem('currentUser') !== null;
+    return localStorage.getItem('token') !== null;
   }
 
   register(username: string, password: string): Observable<any> {
@@ -54,5 +58,21 @@ export class AuthService {
           return of(null);
         })
       );
+  }
+
+  isAdmin(): boolean {
+    return this.getUserRole() === 'ADMINISTRADOR';
+  }
+
+  isComercial(): boolean {
+    return this.getUserRole() === 'COMERCIAL';
+  }
+
+  isCalidad(): boolean {
+    return this.getUserRole() === 'CALIDAD';
+  }
+
+  isVendedor(): boolean {
+    return this.getUserRole() === 'VENDEDOR';
   }
 }

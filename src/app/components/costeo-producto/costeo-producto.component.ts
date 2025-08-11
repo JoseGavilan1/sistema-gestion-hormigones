@@ -12,6 +12,7 @@ import {
 import { PdfService } from '../../services/word-service.service';
 import { debounceTime, distinctUntilChanged, finalize } from 'rxjs';
 import { CostoGeneral } from '../../models/costo-general.model';
+import { TruncateDecimalsPipe } from '../../services/pipe/pipeTranform.service';
 
 @Component({
   selector: 'app-costeo-producto',
@@ -28,7 +29,8 @@ import { CostoGeneral } from '../../models/costo-general.model';
   ],
 })
 export class CosteoProductoComponent {
-  constructor(private apiService: ApiService, private pdfService: PdfService) {}
+  truncateDecimalsPipe = new TruncateDecimalsPipe();
+  constructor(private apiService: ApiService, private pdfService: PdfService) { }
 
   ngOnInit() {
     this.cargarCostosGenerales().catch((err) => {
@@ -196,50 +198,61 @@ export class CosteoProductoComponent {
     });
   }
 
+
   cargarCostosGenerales(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    this.apiService.getCostosGenerales().subscribe({
-      next: (costos: CostoGeneral[]) => {
-        costos.forEach((costo) => {
-          this.costosGenerales[costo.nombreCosto] = costo.valorCosto;
-        });
+    return new Promise((resolve, reject) => {
+      this.apiService.getCostosGenerales().subscribe({
+        next: (costos: CostoGeneral[]) => {
+          costos.forEach((costo) => {
+            this.costosGenerales[costo.nombreCosto] = costo.valorCosto;
+          });
 
-        this.ufValue = this.costosGenerales['UF'] || 0;
-        this.movilizacion = this.costosGenerales['Transporte'] || 0;
-        this.valorPorKm = this.costosGenerales['Sobredistancia'] || 0; 
-        this.ufLaboratorio =  this.costosGenerales['Laboratorio'] || 0.1; 
+          this.ufValue = this.costosGenerales['UF'] || 0;
+          this.movilizacion = this.costosGenerales['Transporte'] || 0;
+          this.valorPorKm = this.costosGenerales['Sobredistancia'] || 0;
+          this.ufLaboratorio = this.costosGenerales['Laboratorio'] || 0.1;
 
-        console.log('Costos generales cargados:', this.costosGenerales);
-        resolve();
-      },
-      error: (err) => {
-        console.error('Error al cargar costos generales:', err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudieron cargar los costos generales desde la base de datos',
-        });
-        reject(err);
-      },
-    });
-  });
-}
-
-actualizarPeajeEnUf(): void {
-  if (this.ufValue > 0) {
-    this.peajeUf = this.redondear(this.peajeClp / this.ufValue);
-  } else {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Valor UF no disponible',
-      text: 'No se puede convertir el peaje a UF sin el valor actual de la UF',
+          console.log('Costos generales cargados:', this.costosGenerales);
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error al cargar costos generales:', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudieron cargar los costos generales desde la base de datos',
+          });
+          reject(err);
+        },
+      });
     });
   }
-}
 
-calcularSobreDistancia(): void {
-  this.sobreDistancia = this.redondear(this.sobreDistanciaKms * this.valorPorKm);
-}
+  actualizarPeajeEnUf(): void {
+    if (this.ufValue > 0) {
+      this.peajeUf = this.redondear(this.peajeClp / this.ufValue);
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Valor UF no disponible',
+        text: 'No se puede convertir el peaje a UF sin el valor actual de la UF',
+      });
+    }
+  }
+
+  calcularSobreDistancia(): void {
+    if (this.sobreDistanciaKms > 30) {
+      this.sobreDistancia = this.sobreDistanciaKms * this.valorPorKm;
+    } else {
+      this.sobreDistancia = 0;
+    }
+
+  }
+
+  getFormattedSobreDistancia(): string {
+    return this.truncateDecimalsPipe.transform(this.sobreDistancia, 2);
+  }
+
 
   seleccionarSugerencia(sugerencia: any): void {
     this.nombreComercial = sugerencia.nombreComercial;
@@ -364,26 +377,26 @@ calcularSobreDistancia(): void {
   }
 
   costearProductoConMargenYOtros() {
-  // Primero actualizamos los valores de peaje y sobre distancia
-  this.actualizarPeajeEnUf();
-  this.calcularSobreDistancia();
+    // Primero actualizamos los valores de peaje y sobre distancia
+    this.actualizarPeajeEnUf();
+    this.calcularSobreDistancia();
 
-  const costoTransporte =
-    this.peajeUf * this.viajes + this.sobreDistancia + this.movilizacion;
+    const costoTransporte =
+      this.peajeUf * this.viajes + this.sobreDistancia + this.movilizacion;
 
-  this.precioVenta =
-    this.costoFinal + this.margenEnUf + this.otros + costoTransporte + this.ufLaboratorio;
+    this.precioVenta =
+      this.costoFinal + this.margenEnUf + this.otros + costoTransporte + this.ufLaboratorio;
 
-  console.log('Desglose de costos:', {
-    costoProduccion: this.costoFinal,
-    peaje: this.peajeUf * this.viajes,
-    sobreDistancia: this.sobreDistancia,
-    movilizacion: this.movilizacion,
-    margen: this.margenEnUf,
-    otros: this.otros,
-    total: this.precioVenta,
-  });
-}
+    console.log('Desglose de costos:', {
+      costoProduccion: this.costoFinal,
+      peaje: this.peajeUf * this.viajes,
+      sobreDistancia: this.sobreDistancia,
+      movilizacion: this.movilizacion,
+      margen: this.margenEnUf,
+      otros: this.otros,
+      total: this.precioVenta,
+    });
+  }
   generarPrecotizacion() {
     if (!this.dosificacion) {
       Swal.fire({
@@ -626,95 +639,95 @@ calcularSobreDistancia(): void {
               console.log(`Costo de Cemento ajustado: ${this.costoCemento}`);
             }
 
-          if (agua) {
-            this.precioAgua = agua.precio;
-            this.aguaUtilizada = agua.perdida; 
-            this.costoAgua = this.redondear(
-              (this.aguaUtilizada * this.precioAgua) / this.ufValue
-            );
-            console.log(`Costo Agua: ${this.costoAgua}`);
-          }
-          if (arena) {
-            this.precioArena = arena.precio;
-            this.densidadArena = arena.densidad;
-            const porcentajePerdidaArena = arena.perdida; 
+            if (agua) {
+              this.precioAgua = agua.precio;
+              this.aguaUtilizada = agua.perdida;
+              this.costoAgua = this.redondear(
+                (this.aguaUtilizada * this.precioAgua) / this.ufValue
+              );
+              console.log(`Costo Agua: ${this.costoAgua}`);
+            }
+            if (arena) {
+              this.precioArena = arena.precio;
+              this.densidadArena = arena.densidad;
+              const porcentajePerdidaArena = arena.perdida;
 
-            console.log(`Precio Arena: ${this.precioArena}`);
-            console.log(`Densidad de Arena: ${this.densidadArena}`);
-            console.log(`Porcentaje de pérdida de Arena: ${porcentajePerdidaArena}`);
+              console.log(`Precio Arena: ${this.precioArena}`);
+              console.log(`Densidad de Arena: ${this.densidadArena}`);
+              console.log(`Porcentaje de pérdida de Arena: ${porcentajePerdidaArena}`);
 
-            const cantidadArena = this.dosificacion?.arena ?? 0; 
+              const cantidadArena = this.dosificacion?.arena ?? 0;
 
-            console.log(`Cantidad de Arena (desde dosificación): ${cantidadArena}`);
+              console.log(`Cantidad de Arena (desde dosificación): ${cantidadArena}`);
 
-            const cantidadArenaAjustada = cantidadArena / this.densidadArena;
-            console.log(`Cantidad de Arena ajustada (por densidad): ${cantidadArenaAjustada}`);
+              const cantidadArenaAjustada = cantidadArena / this.densidadArena;
+              console.log(`Cantidad de Arena ajustada (por densidad): ${cantidadArenaAjustada}`);
 
-            const cantidadArenaConPerdida = cantidadArenaAjustada * (1 + porcentajePerdidaArena / 100);
-            console.log(`Cantidad de Arena ajustada con pérdida: ${cantidadArenaConPerdida}`);
+              const cantidadArenaConPerdida = cantidadArenaAjustada * (1 + porcentajePerdidaArena / 100);
+              console.log(`Cantidad de Arena ajustada con pérdida: ${cantidadArenaConPerdida}`);
 
-            this.costoArena = this.redondear(
-              (cantidadArenaConPerdida * this.precioArena) / this.ufValue 
-            );
-            console.log(`Costo de Arena ajustado: ${this.costoArena}`);
-          }
-
-
-          if (gravilla) {
-            this.precioGravilla = gravilla.precio;
-            this.densidadGravilla = gravilla.densidad;
-            const porcentajePerdidaGravilla = gravilla.perdida; // Obtener el porcentaje de pérdida desde la base de datos
-
-            // Log de los datos de entrada
-            console.log(`Precio Gravilla: ${this.precioGravilla}`);
-            console.log(`Densidad de Gravilla: ${this.densidadGravilla}`);
-            console.log(`Porcentaje de pérdida de Gravilla: ${porcentajePerdidaGravilla}`);
-
-            // Obtener la cantidad de gravilla desde la dosificación
-            const cantidadGravilla = this.dosificacion?.gravilla ?? 0; // Asumimos que la cantidad de gravilla está en la dosificación
-
-            // Log de la cantidad de gravilla
-            console.log(`Cantidad de Gravilla (desde dosificación): ${cantidadGravilla}`);
-
-            // Dividir la cantidad de gravilla entre la densidad de la gravilla para ajustarla
-            const cantidadGravillaAjustada = cantidadGravilla / this.densidadGravilla;
-            console.log(`Cantidad de Gravilla ajustada (por densidad): ${cantidadGravillaAjustada}`);
-
-            // Ajustar por el porcentaje de pérdida
-            const cantidadGravillaConPerdida = cantidadGravillaAjustada * (1 + porcentajePerdidaGravilla / 100);
-            console.log(`Cantidad de Gravilla ajustada con pérdida: ${cantidadGravillaConPerdida}`);
-
-            // Calcular el costo final de la gravilla en función de su precio en la planta seleccionada
-            this.costoGravilla = this.redondear(
-              (cantidadGravillaConPerdida * this.precioGravilla) / this.ufValue
-            );
-            console.log(`Costo de Gravilla ajustado: ${this.costoGravilla}`);
-          }
+              this.costoArena = this.redondear(
+                (cantidadArenaConPerdida * this.precioArena) / this.ufValue
+              );
+              console.log(`Costo de Arena ajustado: ${this.costoArena}`);
+            }
 
 
-          if (aditivoBase) {
-            this.precioAditivoBase = aditivoBase.precio;
-            console.log(`Costo Aditivo Base: ${this.precioAditivoBase}`);
-          }
-          if (aditivo2) this.precioAditivo2 = aditivo2.precio;
-          if (aditivo3) this.precioAditivo3 = aditivo3.precio;
-          if (aditivo4) this.precioAditivo4 = aditivo4.precio;
-          if (aditivo5) this.precioAditivo5 = aditivo5.precio;
-          if (aditivo6) this.precioAditivo6 = aditivo6.precio;
-          if (aditivo7) this.precioAditivo7 = aditivo7.precio;
-          if (aditivo8) this.precioAditivo8 = aditivo8.precio;
-          if (aditivo9) this.precioAditivo9 = aditivo9.precio;
-          if (aditivo10) this.precioAditivo10 = aditivo10.precio;
+            if (gravilla) {
+              this.precioGravilla = gravilla.precio;
+              this.densidadGravilla = gravilla.densidad;
+              const porcentajePerdidaGravilla = gravilla.perdida; // Obtener el porcentaje de pérdida desde la base de datos
 
-          // Cálculo para el aditivo base
-          if (this.dosificacion) {
-            const cantidadAditivoBase = this.dosificacion.aditivo1 || 0; // Obtener cantidad de aditivo base de la dosificación
-            this.costoAditivoBase = this.redondear(
-              (cantidadAditivoBase * this.precioAditivoBase) / this.ufValue
-            );
-            console.log(`Cantidad Aditivo Base: ${cantidadAditivoBase}`);
-            console.log(`Costo Aditivo Base calculado: ${this.costoAditivoBase}`);
-          }
+              // Log de los datos de entrada
+              console.log(`Precio Gravilla: ${this.precioGravilla}`);
+              console.log(`Densidad de Gravilla: ${this.densidadGravilla}`);
+              console.log(`Porcentaje de pérdida de Gravilla: ${porcentajePerdidaGravilla}`);
+
+              // Obtener la cantidad de gravilla desde la dosificación
+              const cantidadGravilla = this.dosificacion?.gravilla ?? 0; // Asumimos que la cantidad de gravilla está en la dosificación
+
+              // Log de la cantidad de gravilla
+              console.log(`Cantidad de Gravilla (desde dosificación): ${cantidadGravilla}`);
+
+              // Dividir la cantidad de gravilla entre la densidad de la gravilla para ajustarla
+              const cantidadGravillaAjustada = cantidadGravilla / this.densidadGravilla;
+              console.log(`Cantidad de Gravilla ajustada (por densidad): ${cantidadGravillaAjustada}`);
+
+              // Ajustar por el porcentaje de pérdida
+              const cantidadGravillaConPerdida = cantidadGravillaAjustada * (1 + porcentajePerdidaGravilla / 100);
+              console.log(`Cantidad de Gravilla ajustada con pérdida: ${cantidadGravillaConPerdida}`);
+
+              // Calcular el costo final de la gravilla en función de su precio en la planta seleccionada
+              this.costoGravilla = this.redondear(
+                (cantidadGravillaConPerdida * this.precioGravilla) / this.ufValue
+              );
+              console.log(`Costo de Gravilla ajustado: ${this.costoGravilla}`);
+            }
+
+
+            if (aditivoBase) {
+              this.precioAditivoBase = aditivoBase.precio;
+              console.log(`Costo Aditivo Base: ${this.precioAditivoBase}`);
+            }
+            if (aditivo2) this.precioAditivo2 = aditivo2.precio;
+            if (aditivo3) this.precioAditivo3 = aditivo3.precio;
+            if (aditivo4) this.precioAditivo4 = aditivo4.precio;
+            if (aditivo5) this.precioAditivo5 = aditivo5.precio;
+            if (aditivo6) this.precioAditivo6 = aditivo6.precio;
+            if (aditivo7) this.precioAditivo7 = aditivo7.precio;
+            if (aditivo8) this.precioAditivo8 = aditivo8.precio;
+            if (aditivo9) this.precioAditivo9 = aditivo9.precio;
+            if (aditivo10) this.precioAditivo10 = aditivo10.precio;
+
+            // Cálculo para el aditivo base
+            if (this.dosificacion) {
+              const cantidadAditivoBase = this.dosificacion.aditivo1 || 0; // Obtener cantidad de aditivo base de la dosificación
+              this.costoAditivoBase = this.redondear(
+                (cantidadAditivoBase * this.precioAditivoBase) / this.ufValue
+              );
+              console.log(`Cantidad Aditivo Base: ${cantidadAditivoBase}`);
+              console.log(`Costo Aditivo Base calculado: ${this.costoAditivoBase}`);
+            }
 
 
             this.calcularCostos();
@@ -767,7 +780,7 @@ calcularSobreDistancia(): void {
               );
               this.costoGravilla = this.redondear(
                 (this.gravillaAjustadaConPerdida * materiaPrima.precio) /
-                  this.ufValue
+                this.ufValue
               );
             } else if (material === 'ARENA') {
               const arenaSinAjustar = arena / materiaPrima.densidad;
@@ -776,7 +789,7 @@ calcularSobreDistancia(): void {
               );
               this.costoArena = this.redondear(
                 (this.arenaAjustadaConPerdida * materiaPrima.precio) /
-                  this.ufValue
+                this.ufValue
               );
             }
 

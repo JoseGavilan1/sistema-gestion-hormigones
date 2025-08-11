@@ -207,7 +207,7 @@ export class CosteoProductoComponent {
         this.ufValue = this.costosGenerales['UF'] || 0;
         this.movilizacion = this.costosGenerales['Transporte'] || 0;
         this.valorPorKm = this.costosGenerales['Sobredistancia'] || 0; 
-        this.ufLaboratorio = this.costosGenerales['Laboratorio'] || 0.1; 
+        this.ufLaboratorio =  this.costosGenerales['Laboratorio'] || 0.1; 
 
         console.log('Costos generales cargados:', this.costosGenerales);
         resolve();
@@ -372,7 +372,7 @@ calcularSobreDistancia(): void {
     this.peajeUf * this.viajes + this.sobreDistancia + this.movilizacion;
 
   this.precioVenta =
-    this.costoFinal + this.margenEnUf + this.otros + costoTransporte;
+    this.costoFinal + this.margenEnUf + this.otros + costoTransporte + this.ufLaboratorio;
 
   console.log('Desglose de costos:', {
     costoProduccion: this.costoFinal,
@@ -793,8 +793,7 @@ calcularSobreDistancia(): void {
               this.costoAditivo7 +
               this.costoAditivo8 +
               this.costoAditivo9 +
-              this.costoAditivo10 +
-              this.ufLaboratorio;
+              this.costoAditivo10
           });
       });
 
@@ -807,7 +806,7 @@ calcularSobreDistancia(): void {
           );
           this.costoFinal = this.redondear(this.costoTotal + this.costoAgua);
 
-          this.precioVenta = this.redondear(this.costoFinal + this.margenEnUf);
+          this.precioVenta = this.redondear(this.costoFinal + this.margenEnUf + this.ufLaboratorio);
           this.utilidad = this.redondear(this.precioVenta - this.costoFinal);
         });
     } else {

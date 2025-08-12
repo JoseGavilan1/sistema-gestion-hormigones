@@ -241,13 +241,13 @@ export class CosteoProductoComponent {
   }
 
   calcularSobreDistancia(): void {
-    if (this.sobreDistanciaKms > 30) {
-      this.sobreDistancia = this.sobreDistanciaKms * this.valorPorKm;
-    } else {
-      this.sobreDistancia = 0;
-    }
-
+  if (this.sobreDistanciaKms > 30) {
+    const kilometrosExcedentes = this.sobreDistanciaKms - 30;
+    this.sobreDistancia = kilometrosExcedentes * this.valorPorKm;
+  } else {
+    this.sobreDistancia = 0;
   }
+}
 
   getFormattedSobreDistancia(): string {
     return this.truncateDecimalsPipe.transform(this.sobreDistancia, 2);

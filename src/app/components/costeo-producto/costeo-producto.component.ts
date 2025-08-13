@@ -238,7 +238,11 @@ export class CosteoProductoComponent {
         text: 'No se puede convertir el peaje a UF sin el valor actual de la UF',
       });
     }
+    console.log('Peaje:', this.peaje);
+    console.log('UF Value:', this.ufValue);
+    console.log('Peaje en UF:', this.peajeUf);
   }
+
 
   calcularSobreDistancia(): void {
   if (this.sobreDistanciaKms > 30) {

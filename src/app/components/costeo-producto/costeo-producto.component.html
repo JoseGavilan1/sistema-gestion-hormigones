@@ -299,9 +299,10 @@
             <span class="float-end">{{ costoFinal | number : "1.2-2" }} UF</span>
           </li>
           <li class="list-group-item">
-            <strong>Peaje ({{ viajes }} viajes):</strong>
-            <span class="float-end">{{ peaje * viajes | number : "1.2-2" }} UF</span>
-          </li>
+  <strong>Peaje ({{ viajes }} viajes):</strong>
+  <span class="float-end">{{ peajeUf * viajes | number : "1.2-2" }} UF</span>
+</li>
+
           <li class="list-group-item">
             <strong>Sobre Distancia:</strong>
             <span class="float-end">

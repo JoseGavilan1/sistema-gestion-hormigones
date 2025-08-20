@@ -230,7 +230,7 @@ export class CosteoProductoComponent {
 
   actualizarPeajeEnUf(): void {
     if (this.ufValue > 0) {
-      this.peajeUf = this.redondear(this.peajeClp / this.ufValue);
+      this.peajeUf = this.redondear(this.peajeClp / this.ufValue / 7);
     } else {
       Swal.fire({
         icon: 'warning',
@@ -238,20 +238,21 @@ export class CosteoProductoComponent {
         text: 'No se puede convertir el peaje a UF sin el valor actual de la UF',
       });
     }
-    console.log('Peaje:', this.peaje);
+    console.log('Peaje CLP:', this.peajeClp);
+    console.log('Viajes:', this.viajes);
     console.log('UF Value:', this.ufValue);
-    console.log('Peaje en UF:', this.peajeUf);
+    console.log('Peaje en UF (dividido por 7):', this.peajeUf);
   }
 
 
   calcularSobreDistancia(): void {
-  if (this.sobreDistanciaKms > 30) {
-    const kilometrosExcedentes = this.sobreDistanciaKms - 30;
-    this.sobreDistancia = kilometrosExcedentes * this.valorPorKm;
-  } else {
-    this.sobreDistancia = 0;
+    if (this.sobreDistanciaKms > 30) {
+      const kilometrosExcedentes = this.sobreDistanciaKms - 30;
+      this.sobreDistancia = kilometrosExcedentes * this.valorPorKm;
+    } else {
+      this.sobreDistancia = 0;
+    }
   }
-}
 
   getFormattedSobreDistancia(): string {
     return this.truncateDecimalsPipe.transform(this.sobreDistancia, 2);
@@ -381,12 +382,11 @@ export class CosteoProductoComponent {
   }
 
   costearProductoConMargenYOtros() {
-    // Primero actualizamos los valores de peaje y sobre distancia
+
     this.actualizarPeajeEnUf();
     this.calcularSobreDistancia();
 
-    const costoTransporte =
-      this.peajeUf * this.viajes + this.sobreDistancia + this.movilizacion;
+    const costoTransporte = this.peajeUf * this.viajes + this.sobreDistancia + this.movilizacion;
 
     this.precioVenta =
       this.costoFinal + this.margenEnUf + this.otros + costoTransporte + this.ufLaboratorio;
@@ -401,6 +401,7 @@ export class CosteoProductoComponent {
       total: this.precioVenta,
     });
   }
+
   generarPrecotizacion() {
     if (!this.dosificacion) {
       Swal.fire({

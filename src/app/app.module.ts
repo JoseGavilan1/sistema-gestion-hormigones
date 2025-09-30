@@ -27,6 +27,7 @@ import { DosificacionComponent } from './components/dosificacion/dosificacion.co
 import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.component';
 import { ConfiguracionComponent } from './components/configuracion/configuracion.component';
 import { CostosGeneralesComponent } from './components/costos-generales/costos-generales.component';
+import { EditarPrecioAntofagastaComponent } from './components/editar-precio-antofagasta/editar-precio-antofagasta.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { CostosGeneralesComponent } from './components/costos-generales/costos-g
     CargaMaestroComponent,
     ConfiguracionComponent,
     CostosGeneralesComponent,
+    EditarPrecioAntofagastaComponent,
   ],
   imports: [
     BrowserModule,

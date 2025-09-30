@@ -18,6 +18,14 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
+updateMateriaPrimaAntofagasta(id: number, data: { nombreProducto: string, precio: number }): Observable<any> {
+  return this.http.put(`${this.apiUrlBase}materiasprimasantofagasta/${id}`, data);
+}
+
+  getProveedoresAntofagasta(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrlBase}proveedor/proveedores`);
+}
+
   getFamilias(): Observable<number[]> {
     return this.http.get<number[]>(`${this.apiUrlBase}producto/familias`);
   }
@@ -224,4 +232,30 @@ export class ApiService {
   deleteCostoGeneral(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrlBase}CostoGeneral/${id}`);
   }
+
+  // En tu api.service.ts
+getMateriasPrimasAntofagasta(proveedorId: number): Observable<any[]> {
+  // Asegurarse de que proveedorId sea un número
+  const id = Number(proveedorId);
+  console.log('Solicitando productos para proveedor ID:', id);
+
+  const url = `${this.apiUrlBase}MateriasPrimasAntofagasta/${id}`;
+  return this.http.get<any[]>(url).pipe(
+    catchError((error) => {
+      console.error('Error al obtener materias primas de Antofagasta:', error);
+      return of([]);
+    })
+  );
+}
+
+// Método para obtener todas las materias primas de Antofagasta (opcional)
+getAllMateriasPrimasAntofagasta(): Observable<any[]> {
+  const url = `${this.apiUrlBase}MateriasPrimasAntofagasta`;
+  return this.http.get<any[]>(url).pipe(
+    catchError((error) => {
+      console.error('Error al obtener todas las materias primas de Antofagasta:', error);
+      return of([]);
+    })
+  );
+}
 }

@@ -1,0 +1,89 @@
+<app-navbar></app-navbar>
+<div class="container mt-4">
+  <!-- Botón Volver -->
+  <button class="btn btn-secondary mb-3" (click)="cancelar()">
+    <i class="fas fa-arrow-left"></i> Volver a la lista
+  </button>
+
+  <!-- Card de Edición -->
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h4><i class="fas fa-edit"></i> Editar Producto - Antofagasta</h4>
+    </div>
+    <div class="card-body" *ngIf="producto">
+      <!-- Información del Contexto -->
+      <div class="alert alert-info">
+        <strong>Proveedor ID:</strong> {{ proveedor }} |
+        <strong>Planta:</strong> {{ planta | uppercase }}
+      </div>
+
+      <!-- Formulario de Edición -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group mb-3">
+            <label for="nombreProducto" class="form-label">
+              <strong>Nombre del Producto:</strong>
+            </label>
+            <input
+              type="text"
+              id="nombreProducto"
+              class="form-control"
+              [(ngModel)]="nombreProducto"
+              placeholder="Ingrese el nombre del producto"
+            >
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group mb-3">
+            <label for="precio" class="form-label">
+              <strong>Precio:</strong>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input
+                type="number"
+                id="precio"
+                class="form-control"
+                [(ngModel)]="precio"
+                step="0.01"
+                min="0"
+                placeholder="Ingrese el precio"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumen de Cambios -->
+      <div class="card mb-3">
+        <div class="card-header">
+          <h6>Resumen de cambios:</h6>
+        </div>
+        <div class="card-body">
+          <p><strong>Nombre anterior:</strong> {{ producto.nombre || producto.nombre_producto }}</p>
+          <p><strong>Nombre nuevo:</strong> {{ nombreProducto }}</p>
+          <p><strong>Precio anterior:</strong> ${{ producto.precio | number:'1.2-2' }}</p>
+          <p><strong>Precio nuevo:</strong> ${{ precio | number:'1.2-2' }}</p>
+        </div>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="mt-4">
+        <button
+          class="btn btn-success me-2"
+          (click)="actualizarProducto()"
+          [disabled]="isLoading || !nombreProducto || precio <= 0"
+        >
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+          <i class="fas fa-save" *ngIf="!isLoading"></i>
+          {{ isLoading ? 'Actualizando...' : 'Guardar Cambios' }}
+        </button>
+
+        <button class="btn btn-secondary" (click)="cancelar()">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

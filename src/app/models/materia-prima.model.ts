@@ -1,4 +1,5 @@
 export interface MateriaPrima {
+
   materiaPrimaId: number;
   nombre: string;
   precio: number;

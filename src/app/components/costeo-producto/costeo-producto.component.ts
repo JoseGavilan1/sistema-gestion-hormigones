@@ -30,13 +30,57 @@ import { TruncateDecimalsPipe } from '../../services/pipe/pipeTranform.service';
 })
 export class CosteoProductoComponent {
   truncateDecimalsPipe = new TruncateDecimalsPipe();
-  constructor(private apiService: ApiService, private pdfService: PdfService) { }
+  constructor(private apiService: ApiService, private pdfService: PdfService) {}
+
+  proveedoresAntofagasta: any[] = [];
+
+  proveedorSeleccionado: number | null = null;
+  productosAntofagasta: any[] = [];
+  productoSeleccionadoAntofagasta: any = null;
+  filtroProducto: string = '';
+  mostrarListaProductos: boolean = false;
+  productosFiltrados: any[] = [];
+
+  nombreProveedorSeleccionado: string | null = null;
 
   ngOnInit() {
     this.cargarCostosGenerales().catch((err) => {
       console.error('Error cargando costos:', err);
     });
+
+    this.cargarProveedoresAntofagasta();
   }
+
+  cargarProveedoresAntofagasta(): void {
+  this.apiService.getProveedoresAntofagasta().subscribe({
+    next: (proveedores) => {
+      // Mapear la estructura correcta - usar idProveedor como id
+      this.proveedoresAntofagasta = proveedores.map(proveedor => ({
+        id: proveedor.idProveedor,  // Usar idProveedor como id
+        nombre: proveedor.nombre
+      }));
+
+      console.log('Proveedores cargados (estructura corregida):', this.proveedoresAntofagasta);
+
+      // Verificar la nueva estructura
+      this.proveedoresAntofagasta.forEach((proveedor, index) => {
+        console.log(`Proveedor ${index}:`, {
+          id: proveedor.id,
+          tipo: typeof proveedor.id,
+          nombre: proveedor.nombre
+        });
+      });
+    },
+    error: (err) => {
+      console.error('Error al cargar proveedores:', err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudieron cargar los proveedores de Antofagasta',
+      });
+    },
+  });
+}
 
   setTimeout(arg0: undefined) {
     throw new Error('Method not implemented.');
@@ -198,7 +242,6 @@ export class CosteoProductoComponent {
     });
   }
 
-
   cargarCostosGenerales(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.apiService.getCostosGenerales().subscribe({
@@ -244,7 +287,6 @@ export class CosteoProductoComponent {
     console.log('Peaje en UF (dividido por 7):', this.peajeUf);
   }
 
-
   calcularSobreDistancia(): void {
     if (this.sobreDistanciaKms > 30) {
       const kilometrosExcedentes = this.sobreDistanciaKms - 30;
@@ -257,7 +299,6 @@ export class CosteoProductoComponent {
   getFormattedSobreDistancia(): string {
     return this.truncateDecimalsPipe.transform(this.sobreDistancia, 2);
   }
-
 
   seleccionarSugerencia(sugerencia: any): void {
     this.nombreComercial = sugerencia.nombreComercial;
@@ -284,6 +325,11 @@ export class CosteoProductoComponent {
     if (planta) {
       this.plantaSeleccionada = idPlanta;
       this.nombrePlantaSeleccionada = planta.nombre;
+
+      // Resetear proveedor seleccionado cuando cambia la planta
+      this.proveedorSeleccionado = null;
+      this.nombreProveedorSeleccionado = null;
+
       Swal.fire({
         icon: 'success',
         title: 'Planta seleccionada',
@@ -293,6 +339,183 @@ export class CosteoProductoComponent {
       });
     }
   }
+
+  seleccionarProveedor(idProveedor: number) {
+  console.log('ID Proveedor seleccionado:', idProveedor); // Agregar este log para debug
+
+  const proveedor = this.proveedoresAntofagasta.find(
+    (p) => p.id === idProveedor
+  );
+
+  if (proveedor) {
+    this.proveedorSeleccionado = idProveedor;
+    this.nombreProveedorSeleccionado = proveedor.nombre;
+
+    // Cargar productos del proveedor seleccionado
+    this.cargarProductosPorProveedor(idProveedor);
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Proveedor seleccionado',
+      text: `Has seleccionado el proveedor ${this.nombreProveedorSeleccionado}`,
+      timer: 1500,
+      showConfirmButton: false,
+    });
+  } else {
+    console.error('Proveedor no encontrado con ID:', idProveedor);
+  }
+}
+
+  cargarProductosPorProveedor(idProveedor: number): void {
+  console.log('Cargando productos para proveedor ID:', idProveedor);
+
+  if (!idProveedor || idProveedor === undefined) {
+    console.error('ID Proveedor inválido:', idProveedor);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'ID de proveedor inválido',
+    });
+    return;
+  }
+
+  this.apiService.getMateriasPrimasAntofagasta(idProveedor).subscribe({
+    next: (productos) => {
+      // Filtrar productos que tienen precio > 0
+      this.productosAntofagasta = productos.filter(producto =>
+        producto.precio > 0
+      );
+
+      this.productosFiltrados = [...this.productosAntofagasta];
+
+      console.log('Estructura completa del primer producto:', this.productosAntofagasta[0]);
+      console.log('Productos de Antofagasta cargados (sin precio 0):', this.productosAntofagasta);
+    },
+    error: (err) => {
+      console.error('Error al cargar productos de Antofagasta:', err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudieron cargar los productos del proveedor',
+      });
+    },
+  });
+}
+
+  filtrarProductos(): void {
+  if (this.filtroProducto.length >= 3) {
+    const filtro = this.filtroProducto.toLowerCase();
+
+    // Filtrar por nombre Y por precio > 0
+    this.productosFiltrados = this.productosAntofagasta.filter((producto) =>
+      producto.nombre_producto.toLowerCase().includes(filtro) && producto.precio > 0
+    );
+
+    this.mostrarListaProductos = true;
+  } else {
+    // Mostrar todos los productos con precio > 0
+    this.productosFiltrados = this.productosAntofagasta.filter(producto => producto.precio > 0);
+    this.mostrarListaProductos = this.filtroProducto.length > 0;
+  }
+
+  console.log('Productos después del filtro:', this.productosFiltrados.length);
+}
+
+  seleccionarProducto(producto: any): void {
+    this.productoSeleccionadoAntofagasta = producto;
+    this.filtroProducto = producto.nombre_producto;
+    this.mostrarListaProductos = false;
+
+    // Para Antofagasta, usar el precio directo del producto
+    this.costearProductoDirectoAntofagasta(producto);
+  }
+
+  costearProductoDirectoAntofagasta(producto: any): void {
+    if (!this.proveedorSeleccionado) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Proveedor no seleccionado',
+        text: 'Por favor, selecciona un proveedor',
+      });
+      return;
+    }
+
+    this.tipoBusqueda = 'producto';
+
+    // Usar el precio directo del producto
+    const precioProductoUF = producto.precio || 0;
+
+    // Calcular costos adicionales
+    this.actualizarPeajeEnUf();
+    this.calcularSobreDistancia();
+
+    const costoTransporte =
+      this.peajeUf * this.viajes + this.sobreDistancia + this.movilizacion;
+
+    // El costo final es el precio del producto más costos adicionales
+    this.costoFinal = precioProductoUF;
+    this.precioVenta =
+      this.costoFinal +
+      this.margenEnUf +
+      this.otros +
+      costoTransporte +
+      this.ufLaboratorio;
+
+    // Mostrar información del producto seleccionado
+    this.dosificacion = {
+      idDosificacion: 0,
+      idProducto: producto.id_producto || 0,
+      idPlanta: this.plantaSeleccionada || 0,
+      descripcion: `Producto: ${producto.nombre_producto} - Proveedor: ${this.nombreProveedorSeleccionado}`,
+      cemento: 0,
+      aguaTotal: 0,
+      arena: 0,
+      gravilla: 0,
+      aditivo1: 0,
+      aditivo2: 0,
+      aditivo3: 0,
+      aditivo4: 0,
+      aditivo5: 0,
+      aditivo6: 0,
+      aditivo7: 0,
+      aditivo8: 0,
+    };
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Producto seleccionado',
+      text: `Precio base: UF ${precioProductoUF.toFixed(2)}`,
+      timer: 1500,
+      showConfirmButton: false,
+    });
+
+    console.log('Costeo Antofagasta:', {
+      producto: producto.nombre_producto,
+      precioBaseUF: precioProductoUF,
+      costoFinal: this.costoFinal,
+      precioVenta: this.precioVenta,
+    });
+  }
+
+
+
+  limpiarSeleccionProducto(): void {
+  this.productoSeleccionadoAntofagasta = null;
+  this.filtroProducto = '';
+  // Al limpiar, mostrar solo productos con precio > 0
+  this.productosFiltrados = this.productosAntofagasta.filter(producto => producto.precio > 0);
+  this.mostrarListaProductos = false;
+  this.dosificacion = null;
+}
+
+  // Ocultar lista con delay
+  ocultarListaProductos(): void {
+    setTimeout(() => {
+      this.mostrarListaProductos = false;
+    }, 200);
+  }
+
+
 
   transformarNomenclaturaParaBD(nomenclatura: string): string {
     if (!nomenclatura) return nomenclatura;
@@ -382,14 +605,27 @@ export class CosteoProductoComponent {
   }
 
   costearProductoConMargenYOtros() {
+    // Si es Antofagasta y hay producto seleccionado, recalcular
+    if (this.plantaSeleccionada === 3 && this.productoSeleccionadoAntofagasta) {
+      this.costearProductoDirectoAntofagasta(
+        this.productoSeleccionadoAntofagasta
+      );
+      return;
+    }
 
+    // Para otras plantas, usar el método original con dosificación
     this.actualizarPeajeEnUf();
     this.calcularSobreDistancia();
 
-    const costoTransporte = this.peajeUf * this.viajes + this.sobreDistancia + this.movilizacion;
+    const costoTransporte =
+      this.peajeUf * this.viajes + this.sobreDistancia + this.movilizacion;
 
     this.precioVenta =
-      this.costoFinal + this.margenEnUf + this.otros + costoTransporte + this.ufLaboratorio;
+      this.costoFinal +
+      this.margenEnUf +
+      this.otros +
+      costoTransporte +
+      this.ufLaboratorio;
 
     console.log('Desglose de costos:', {
       costoProduccion: this.costoFinal,
@@ -403,20 +639,33 @@ export class CosteoProductoComponent {
   }
 
   generarPrecotizacion() {
-    if (!this.dosificacion) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Debe calcular el costeo antes de generar la pre-cotización.',
-      });
-      return;
+    if (this.plantaSeleccionada === 3) {
+      // Validaciones específicas para Antofagasta
+      if (!this.productoSeleccionadoAntofagasta) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Debe seleccionar un producto para Antofagasta antes de generar la pre-cotización.',
+        });
+        return;
+      }
+    } else {
+      // Validaciones para otras plantas
+      if (!this.dosificacion) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Debe calcular el costeo antes de generar la pre-cotización.',
+        });
+        return;
+      }
     }
 
     this.isGeneratingQuote = true;
 
     const costosAdicionales = {
       costoProduccion: this.costoFinal,
-      peaje: this.peaje * this.viajes,
+      peaje: this.peajeUf * this.viajes,
       sobreDistancia: this.sobreDistancia,
       movilizacion: this.movilizacion,
       margen: this.margenEnUf,
@@ -436,7 +685,9 @@ export class CosteoProductoComponent {
     };
 
     let descripcionProducto = '';
-    if (this.tipoBusqueda === 'producto' && this.idProducto) {
+    if (this.plantaSeleccionada === 3 && this.productoSeleccionadoAntofagasta) {
+      descripcionProducto = `${this.productoSeleccionadoAntofagasta.nombre_producto} - ${this.nombreProveedorSeleccionado}`;
+    } else if (this.tipoBusqueda === 'producto' && this.idProducto) {
       descripcionProducto = `Hormigón ID ${this.idProducto}`;
     } else if (
       this.tipoBusqueda === 'nomenclatura' &&
@@ -459,7 +710,11 @@ export class CosteoProductoComponent {
 
     const totales = {
       numeroCotizacion:
-        this.tipoBusqueda === 'producto'
+        this.plantaSeleccionada === 3
+          ? `PC-ANT-${
+              this.productoSeleccionadoAntofagasta?.id_producto || 'N/A'
+            }`
+          : this.tipoBusqueda === 'producto'
           ? `PC-${this.idProducto}`
           : `PC-${new Date().getTime()}`,
       fecha: new Date().toLocaleDateString('es-CL'),
@@ -624,18 +879,26 @@ export class CosteoProductoComponent {
 
               // Log de los datos de entrada
               console.log(`Precio Cemento: ${this.precioCemento}`);
-              console.log(`Porcentaje de pérdida de Cemento: ${porcentajePerdidaCemento}`);
+              console.log(
+                `Porcentaje de pérdida de Cemento: ${porcentajePerdidaCemento}`
+              );
 
               // Obtener la cantidad de cemento desde la dosificación
-              const cantidadCemento = this.dosificacion ? this.dosificacion.cemento || 0 : 0; // Asumimos que la cantidad de cemento está en la dosificación
+              const cantidadCemento = this.dosificacion
+                ? this.dosificacion.cemento || 0
+                : 0; // Asumimos que la cantidad de cemento está en la dosificación
 
               // Log de la cantidad de cemento
-              console.log(`Cantidad de Cemento (desde dosificación): ${cantidadCemento}`);
-
+              console.log(
+                `Cantidad de Cemento (desde dosificación): ${cantidadCemento}`
+              );
 
               // Ajustar por el porcentaje de pérdida
-              const cantidadCementoConPerdida = cantidadCemento * (1 + porcentajePerdidaCemento / 100);
-              console.log(`Cantidad de Cemento ajustada con pérdida: ${cantidadCementoConPerdida}`);
+              const cantidadCementoConPerdida =
+                cantidadCemento * (1 + porcentajePerdidaCemento / 100);
+              console.log(
+                `Cantidad de Cemento ajustada con pérdida: ${cantidadCementoConPerdida}`
+              );
 
               // Calcular el costo final del cemento en función de su precio en la planta seleccionada
               this.costoCemento = this.redondear(
@@ -659,24 +922,32 @@ export class CosteoProductoComponent {
 
               console.log(`Precio Arena: ${this.precioArena}`);
               console.log(`Densidad de Arena: ${this.densidadArena}`);
-              console.log(`Porcentaje de pérdida de Arena: ${porcentajePerdidaArena}`);
+              console.log(
+                `Porcentaje de pérdida de Arena: ${porcentajePerdidaArena}`
+              );
 
               const cantidadArena = this.dosificacion?.arena ?? 0;
 
-              console.log(`Cantidad de Arena (desde dosificación): ${cantidadArena}`);
+              console.log(
+                `Cantidad de Arena (desde dosificación): ${cantidadArena}`
+              );
 
               const cantidadArenaAjustada = cantidadArena / this.densidadArena;
-              console.log(`Cantidad de Arena ajustada (por densidad): ${cantidadArenaAjustada}`);
+              console.log(
+                `Cantidad de Arena ajustada (por densidad): ${cantidadArenaAjustada}`
+              );
 
-              const cantidadArenaConPerdida = cantidadArenaAjustada * (1 + porcentajePerdidaArena / 100);
-              console.log(`Cantidad de Arena ajustada con pérdida: ${cantidadArenaConPerdida}`);
+              const cantidadArenaConPerdida =
+                cantidadArenaAjustada * (1 + porcentajePerdidaArena / 100);
+              console.log(
+                `Cantidad de Arena ajustada con pérdida: ${cantidadArenaConPerdida}`
+              );
 
               this.costoArena = this.redondear(
                 (cantidadArenaConPerdida * this.precioArena) / this.ufValue
               );
               console.log(`Costo de Arena ajustado: ${this.costoArena}`);
             }
-
 
             if (gravilla) {
               this.precioGravilla = gravilla.precio;
@@ -686,29 +957,40 @@ export class CosteoProductoComponent {
               // Log de los datos de entrada
               console.log(`Precio Gravilla: ${this.precioGravilla}`);
               console.log(`Densidad de Gravilla: ${this.densidadGravilla}`);
-              console.log(`Porcentaje de pérdida de Gravilla: ${porcentajePerdidaGravilla}`);
+              console.log(
+                `Porcentaje de pérdida de Gravilla: ${porcentajePerdidaGravilla}`
+              );
 
               // Obtener la cantidad de gravilla desde la dosificación
               const cantidadGravilla = this.dosificacion?.gravilla ?? 0; // Asumimos que la cantidad de gravilla está en la dosificación
 
               // Log de la cantidad de gravilla
-              console.log(`Cantidad de Gravilla (desde dosificación): ${cantidadGravilla}`);
+              console.log(
+                `Cantidad de Gravilla (desde dosificación): ${cantidadGravilla}`
+              );
 
               // Dividir la cantidad de gravilla entre la densidad de la gravilla para ajustarla
-              const cantidadGravillaAjustada = cantidadGravilla / this.densidadGravilla;
-              console.log(`Cantidad de Gravilla ajustada (por densidad): ${cantidadGravillaAjustada}`);
+              const cantidadGravillaAjustada =
+                cantidadGravilla / this.densidadGravilla;
+              console.log(
+                `Cantidad de Gravilla ajustada (por densidad): ${cantidadGravillaAjustada}`
+              );
 
               // Ajustar por el porcentaje de pérdida
-              const cantidadGravillaConPerdida = cantidadGravillaAjustada * (1 + porcentajePerdidaGravilla / 100);
-              console.log(`Cantidad de Gravilla ajustada con pérdida: ${cantidadGravillaConPerdida}`);
+              const cantidadGravillaConPerdida =
+                cantidadGravillaAjustada *
+                (1 + porcentajePerdidaGravilla / 100);
+              console.log(
+                `Cantidad de Gravilla ajustada con pérdida: ${cantidadGravillaConPerdida}`
+              );
 
               // Calcular el costo final de la gravilla en función de su precio en la planta seleccionada
               this.costoGravilla = this.redondear(
-                (cantidadGravillaConPerdida * this.precioGravilla) / this.ufValue
+                (cantidadGravillaConPerdida * this.precioGravilla) /
+                  this.ufValue
               );
               console.log(`Costo de Gravilla ajustado: ${this.costoGravilla}`);
             }
-
 
             if (aditivoBase) {
               this.precioAditivoBase = aditivoBase.precio;
@@ -731,9 +1013,10 @@ export class CosteoProductoComponent {
                 (cantidadAditivoBase * this.precioAditivoBase) / this.ufValue
               );
               console.log(`Cantidad Aditivo Base: ${cantidadAditivoBase}`);
-              console.log(`Costo Aditivo Base calculado: ${this.costoAditivoBase}`);
+              console.log(
+                `Costo Aditivo Base calculado: ${this.costoAditivoBase}`
+              );
             }
-
 
             this.calcularCostos();
             Swal.close();
@@ -785,7 +1068,7 @@ export class CosteoProductoComponent {
               );
               this.costoGravilla = this.redondear(
                 (this.gravillaAjustadaConPerdida * materiaPrima.precio) /
-                this.ufValue
+                  this.ufValue
               );
             } else if (material === 'ARENA') {
               const arenaSinAjustar = arena / materiaPrima.densidad;
@@ -794,7 +1077,7 @@ export class CosteoProductoComponent {
               );
               this.costoArena = this.redondear(
                 (this.arenaAjustadaConPerdida * materiaPrima.precio) /
-                this.ufValue
+                  this.ufValue
               );
             }
 
@@ -811,7 +1094,7 @@ export class CosteoProductoComponent {
               this.costoAditivo7 +
               this.costoAditivo8 +
               this.costoAditivo9 +
-              this.costoAditivo10
+              this.costoAditivo10;
           });
       });
 
@@ -824,7 +1107,9 @@ export class CosteoProductoComponent {
           );
           this.costoFinal = this.redondear(this.costoTotal + this.costoAgua);
 
-          this.precioVenta = this.redondear(this.costoFinal + this.margenEnUf + this.ufLaboratorio);
+          this.precioVenta = this.redondear(
+            this.costoFinal + this.margenEnUf + this.ufLaboratorio
+          );
           this.utilidad = this.redondear(this.precioVenta - this.costoFinal);
         });
     } else {

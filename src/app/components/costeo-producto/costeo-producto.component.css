@@ -148,3 +148,33 @@ h5 {
 .sugerencia-item:hover {
   background-color: #f1f1f1; /* Cambia el color de fondo cuando el usuario pasa el cursor por encima */
 }
+
+
+.proveedores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.proveedor-btn {
+  padding: 10px 15px;
+  border: 2px solid #ddd;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  font-weight: 500;
+}
+
+.proveedor-btn:hover {
+  background-color: #e9ecef;
+  border-color: #007bff;
+}
+
+.proveedor-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}

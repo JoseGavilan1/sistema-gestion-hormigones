@@ -13,6 +13,7 @@ import { DosificacionComponent } from './components/dosificacion/dosificacion.co
 import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.component';
 import { ConfiguracionComponent } from './components/configuracion/configuracion.component';
 import { CostosGeneralesComponent } from './components/costos-generales/costos-generales.component';
+import { EditarPrecioAntofagastaComponent } from './components/editar-precio-antofagasta/editar-precio-antofagasta.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -38,7 +39,9 @@ const routes: Routes = [
 
   {path: 'configuracion', component: ConfiguracionComponent, canActivate: [AuthGuard]},
 
-  {path: 'costos-generales', component: CostosGeneralesComponent, canActivate: [AuthGuard]}
+  {path: 'costos-generales', component: CostosGeneralesComponent, canActivate: [AuthGuard]},
+
+  {path: 'editar-precio-antofagasta', component: EditarPrecioAntofagastaComponent, canActivate: [AuthGuard]},
 ];
 
 @NgModule({

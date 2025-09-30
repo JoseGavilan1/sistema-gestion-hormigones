@@ -42,3 +42,11 @@ button.selected {
   border-color: black;
   color: white; /* Asegúrate de que el texto sea visible */
 }
+
+.btn.selected {
+  background-color: #198754;
+  color: white;
+  border-color: #198754;
+}
+
+

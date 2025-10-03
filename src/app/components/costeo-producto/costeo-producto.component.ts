@@ -187,10 +187,18 @@ export class CosteoProductoComponent {
   valorPorKm: number = 0;
 
   ocultarSugerenciasConDelay() {
-    setTimeout(() => {
-      this.mostrarSugerencias = false;
-    }, 200);
+  // No ocultar si hay un toast activo - verificar de manera más específica
+  if (document.querySelector('.swal2-container')) {
+    const toast = document.querySelector('.swal2-toast');
+    if (toast) {
+      return; // Hay un toast activo, no ocultar sugerencias
+    }
   }
+
+  setTimeout(() => {
+    this.mostrarSugerencias = false;
+  }, 200);
+}
 
   handleInputEvent(event: Event) {
     const inputElement = event.target as HTMLInputElement;
@@ -301,20 +309,176 @@ export class CosteoProductoComponent {
   }
 
   seleccionarSugerencia(sugerencia: any): void {
-    this.nombreComercial = sugerencia.nombreComercial;
-    this.mostrarSugerencias = false;
-    this.buscarPorNombreComercial(
-      sugerencia.nombreComercial,
-      this.plantaSeleccionada!
-    );
+  console.log('Sugerencia seleccionada:', sugerencia);
 
-    const inputElement = document.querySelector(
-      '#nombreComercialInput'
-    ) as HTMLInputElement;
-    if (inputElement) {
-      inputElement.blur();
+  this.nombreComercial = sugerencia.nombreComercial;
+  this.mostrarSugerencias = false;
+
+  // Toast de selección exitosa
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 2000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
     }
+  });
+
+  Toast.fire({
+    icon: 'success',
+    title: `"${sugerencia.nombreComercial}" seleccionado`
+  });
+
+  // Llamar a la búsqueda con toasts en lugar de alerts modales
+  this.ejecutarBusquedaPorNombreComercialConToasts(sugerencia.nombreComercial, this.plantaSeleccionada!);
+}
+
+private ejecutarBusquedaPorNombreComercialConToasts(nombreComercial: string, idPlanta: number): void {
+  console.log('Ejecutando búsqueda con toasts:', { nombreComercial, idPlanta });
+
+  // Toast de "Buscando dosificación..."
+  const loadingToast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      Swal.showLoading();
+    }
+  });
+
+  const toastInstance = loadingToast.fire({
+    title: 'Buscando dosificación...'
+  });
+
+  this.apiService.getDosificacionByNombreComercial(nombreComercial, idPlanta)
+    .subscribe({
+      next: (dosificacion) => {
+        console.log('Dosificación encontrada:', dosificacion);
+        this.dosificacion = dosificacion;
+
+        // Cerrar toast de búsqueda
+        Swal.close();
+
+        // Toast de éxito
+        const successToast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
+
+        successToast.fire({
+          icon: 'success',
+          title: `Dosificación encontrada`
+        });
+
+        // Usar el valor de UF desde costos generales
+        this.ufValue = this.costosGenerales['UF'] || 0;
+
+        if (this.ufValue <= 0) {
+          const warningToast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+          });
+          warningToast.fire({
+            icon: 'warning',
+            title: 'Valor UF no disponible'
+          });
+        }
+
+        // Proceder con el cálculo de costos usando toast
+        this.obtenerPreciosMateriasPrimasConToasts();
+      },
+      error: (error) => {
+        console.error('Error en búsqueda por nombre comercial:', error);
+        Swal.close();
+
+        // Toast de error
+        const errorToast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 4000,
+        });
+
+        errorToast.fire({
+          icon: 'error',
+          title: 'No se encontró dosificación'
+        });
+      },
+    });
+}
+
+obtenerPreciosMateriasPrimasConToasts(mostrarAlerta: boolean = true) {
+  if (this.nombrePlantaSeleccionada) {
+    // Toast de "Calculando costeo..."
+    const calculatingToast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        Swal.showLoading();
+      }
+    });
+
+    calculatingToast.fire({
+      title: 'Calculando costeo...'
+    });
+
+    this.apiService
+      .getMateriasPrimas(this.nombrePlantaSeleccionada)
+      .subscribe({
+        next: (materias) => {
+          // ... (todo el código existente de obtenerPreciosMateriasPrimas)
+
+          this.calcularCostos();
+          Swal.close();
+
+          if (mostrarAlerta) {
+            // Toast de éxito en cálculo
+            const successToast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+            });
+
+            successToast.fire({
+              icon: 'success',
+              title: 'Costeo completado'
+            });
+          }
+        },
+        error: (err) => {
+          Swal.close();
+
+          // Toast de error
+          const errorToast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+          });
+
+          errorToast.fire({
+            icon: 'error',
+            title: 'Error en cálculo de costos'
+          });
+        },
+      });
   }
+}
 
   toggleDetalles() {
     this.mostrarDetalles = !this.mostrarDetalles;
@@ -366,7 +530,8 @@ export class CosteoProductoComponent {
   }
 }
 
-  cargarProductosPorProveedor(idProveedor: number): void {
+  // En cargarProductosPorProveedor()
+cargarProductosPorProveedor(idProveedor: number): void {
   console.log('Cargando productos para proveedor ID:', idProveedor);
 
   if (!idProveedor || idProveedor === undefined) {
@@ -381,18 +546,21 @@ export class CosteoProductoComponent {
 
   this.apiService.getMateriasPrimasAntofagasta(idProveedor).subscribe({
     next: (productos) => {
-      // Filtrar productos que tienen precio > 0
-      this.productosAntofagasta = productos.filter(producto =>
-        producto.precio > 0
-      );
+      // Normalizar la estructura de productos
+      this.productosAntofagasta = productos
+        .filter(producto => producto.precio > 0)
+        .map(producto => ({
+          ...producto,
+          // Asegurar que siempre tenga la propiedad 'nombre'
+          nombre: producto.nombre_producto || producto.nombre || 'Sin nombre'
+        }));
 
       this.productosFiltrados = [...this.productosAntofagasta];
 
-      console.log('Estructura completa del primer producto:', this.productosAntofagasta[0]);
-      console.log('Productos de Antofagasta cargados (sin precio 0):', this.productosAntofagasta);
+      console.log('Productos cargados:', this.productosAntofagasta);
     },
     error: (err) => {
-      console.error('Error al cargar productos de Antofagasta:', err);
+      console.error('Error al cargar productos:', err);
       Swal.fire({
         icon: 'error',
         title: 'Error',
@@ -406,29 +574,35 @@ export class CosteoProductoComponent {
   if (this.filtroProducto.length >= 3) {
     const filtro = this.filtroProducto.toLowerCase();
 
-    // Filtrar por nombre Y por precio > 0
-    this.productosFiltrados = this.productosAntofagasta.filter((producto) =>
-      producto.nombre_producto.toLowerCase().includes(filtro) && producto.precio > 0
-    );
+    this.productosFiltrados = this.productosAntofagasta.filter((producto) => {
+      const nombre = producto.nombre_producto || producto.nombre || '';
+      return nombre.toLowerCase().includes(filtro) && producto.precio > 0;
+    });
 
     this.mostrarListaProductos = true;
   } else {
-    // Mostrar todos los productos con precio > 0
     this.productosFiltrados = this.productosAntofagasta.filter(producto => producto.precio > 0);
     this.mostrarListaProductos = this.filtroProducto.length > 0;
   }
 
-  console.log('Productos después del filtro:', this.productosFiltrados.length);
+  console.log('Productos filtrados:', this.productosFiltrados);
 }
 
-  seleccionarProducto(producto: any): void {
-    this.productoSeleccionadoAntofagasta = producto;
-    this.filtroProducto = producto.nombre_producto;
-    this.mostrarListaProductos = false;
+private blurTimeout: any;
 
-    // Para Antofagasta, usar el precio directo del producto
-    this.costearProductoDirectoAntofagasta(producto);
+  seleccionarProducto(producto: any): void {
+  // Cancelar cualquier timeout pendiente de blur
+  if (this.blurTimeout) {
+    clearTimeout(this.blurTimeout);
+    this.blurTimeout = null;
   }
+
+  this.productoSeleccionadoAntofagasta = producto;
+  this.filtroProducto = producto.nombre_producto || producto.nombre;
+  this.mostrarListaProductos = false;
+
+  this.costearProductoDirectoAntofagasta(producto);
+}
 
   costearProductoDirectoAntofagasta(producto: any): void {
     if (!this.proveedorSeleccionado) {
@@ -481,13 +655,22 @@ export class CosteoProductoComponent {
       aditivo8: 0,
     };
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Producto seleccionado',
-      text: `Precio base: UF ${precioProductoUF.toFixed(2)}`,
-      timer: 1500,
-      showConfirmButton: false,
-    });
+    const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 2000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    }
+  });
+
+  Toast.fire({
+    icon: 'success',
+    title: `"${producto.nombre_producto || producto.nombre}" seleccionado y costeo realizado`
+  });
 
     console.log('Costeo Antofagasta:', {
       producto: producto.nombre_producto,
@@ -502,18 +685,24 @@ export class CosteoProductoComponent {
   limpiarSeleccionProducto(): void {
   this.productoSeleccionadoAntofagasta = null;
   this.filtroProducto = '';
-  // Al limpiar, mostrar solo productos con precio > 0
   this.productosFiltrados = this.productosAntofagasta.filter(producto => producto.precio > 0);
   this.mostrarListaProductos = false;
   this.dosificacion = null;
+
+  // Cancelar timeout si existe
+  if (this.blurTimeout) {
+    clearTimeout(this.blurTimeout);
+    this.blurTimeout = null;
+  }
 }
 
-  // Ocultar lista con delay
   ocultarListaProductos(): void {
-    setTimeout(() => {
-      this.mostrarListaProductos = false;
-    }, 200);
-  }
+  // Usar timeout para dar tiempo a que se procese el clic
+  this.blurTimeout = setTimeout(() => {
+    this.mostrarListaProductos = false;
+    this.blurTimeout = null;
+  }, 150);
+}
 
 
 
@@ -839,7 +1028,7 @@ export class CosteoProductoComponent {
       });
   }
 
-  obtenerPreciosMateriasPrimas() {
+  obtenerPreciosMateriasPrimas(mostrarAlerta: boolean = true) {
     if (this.nombrePlantaSeleccionada) {
       Swal.fire({
         title: 'Calculando costeo...',
@@ -1021,6 +1210,7 @@ export class CosteoProductoComponent {
             this.calcularCostos();
             Swal.close();
 
+            if (mostrarAlerta) {
             Swal.fire({
               icon: 'success',
               title: 'Costeo completado',
@@ -1028,6 +1218,7 @@ export class CosteoProductoComponent {
               timer: 1500,
               showConfirmButton: false,
             });
+          }
           },
           error: (err) => {
             Swal.close();
@@ -1227,61 +1418,38 @@ export class CosteoProductoComponent {
   }
 
   buscarPorNombreComercial(nombreComercial: string, idPlanta: number): void {
-    this.tipoBusqueda = 'nombreComercialText';
+  console.log('=== INICIANDO BÚSQUEDA POR NOMBRE COMERCIAL ===');
+  console.log('Nombre comercial:', nombreComercial);
+  console.log('Planta ID:', idPlanta);
+  console.log('Planta seleccionada:', this.plantaSeleccionada);
 
-    if (!nombreComercial || !idPlanta) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Campos incompletos',
-        text: 'Por favor, ingresa un nombre comercial válido y selecciona una planta.',
-      });
-      return;
-    }
-
-    // Verificar si los costos generales están cargados
-    if (
-      !this.costosGenerales ||
-      Object.keys(this.costosGenerales).length === 0
-    ) {
-      Swal.fire({
-        title: 'Cargando costos...',
-        text: 'Por favor espera',
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
-
-      this.apiService.getCostosGenerales().subscribe({
-        next: (costos: CostoGeneral[]) => {
-          this.costosGenerales = {};
-          costos.forEach((costo) => {
-            this.costosGenerales[costo.nombreCosto] = costo.valorCosto;
-          });
-
-          Swal.close();
-          this.ejecutarBusquedaPorNombreComercial(nombreComercial, idPlanta);
-        },
-        error: (err) => {
-          Swal.close();
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se pudieron cargar los costos generales',
-          });
-        },
-      });
-    } else {
-      this.ejecutarBusquedaPorNombreComercial(nombreComercial, idPlanta);
-    }
+  // Validaciones más estrictas
+  if (!nombreComercial || nombreComercial.trim().length === 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Nombre comercial requerido',
+      text: 'Por favor, ingresa un nombre comercial válido.',
+    });
+    return;
   }
 
-  private ejecutarBusquedaPorNombreComercial(
-    nombreComercial: string,
-    idPlanta: number
-  ): void {
+  if (!idPlanta || idPlanta === null || idPlanta === undefined) {
     Swal.fire({
-      title: 'Cargando dosificación...',
+      icon: 'warning',
+      title: 'Planta no seleccionada',
+      text: 'Por favor, selecciona una planta primero.',
+    });
+    return;
+  }
+
+  this.tipoBusqueda = 'nombreComercialText';
+
+  // Verificar si los costos generales están cargados
+  if (!this.costosGenerales || Object.keys(this.costosGenerales).length === 0) {
+    console.log('Costos generales no cargados, cargando primero...');
+
+    Swal.fire({
+      title: 'Cargando costos...',
       text: 'Por favor espera',
       allowOutsideClick: false,
       didOpen: () => {
@@ -1289,44 +1457,99 @@ export class CosteoProductoComponent {
       },
     });
 
-    this.apiService
-      .getDosificacionByNombreComercial(nombreComercial, idPlanta)
-      .subscribe({
-        next: (dosificacion) => {
-          this.dosificacion = dosificacion;
-          Swal.close();
-          Swal.fire({
-            icon: 'success',
-            title: 'Dosificación encontrada',
-            text: `Se encontró la dosificación para el nombre comercial: ${nombreComercial}`,
-            timer: 1500,
-            showConfirmButton: false,
-          });
+    this.apiService.getCostosGenerales().subscribe({
+      next: (costos: CostoGeneral[]) => {
+        this.costosGenerales = {};
+        costos.forEach((costo) => {
+          this.costosGenerales[costo.nombreCosto] = costo.valorCosto;
+        });
 
-          // Usar el valor de UF desde costos generales
-          this.ufValue = this.costosGenerales['UF'] || 0;
-
-          if (this.ufValue <= 0) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Valor de UF inválido',
-              text: 'El valor de UF no está configurado en los costos generales.',
-              timer: 2000,
-            });
-          }
-
-          this.obtenerPreciosMateriasPrimas();
-        },
-        error: () => {
-          Swal.close();
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se encontró una dosificación para este nombre comercial en la planta seleccionada.',
-          });
-        },
-      });
+        Swal.close();
+        console.log('Costos cargados, ejecutando búsqueda...');
+        this.ejecutarBusquedaPorNombreComercial(nombreComercial.trim(), idPlanta, true);
+      },
+      error: (err) => {
+        Swal.close();
+        console.error('Error al cargar costos:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudieron cargar los costos generales',
+        });
+      },
+    });
+  } else {
+    console.log('Costos ya cargados, ejecutando búsqueda directamente...');
+    this.ejecutarBusquedaPorNombreComercial(nombreComercial.trim(), idPlanta, true);
   }
+}
+
+  private ejecutarBusquedaPorNombreComercial(nombreComercial: string, idPlanta: number, mostrarAlertaFinal: boolean = true): void {
+  console.log('Ejecutando búsqueda con:', { nombreComercial, idPlanta });
+
+  Swal.fire({
+    title: 'Buscando dosificación...',
+    text: `Buscando "${nombreComercial}" en ${this.nombrePlantaSeleccionada}`,
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    },
+  });
+
+  this.apiService.getDosificacionByNombreComercial(nombreComercial, idPlanta)
+    .subscribe({
+      next: (dosificacion) => {
+        console.log('Dosificación encontrada:', dosificacion);
+        this.dosificacion = dosificacion;
+
+        Swal.close();
+
+        // Mostrar éxito con toast en lugar de alerta modal
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
+          }
+        });
+
+        Toast.fire({
+          icon: 'success',
+          title: `Dosificación encontrada para "${nombreComercial}"`
+        });
+
+        // Usar el valor de UF desde costos generales
+        this.ufValue = this.costosGenerales['UF'] || 0;
+
+        if (this.ufValue <= 0) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Valor de UF no disponible',
+            text: 'El valor de UF no está configurado en los costos generales.',
+            timer: 2000,
+          });
+        }
+
+        // Proceder con el cálculo de costos, pasando el parámetro para no mostrar alerta final
+        this.obtenerPreciosMateriasPrimas(mostrarAlertaFinal);
+      },
+      error: (error) => {
+        console.error('Error en búsqueda por nombre comercial:', error);
+        Swal.close();
+
+        Swal.fire({
+          icon: 'error',
+          title: 'No se encontró dosificación',
+          text: `No se encontró una dosificación para el nombre comercial "${nombreComercial}" en la planta ${this.nombrePlantaSeleccionada}.`,
+          footer: 'Verifica que el nombre comercial sea correcto y esté asociado a esta planta.'
+        });
+      },
+    });
+}
 
   obtenerCostosGenerales() {
     this.apiService.getCostosGenerales().subscribe({

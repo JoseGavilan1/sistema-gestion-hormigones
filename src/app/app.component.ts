@@ -23,7 +23,5 @@ export class AppComponent {
   }
 
   title = 'tu-aplicacion';
-  isLoginPage(): boolean {
-    return this.currentRoute === '/login' || this.currentRoute === '/';
-  }
+
 }

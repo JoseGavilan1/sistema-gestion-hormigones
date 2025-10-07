@@ -189,13 +189,19 @@ updateMateriaPrimaAntofagasta(id: number, data: { nombreProducto: string, precio
   }
 
   getDosificacionByNombreComercial(
-    nombreComercial: string,
-    idPlanta: number
-  ): Observable<Dosificacion> {
-    return this.http.get<Dosificacion>(
-      `${this.apiUrlBase}Dosificacion/dosificacion/${nombreComercial}/${idPlanta}`
-    );
-  }
+  nombreComercial: string,
+  idPlanta: number
+): Observable<Dosificacion> {
+  // Usar query parameters en lugar de path parameters
+  const params = new HttpParams()
+    .set('nombreComercial', nombreComercial)
+    .set('idPlanta', idPlanta.toString());
+
+  return this.http.get<Dosificacion>(
+    `${this.apiUrlBase}Dosificacion/dosificacion`,
+    { params }
+  );
+}
 
   buscarNombresComerciales(
     termino: string,

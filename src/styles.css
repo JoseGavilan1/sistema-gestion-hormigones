@@ -48,3 +48,18 @@ html, body {
     min-height: calc(100vh - 50px);
   }
 }
+
+
+.swal2-container {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+.swal2-popup, .swal2-toast {
+  z-index: 100000 !important;
+  position: relative !important;
+}
+
+.swal2-backdrop-show {
+  z-index: 99998 !important;
+}

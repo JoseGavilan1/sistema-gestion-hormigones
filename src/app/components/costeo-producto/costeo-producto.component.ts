@@ -323,6 +323,7 @@ export class CosteoProductoComponent {
       title: `"${sugerencia.nombreComercial}" seleccionado`,
     });
 
+    const nombreCodificado = encodeURIComponent(sugerencia.nombreComercial);
     // Llamar a la búsqueda con toasts en lugar de alerts modales
     this.ejecutarBusquedaPorNombreComercialConToasts(
       sugerencia.nombreComercial,
@@ -1166,6 +1167,8 @@ export class CosteoProductoComponent {
       costosAdicionales
     );
 
+
+
     setTimeout(() => {
       this.isGeneratingQuote = false;
       Swal.close();
@@ -1177,6 +1180,8 @@ export class CosteoProductoComponent {
       });
     }, 2000);
   }
+
+
 
   obtenerPreciosMateriasPrimas(mostrarAlerta: boolean = true) {
     if (this.nombrePlantaSeleccionada) {
@@ -1389,6 +1394,11 @@ export class CosteoProductoComponent {
 
       const { cemento, gravilla, arena } = this.dosificacion;
 
+      console.log('=== INICIANDO CÁLCULO DE COSTOS ===');
+      console.log('Planta ID:', plantaId);
+      console.log('Dosificación:', this.dosificacion);
+      console.log('Valor UF:', this.ufValue);
+
       const materiales = ['CEMENTO', 'GRAVILLA', 'ARENA'];
       materiales.forEach((material) => {
         this.apiService
@@ -1405,12 +1415,42 @@ export class CosteoProductoComponent {
               );
             } else if (material === 'GRAVILLA') {
               const gravillaSinAjustar = gravilla / materiaPrima.densidad;
-              this.gravillaAjustadaConPerdida = this.redondear(
-                gravillaSinAjustar * (1 + porcentajePerdida / 100)
+
+              console.log('=== CÁLCULO DETALLADO GRAVILLA ===');
+              console.log('- Cantidad dosificación:', gravilla, 'kg');
+              console.log('- Densidad gravilla:', materiaPrima.densidad);
+              console.log(
+                '- Gravilla sin ajustar (kg/m³):',
+                gravillaSinAjustar
               );
-              this.costoGravilla = this.redondear(
-                (this.gravillaAjustadaConPerdida * materiaPrima.precio) /
-                  this.ufValue
+              console.log('- Porcentaje pérdida:', porcentajePerdida, '%');
+
+              const gravillaConPerdida =
+                gravillaSinAjustar * (1 + porcentajePerdida / 100);
+              console.log('- Gravilla con pérdida:', gravillaConPerdida);
+
+              // 🔥 CAMBIO IMPORTANTE: Usar el cálculo exacto en lugar de redondeos intermedios
+              const calculoExacto =
+                (gravillaConPerdida * materiaPrima.precio) / this.ufValue;
+              console.log(
+                '- Cálculo exacto (sin redondeos intermedios):',
+                calculoExacto
+              );
+
+              // 🔥 USAR EL CÁLCULO EXACTO REDONDEADO para el costo final
+              this.costoGravilla = this.redondear(calculoExacto);
+              console.log(
+                '- Costo gravilla final (usando cálculo exacto):',
+                this.costoGravilla,
+                'UF'
+              );
+
+              // Solo para tracking, no para cálculo
+              this.gravillaAjustadaConPerdida =
+                this.truncarADosDecimales(gravillaConPerdida);
+              console.log(
+                '- Gravilla ajustada (solo para visualización):',
+                this.gravillaAjustadaConPerdida
               );
             } else if (material === 'ARENA') {
               const arenaSinAjustar = arena / materiaPrima.densidad;
@@ -1421,6 +1461,132 @@ export class CosteoProductoComponent {
                 (this.arenaAjustadaConPerdida * materiaPrima.precio) /
                   this.ufValue
               );
+            }
+
+            // Calcular costos de aditivos 2-10 CON LOGS
+            console.log('=== CÁLCULO DE ADITIVOS ===');
+            console.log('Precios de aditivos disponibles:');
+            console.log('- precioAditivo2:', this.precioAditivo2);
+            console.log('- precioAditivo3:', this.precioAditivo3);
+            console.log('- precioAditivo4:', this.precioAditivo4);
+            console.log('- precioAditivo5:', this.precioAditivo5);
+            console.log('- precioAditivo6:', this.precioAditivo6);
+            console.log('- precioAditivo7:', this.precioAditivo7);
+            console.log('- precioAditivo8:', this.precioAditivo8);
+            console.log('- precioAditivo9:', this.precioAditivo9);
+            console.log('- precioAditivo10:', this.precioAditivo10);
+
+            if (this.dosificacion) {
+              console.log('Cantidades en dosificación:');
+              console.log('- aditivo2:', this.dosificacion.aditivo2);
+              console.log('- aditivo3:', this.dosificacion.aditivo3);
+              console.log('- aditivo4:', this.dosificacion.aditivo4);
+              console.log('- aditivo5:', this.dosificacion.aditivo5);
+              console.log('- aditivo6:', this.dosificacion.aditivo6);
+              console.log('- aditivo7:', this.dosificacion.aditivo7);
+              console.log('- aditivo8:', this.dosificacion.aditivo8);
+              console.log('- aditivo9:', this.dosificacion.aditivo9);
+              console.log('- aditivo10:', this.dosificacion.aditivo10);
+
+              // Calcular cada aditivo con log detallado
+              this.costoAditivo2 = this.redondear(
+                (this.precioAditivo2 / this.ufValue) *
+                  (this.dosificacion.aditivo2 || 0)
+              );
+              console.log('Cálculo Aditivo 2:', {
+                precioCLP: this.precioAditivo2,
+                cantidad: this.dosificacion.aditivo2,
+                precioUF: this.precioAditivo2 / this.ufValue,
+                costoUF: this.costoAditivo2,
+              });
+
+              this.costoAditivo3 = this.redondear(
+                (this.precioAditivo3 / this.ufValue) *
+                  (this.dosificacion.aditivo3 || 0)
+              );
+              console.log('Cálculo Aditivo 3:', {
+                precioCLP: this.precioAditivo3,
+                cantidad: this.dosificacion.aditivo3,
+                precioUF: this.precioAditivo3 / this.ufValue,
+                costoUF: this.costoAditivo3,
+              });
+
+              this.costoAditivo4 = this.redondear(
+                (this.precioAditivo4 / this.ufValue) *
+                  (this.dosificacion.aditivo4 || 0)
+              );
+              console.log('Cálculo Aditivo 4:', {
+                precioCLP: this.precioAditivo4,
+                cantidad: this.dosificacion.aditivo4,
+                precioUF: this.precioAditivo4 / this.ufValue,
+                costoUF: this.costoAditivo4,
+              });
+
+              this.costoAditivo5 = this.redondear(
+                (this.precioAditivo5 / this.ufValue) *
+                  (this.dosificacion.aditivo5 || 0)
+              );
+              console.log('Cálculo Aditivo 5:', {
+                precioCLP: this.precioAditivo5,
+                cantidad: this.dosificacion.aditivo5,
+                precioUF: this.precioAditivo5 / this.ufValue,
+                costoUF: this.costoAditivo5,
+              });
+
+              this.costoAditivo6 = this.redondear(
+                (this.precioAditivo6 / this.ufValue) *
+                  (this.dosificacion.aditivo6 || 0)
+              );
+              console.log('Cálculo Aditivo 6:', {
+                precioCLP: this.precioAditivo6,
+                cantidad: this.dosificacion.aditivo6,
+                precioUF: this.precioAditivo6 / this.ufValue,
+                costoUF: this.costoAditivo6,
+              });
+
+              this.costoAditivo7 = this.redondear(
+                (this.precioAditivo7 / this.ufValue) *
+                  (this.dosificacion.aditivo7 || 0)
+              );
+              console.log('Cálculo Aditivo 7:', {
+                precioCLP: this.precioAditivo7,
+                cantidad: this.dosificacion.aditivo7,
+                precioUF: this.precioAditivo7 / this.ufValue,
+                costoUF: this.costoAditivo7,
+              });
+
+              this.costoAditivo8 = this.redondear(
+                (this.precioAditivo8 / this.ufValue) *
+                  (this.dosificacion.aditivo8 || 0)
+              );
+              console.log('Cálculo Aditivo 8:', {
+                precioCLP: this.precioAditivo8,
+                cantidad: this.dosificacion.aditivo8,
+                precioUF: this.precioAditivo8 / this.ufValue,
+                costoUF: this.costoAditivo8,
+              });
+
+              this.costoAditivo9 = this.redondear(
+                (this.precioAditivo9 / this.ufValue) *
+                  (this.dosificacion.aditivo9 || 0)
+              );
+              console.log('Cálculo Aditivo 9:', {
+                precioCLP: this.precioAditivo9,
+                cantidad: this.dosificacion.aditivo9,
+                precioUF: this.precioAditivo9 / this.ufValue,
+                costoUF: this.costoAditivo9,
+              });
+
+              this.costoAditivo10 = this.redondear(
+                (this.precioAditivo10 / this.ufValue) *
+                  (this.dosificacion.aditivo10 || 0)
+              );
+              console.log('Cálculo Aditivo 10:', {
+                precioCLP: this.precioAditivo10,
+                cantidad: this.dosificacion.aditivo10,
+                precioUF: this.precioAditivo10 / this.ufValue,
+                costoUF: this.costoAditivo10,
+              });
             }
 
             this.costoTotal =
@@ -1437,6 +1603,22 @@ export class CosteoProductoComponent {
               this.costoAditivo8 +
               this.costoAditivo9 +
               this.costoAditivo10;
+
+            console.log('=== RESUMEN DE COSTOS ===');
+            console.log('- Costo Cemento:', this.costoCemento, 'UF');
+            console.log('- Costo Arena:', this.costoArena, 'UF');
+            console.log('- Costo Gravilla:', this.costoGravilla, 'UF');
+            console.log('- Costo Aditivo Base:', this.costoAditivoBase, 'UF');
+            console.log('- Costo Aditivo 2:', this.costoAditivo2, 'UF');
+            console.log('- Costo Aditivo 3:', this.costoAditivo3, 'UF');
+            console.log('- Costo Aditivo 4:', this.costoAditivo4, 'UF');
+            console.log('- Costo Aditivo 5:', this.costoAditivo5, 'UF');
+            console.log('- Costo Aditivo 6:', this.costoAditivo6, 'UF');
+            console.log('- Costo Aditivo 7:', this.costoAditivo7, 'UF');
+            console.log('- Costo Aditivo 8:', this.costoAditivo8, 'UF');
+            console.log('- Costo Aditivo 9:', this.costoAditivo9, 'UF');
+            console.log('- Costo Aditivo 10:', this.costoAditivo10, 'UF');
+            console.log('- COSTO TOTAL:', this.costoTotal, 'UF');
           });
       });
 
@@ -1453,6 +1635,12 @@ export class CosteoProductoComponent {
             this.costoFinal + this.margenEnUf + this.ufLaboratorio
           );
           this.utilidad = this.redondear(this.precioVenta - this.costoFinal);
+
+          console.log('=== CÁLCULO FINAL ===');
+          console.log('- Costo Agua:', this.costoAgua, 'UF');
+          console.log('- Costo Final (producción):', this.costoFinal, 'UF');
+          console.log('- Precio Venta:', this.precioVenta, 'UF');
+          console.log('- Utilidad:', this.utilidad, 'UF');
         });
     } else {
       console.error('Dosificación o planta seleccionada no es válida.');
@@ -1461,6 +1649,10 @@ export class CosteoProductoComponent {
 
   redondear(valor: number): number {
     return Math.round(valor * 100) / 100;
+  }
+
+  truncarADosDecimales(valor: number): number {
+    return Math.floor(valor * 100) / 100;
   }
 
   buscarProducto(): void {
@@ -1488,6 +1680,7 @@ export class CosteoProductoComponent {
     console.log('Nombre comercial:', nombreComercial);
     console.log('Planta ID:', idPlanta);
     console.log('Planta seleccionada:', this.plantaSeleccionada);
+
 
     // Validaciones más estrictas
     if (!nombreComercial || nombreComercial.trim().length === 0) {

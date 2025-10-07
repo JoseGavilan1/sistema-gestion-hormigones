@@ -1,13 +1,50 @@
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-body {
+/* ===== GLOBAL STYLES ===== */
+html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Previene el scroll horizontal */
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
 }
 
-html {
-  margin: 0;
-  padding: 0;
+.main-content {
+  margin-top: 80px;
+  min-height: calc(100vh - 80px);
   box-sizing: border-box;
+}
+
+/* Responsive margins */
+@media (max-width: 1024px) {
+  .main-content {
+    margin-top: 70px;
+    min-height: calc(100vh - 70px);
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-top: 65px;
+    min-height: calc(100vh - 65px);
+  }
+}
+
+@media (max-width: 576px) {
+  .main-content {
+    margin-top: 60px;
+    min-height: calc(100vh - 60px);
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    margin-top: 55px;
+    min-height: calc(100vh - 55px);
+  }
+}
+
+@media (max-width: 360px) {
+  .main-content {
+    margin-top: 50px;
+    min-height: calc(100vh - 50px);
+  }
 }

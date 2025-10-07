@@ -28,6 +28,7 @@ import { CargaMaestroComponent } from './components/carga-maestro/carga-maestro.
 import { ConfiguracionComponent } from './components/configuracion/configuracion.component';
 import { CostosGeneralesComponent } from './components/costos-generales/costos-generales.component';
 import { EditarPrecioAntofagastaComponent } from './components/editar-precio-antofagasta/editar-precio-antofagasta.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { EditarPrecioAntofagastaComponent } from './components/editar-precio-ant
     ConfiguracionComponent,
     CostosGeneralesComponent,
     EditarPrecioAntofagastaComponent,
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,

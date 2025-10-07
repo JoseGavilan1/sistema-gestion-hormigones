@@ -1,0 +1,104 @@
+<div class="sidebar" [class.sidebar-collapsed]="isCollapsed">
+  <!-- Header del Sidebar -->
+  <div class="sidebar-header">
+    <div class="logo-container" *ngIf="!isCollapsed">
+      <img
+        src="https://copat.cl/wp-content/uploads/2024/04/copat-logo-transparente-1024x249.webp"
+        alt="Logo Copat"
+        class="sidebar-logo"
+      />
+    </div>
+    <button class="toggle-btn" (click)="toggleSidebar()" [attr.aria-label]="isCollapsed ? 'Expandir menú' : 'Contraer menú'">
+      <i class="fas" [class.fa-bars]="isCollapsed" [class.fa-times]="!isCollapsed"></i>
+    </button>
+  </div>
+
+  <!-- Menú de Navegación -->
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <!-- Costeo Productos -->
+      <li class="nav-item" *ngIf="authService.isAdmin() || authService.isComercial() || authService.isVendedor()">
+        <a
+          class="nav-link"
+          [routerLink]="['/costeo-producto']"
+          routerLinkActive="active"
+          [class.collapsed]="isCollapsed"
+        >
+          <i class="fas fa-calculator nav-icon"></i>
+          <span class="nav-text" *ngIf="!isCollapsed">Costeo Productos</span>
+          <span class="nav-tooltip" *ngIf="isCollapsed">Costeo Productos</span>
+        </a>
+      </li>
+
+      <!-- Costeos Generales -->
+      <li class="nav-item" *ngIf="authService.isAdmin() || authService.isComercial()">
+        <a
+          class="nav-link"
+          [routerLink]="['/costos-generales']"
+          routerLinkActive="active"
+          [class.collapsed]="isCollapsed"
+        >
+          <i class="fas fa-calculator nav-icon"></i>
+          <span class="nav-text" *ngIf="!isCollapsed">Costeos Generales</span>
+          <span class="nav-tooltip" *ngIf="isCollapsed">Costeos Generales</span>
+        </a>
+      </li>
+
+      <!-- Costeo Materias Primas -->
+      <li class="nav-item" *ngIf="authService.isAdmin() || authService.isComercial()">
+        <a
+          class="nav-link"
+          [routerLink]="['/materias-primas', 'taltal']"
+          routerLinkActive="active"
+          [class.collapsed]="isCollapsed"
+        >
+          <i class="fas fa-boxes nav-icon"></i>
+          <span class="nav-text" *ngIf="!isCollapsed">Materias Primas</span>
+          <span class="nav-tooltip" *ngIf="isCollapsed">Materias Primas</span>
+        </a>
+      </li>
+
+      <!-- Área Técnica -->
+      <li class="nav-item" *ngIf="authService.isAdmin() || authService.isCalidad()">
+        <a
+          class="nav-link"
+          [routerLink]="['/menu-area-tecnica']"
+          routerLinkActive="active"
+          [class.collapsed]="isCollapsed"
+        >
+          <i class="fas fa-tools nav-icon"></i>
+          <span class="nav-text" *ngIf="!isCollapsed">Área Técnica</span>
+          <span class="nav-tooltip" *ngIf="isCollapsed">Área Técnica</span>
+        </a>
+      </li>
+
+      <!-- Configuración -->
+      <li class="nav-item" *ngIf="authService.isAdmin()">
+        <a
+          class="nav-link"
+          [routerLink]="['/configuracion']"
+          routerLinkActive="active"
+          [class.collapsed]="isCollapsed"
+          [class.disabled]="true"
+        >
+          <i class="fas fa-cogs nav-icon"></i>
+          <span class="nav-text" *ngIf="!isCollapsed">Configuración</span>
+          <span class="nav-tooltip" *ngIf="isCollapsed">Configuración</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Footer del Sidebar -->
+  <div class="sidebar-footer" *ngIf="!isCollapsed">
+    <div class="user-info">
+      <i class="fas fa-user-circle user-icon"></i>
+      <div class="user-details">
+        <span class="user-role">{{ getUserRole() }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay para móviles -->
+<div class="sidebar-overlay" *ngIf="!isCollapsed && isMobile" (click)="toggleSidebar()"></div>

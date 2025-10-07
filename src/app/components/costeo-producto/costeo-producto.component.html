@@ -1,4 +1,4 @@
-<app-navbar></app-navbar>
+
 <div class="container mt-4">
   <!-- Botón "Volver atrás" -->
   <button class="btn btn-danger mb-3" [routerLink]="['/home']">
@@ -169,21 +169,18 @@
             </button>
           </div>
 
-          <!-- Sección específica para Antofagasta -->
-          <!-- Sección específica para Antofagasta -->
           <div *ngIf="plantaSeleccionada === 3">
             <h5 class="mb-3">Seleccione proveedor:</h5>
-            <!-- En el HTML, verifica que los proveedores tengan IDs numéricos -->
-<div class="proveedores-grid mb-4">
-  <button
-    class="proveedor-btn"
-    *ngFor="let proveedor of proveedoresAntofagasta"
-    [class.active]="proveedorSeleccionado === proveedor.id"
-    (click)="seleccionarProveedor(proveedor.id)"
-  >
-    {{ proveedor.nombre }}
-  </button>
-</div>
+            <div class="proveedores-grid mb-4">
+              <button
+                class="proveedor-btn"
+                *ngFor="let proveedor of proveedoresAntofagasta"
+                [class.active]="proveedorSeleccionado === proveedor.id"
+                (click)="seleccionarProveedor(proveedor.id)"
+              >
+                {{ proveedor.nombre }}
+              </button>
+            </div>
 
             <div *ngIf="proveedorSeleccionado">
               <h6 class="mb-3">
@@ -193,7 +190,6 @@
                 }}</span>
               </h6>
 
-              <!-- Buscador de productos con autocompletado -->
               <div class="mb-4">
                 <label class="form-label"
                   ><strong>Buscar Producto:</strong></label
@@ -225,7 +221,6 @@
                   </button>
                 </div>
 
-                <!-- Lista desplegable de productos -->
                 <div
                   *ngIf="mostrarListaProductos && productosFiltrados.length > 0"
                   class="productos-dropdown mt-1"
@@ -240,9 +235,7 @@
                       <div
                         class="d-flex justify-content-between align-items-center"
                       >
-                        <span class="fw-bold">{{
-                          producto.nombre
-                        }}</span>
+                        <span class="fw-bold">{{ producto.nombre }}</span>
                         <small class="text-success fw-bold">
                           UF {{ producto.precio | number : "1.2-2" }}
                         </small>
@@ -255,7 +248,6 @@
                   </div>
                 </div>
 
-                <!-- Mensaje cuando no hay resultados -->
                 <div
                   *ngIf="
                     mostrarListaProductos &&
@@ -270,7 +262,6 @@
                   }}"
                 </div>
 
-                <!-- Producto seleccionado -->
                 <div
                   *ngIf="productoSeleccionadoAntofagasta"
                   class="mt-3 p-3 bg-light rounded"
@@ -309,7 +300,6 @@
                 </div>
               </div>
 
-              <!-- Información de costeo para Antofagasta -->
               <div
                 *ngIf="productoSeleccionadoAntofagasta"
                 class="alert alert-success"
@@ -322,7 +312,7 @@
             </div>
           </div>
 
-          <div *ngIf="dosificacion && !(plantaSeleccionada === 3 && productoSeleccionadoAntofagasta)" class="fade-in">
+          <div *ngIf="dosificacion" class="fade-in">
             <h5 class="mb-3">
               Dosificación para el hormigón
               <ng-container *ngIf="tipoBusqueda === 'producto'">
@@ -333,6 +323,16 @@
               </ng-container>
               <ng-container *ngIf="tipoBusqueda === 'nombreComercialText'">
                 {{ nombreComercial }}
+              </ng-container>
+              <ng-container
+                *ngIf="
+                  plantaSeleccionada === 3 && productoSeleccionadoAntofagasta
+                "
+              >
+                {{
+                  productoSeleccionadoAntofagasta.nombre_producto ||
+                    productoSeleccionadoAntofagasta.nombre
+                }}
               </ng-container>
               <ng-container
                 *ngIf="plantaSeleccionada === 3 && proveedorSeleccionado"
@@ -496,7 +496,6 @@
       </div>
     </div>
 
-    <!-- Resto del código se mantiene igual -->
     <div class="col-md-6">
       <div class="card shadow p-4 fade-in">
         <div class="mb-3">

@@ -1,0 +1,49 @@
+/* ===== APP LAYOUT ===== */
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+
+
+/* ===== RESPONSIVE LAYOUT ===== */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .app-content {
+    margin-top: 70px;
+    min-height: calc(100vh - 70px);
+  }
+}
+
+/* Móviles */
+@media (max-width: 768px) {
+  .app-content {
+    margin-top: 65px;
+    min-height: calc(100vh - 65px);
+  }
+}
+
+/* Móviles medianos */
+@media (max-width: 576px) {
+  .app-content {
+    margin-top: 60px;
+    min-height: calc(100vh - 60px);
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .app-content {
+    margin-top: 55px;
+    min-height: calc(100vh - 55px);
+  }
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 360px) {
+  .app-content {
+    margin-top: 50px;
+    min-height: calc(100vh - 50px);
+  }
+}

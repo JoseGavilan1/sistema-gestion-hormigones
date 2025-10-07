@@ -1,14 +1,29 @@
 <div class="navbar">
-  <img
-    src="https://copat.cl/wp-content/uploads/2024/04/copat-logo-transparente-1024x249.webp"
-    alt="Logo"
-  />
-  <h1>Gestión y costeo de hormigones</h1>
-  <button (click)="logout()" [disabled]="isLoggingOut">Cerrar sesión</button>
-</div>
-<div *ngIf="isLoggingOut" class="text-center mt-3">
-  <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Cerrando sesión...</span>
+  <!-- Logo -->
+  <div class="navbar-brand">
+    <img
+      src="https://copat.cl/wp-content/uploads/2024/04/copat-logo-transparente-1024x249.webp"
+      alt="Logo COPAT"
+      class="navbar-logo"
+    />
   </div>
-  <p class="text-primary">Cerrando sesión...</p>
+
+  <!-- Título - Solo visible en desktop -->
+  <h1 class="navbar-title">Gestión y costeo de hormigones</h1>
+
+  <!-- Botón Cerrar Sesión -->
+  <button class="navbar-logout-btn" (click)="logout()" [disabled]="isLoggingOut">
+    <i class="fas fa-sign-out-alt logout-icon"></i>
+    <span class="logout-text">Cerrar sesión</span>
+  </button>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="isLoggingOut" class="logout-overlay">
+  <div class="logout-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cerrando sesión...</span>
+    </div>
+    <p class="logout-message">Cerrando sesión...</p>
+  </div>
 </div>

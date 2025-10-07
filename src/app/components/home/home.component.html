@@ -1,51 +1,107 @@
-<app-navbar></app-navbar>
-<div class="container mt-4">
-  <div class="row">
-    <div class="col text-center mb-3" *ngIf="authService.isAdmin() || authService.isComercial() || authService.isVendedor()">
-      <button
-        class="btn btn-primary d-flex align-items-center justify-content-center"
-        style="width: auto"
-        [routerLink]="['/costeo-producto']"
-      >
-        <i class="fas fa-calculator me-2"></i> Costeo Productos
-      </button>
+
+
+<div class="home-container">
+  <div class="container">
+    <!-- Título principal -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2 class="home-title text-center">Panel de Control</h2>
+        <p class="home-subtitle text-center">Selecciona una opción para comenzar</p>
+      </div>
     </div>
 
-    <div class="col text-center mb-3" *ngIf="authService.isAdmin() || authService.isComercial()">
-      <button class="btn btn-primary d-flex align-items-center justify-content-center" style="width: auto" [routerLink]="['/costos-generales']">
-        <i class="fas fa-calculator me-2"></i> Costeos Generales
-      </button>
+    <!-- Grid de botones -->
+    <div class="buttons-grid">
+      <!-- Costeo Productos -->
+      <div class="button-card" *ngIf="authService.isAdmin() || authService.isComercial() || authService.isVendedor()">
+        <button
+          class="btn btn-primary home-btn"
+          [routerLink]="['/costeo-producto']"
+        >
+          <div class="btn-content">
+            <i class="fas fa-calculator btn-icon"></i>
+            <div class="btn-text">
+              <span class="btn-title">Costeo Productos</span>
+              <span class="btn-description">Calcular costos de hormigones</span>
+            </div>
+            <i class="fas fa-chevron-right btn-arrow"></i>
+          </div>
+        </button>
+      </div>
+
+      <!-- Costeos Generales -->
+      <div class="button-card" *ngIf="authService.isAdmin() || authService.isComercial()">
+        <button class="btn btn-primary home-btn" [routerLink]="['/costos-generales']">
+          <div class="btn-content">
+            <i class="fas fa-calculator btn-icon"></i>
+            <div class="btn-text">
+              <span class="btn-title">Costeos Generales</span>
+              <span class="btn-description">Configurar costos globales</span>
+            </div>
+            <i class="fas fa-chevron-right btn-arrow"></i>
+          </div>
+        </button>
+      </div>
+
+      <!-- Costeo Materias Primas -->
+      <div class="button-card" *ngIf="authService.isAdmin() || authService.isComercial()">
+        <button
+          class="btn btn-secondary home-btn"
+          [routerLink]="['/materias-primas', 'taltal']"
+        >
+          <div class="btn-content">
+            <i class="fas fa-boxes btn-icon"></i>
+            <div class="btn-text">
+              <span class="btn-title">Materias Primas</span>
+              <span class="btn-description">Gestionar materiales</span>
+            </div>
+            <i class="fas fa-chevron-right btn-arrow"></i>
+          </div>
+        </button>
+      </div>
+
+      <!-- Área Técnica -->
+      <div class="button-card" *ngIf="authService.isAdmin() || authService.isCalidad()">
+        <button
+          class="btn btn-secondary home-btn"
+          [routerLink]="['/menu-area-tecnica']"
+        >
+          <div class="btn-content">
+            <i class="fas fa-tools btn-icon"></i>
+            <div class="btn-text">
+              <span class="btn-title">Área Técnica</span>
+              <span class="btn-description">Herramientas técnicas</span>
+            </div>
+            <i class="fas fa-chevron-right btn-arrow"></i>
+          </div>
+        </button>
+      </div>
+
+      <!-- Configuración -->
+      <div class="button-card" *ngIf="authService.isAdmin()">
+        <button
+          class="btn btn-success home-btn"
+          [routerLink]="['/configuracion']"
+          disabled
+        >
+          <div class="btn-content">
+            <i class="fas fa-cogs btn-icon"></i>
+            <div class="btn-text">
+              <span class="btn-title">Configuración</span>
+              <span class="btn-description">Ajustes del sistema</span>
+            </div>
+            <i class="fas fa-chevron-right btn-arrow"></i>
+          </div>
+        </button>
+      </div>
     </div>
 
-    <div class="col text-center mb-3" *ngIf="authService.isAdmin() || authService.isComercial()">
-      <button
-        class="btn btn-secondary d-flex align-items-center justify-content-center"
-        style="width: auto"
-        [routerLink]="['/materias-primas', 'taltal']"
-      >
-        <i class="fas fa-boxes me-2"></i> Costeo Materias Primas
-      </button>
-    </div>
-
-    <div class="col text-center mb-3" *ngIf="authService.isAdmin() || authService.isCalidad()">
-      <button
-        class="btn btn-secondary d-flex align-items-center justify-content-center"
-        style="width: auto"
-        [routerLink]="['/menu-area-tecnica']"
-      >
-        <i class="fas fa-tools me-2"></i> Área Técnica
-      </button>
-    </div>
-
-    <div class="col text-center mb-3" *ngIf="authService.isAdmin()">
-      <button
-        class="btn btn-success d-flex align-items-center justify-content-center"
-        style="width: auto"
-        [routerLink]="['/configuracion']"
-        disabled
-      >
-        <i class="fas fa-cogs me-2"></i> Configuración
-      </button>
+    <!-- Mensaje para pantallas móviles -->
+    <div class="mobile-hint d-block d-md-none text-center mt-4">
+      <small class="text-muted">
+        <i class="fas fa-mobile-alt me-1"></i>
+        Desliza para ver más opciones
+      </small>
     </div>
   </div>
 </div>
